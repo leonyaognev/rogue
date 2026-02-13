@@ -1,4 +1,5 @@
 import { Inventory } from "../inventory.js";
+import { Character } from "./character.js";
 
 export class Player extends Character {
   constructor(...args) {
@@ -10,10 +11,6 @@ export class Player extends Character {
 
   useItem(itemType, index) {
     /* использование еды/свитка/эликсира/оружия */
-  }
-
-  levelUp() {
-    /* если нужно поднять уровень */
   }
 
   pickItem(item) {
