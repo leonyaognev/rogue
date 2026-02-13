@@ -15,4 +15,8 @@ export class Player extends Character {
   levelUp() {
     /* если нужно поднять уровень */
   }
+
+  pickItem(item) {
+    return this.inventory.add(item);
+  }
 }

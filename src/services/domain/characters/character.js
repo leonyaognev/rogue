@@ -1,3 +1,15 @@
+const CombatConfig = {
+  hit: {
+    baseChance: 0.6,
+    agilityFactor: 0.05,
+    minChance: 0.1,
+    maxChance: 0.95,
+  },
+  damage: {
+    variance: 3,
+  },
+};
+
 export class Character {
   constructor(name, maxHP, hp, agility, strength, weapon = null) {
     this.name = name;
@@ -6,21 +18,50 @@ export class Character {
     this.agility = agility;
     this.strength = strength;
     this.weapon = weapon;
+    this.chords = { x: 0, y: 0 };
   }
 
   move(x, y) {
-    /* изменить координаты */
+    this.chords.x += x;
+    this.chords.y += y;
+  }
+
+  #checkHit(target) {
+    const chance =
+      CombatConfig.hit.baseChance +
+      (this.agility - target.agility) * CombatConfig.hit.agilityFactor;
+
+    const clamped = Math.max(
+      CombatConfig.hit.minChance,
+      Math.min(CombatConfig.hit.maxChance, chance)
+    );
+
+    return Math.random() < clamped;
+  }
+
+  #calculateDamage() {
+    const weaponBonus = this.weapon?.strengthBonus ?? 0;
+
+    const base = this.strength + weaponBonus;
+    const variance = Math.floor(Math.random() * CombatConfig.damage.variance);
+
+    return base + variance;
   }
 
   attack(target) {
-    /* пошаговый бой */
+    if (!this.#checkHit(target)) {
+      return 0;
+    }
+
+    const damage = this.#calculateDamage();
+    const died = target.takeDamage(damage);
+
+    return died ? 1 : 0;
   }
 
   takeDamage(amount) {
-    /* вычесть hp, проверить смерть */
-  }
+    this.hp -= amount;
 
-  pickItem(item) {
-    /* добавить в рюкзак */
+    return this.hp <= 0;
   }
 }

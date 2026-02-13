@@ -4,11 +4,7 @@ export class Enemy extends Character {
     this.hostility = hostility;
   }
 
-  movePattern(level) {
-    /* логика движения монстра */
-  }
+  movePattern(level) {}
 
-  decideAction(player) {
-    /* преследование/телепорт/атака */
-  }
+  decideAction(player) {}
 }
