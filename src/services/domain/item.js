@@ -1,4 +1,4 @@
-const ItemType = Object.freeze({
+export const ItemType = Object.freeze({
   food: "food",
   potion: "potion",
   scroll: "scroll",
