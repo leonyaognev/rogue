@@ -1,7 +1,7 @@
 import { Room } from "./room.js";
 
 function randomBetween(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 class Node {
@@ -10,55 +10,18 @@ class Node {
     this.y = y;
     this.width = width;
     this.height = height;
-    this.left = null;
-    this.right = null;
-  }
-
-  split(min = 0) {
-    if (this.left || this.right || this.width <= min || this.height <= min)
-      return false;
-
-    const p1 = Math.random();
-    const splitVertical = p1 >= 0.5;
-
-    if (splitVertical) {
-      const split = randomBetween(
-        this.width / 2 - (this.width / 2) * 0.8,
-        this.width / 2 + (this.width / 2) * 0.8
-      );
-      this.left = new Node(this.x, this.y, split, this.height);
-      this.right = new Node(
-        this.x + split,
-        this.y,
-        this.width - split,
-        this.height
-      );
-    } else {
-      const split = randomBetween(
-        this.height / 2 - (this.height / 2) * 0.8,
-        this.height / 2 + (this.height / 2) * 0.8
-      );
-      this.left = new Node(this.x, this.y, this.width, split);
-      this.right = new Node(
-        this.x,
-        this.y + split,
-        this.width,
-        this.height - split
-      );
-    }
-    return true;
   }
 }
 
 function makeLeaves(width, height) {
-  const root = new Node(0, 0, width, height);
-  const leaves = [root];
+  const pw = width / 3;
+  const ph = height / 3;
 
-  while (leaves.length < 9) {
-    const idx = Math.floor(Math.random() * leaves.length);
+  const leaves = [];
 
-    if (leaves[idx].split()) {
-      leaves.splice(idx, 1, leaves[idx].left, leaves[idx].right);
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      leaves.push(new Node(pw * i, ph * j, pw, ph));
     }
   }
 
@@ -93,30 +56,35 @@ export class Level {
       .sort((a, b) => this.#distance(origin, a) - this.#distance(origin, b));
   }
 
+  #generateRooms(width, height) {
+    const leaves = makeLeaves(width, height);
+
+    const minRoomSize = 3;
+
+    for (const leave of leaves) {
+      const x = randomBetween(leave.x, leave.x + leave.width - minRoomSize - 4);
+      const y = randomBetween(
+        leave.y,
+        leave.y + leave.height - minRoomSize - 4
+      );
+
+      const maxWidth = leave.x + leave.width - x;
+      const maxHeight = leave.y + leave.height - y;
+
+      const rw = randomBetween(minRoomSize, Math.max(minRoomSize, maxWidth));
+      const rh = randomBetween(minRoomSize, Math.max(minRoomSize, maxHeight));
+
+      const room = new Room(x, y, rw, rh);
+      this.rooms.push(room);
+
+      console.log(room);
+    }
+  }
+
   generate() {
     const width = process.stdout.columns;
     const height = process.stdout.rows;
-
-    const leaves = makeLeaves(width, height);
-    const min = 0;
-
-    const centers = [];
-
-    for (const leave of leaves) {
-      const room = new Room(
-        leave.x - 1,
-        leave.y - 1,
-        leave.width - 1,
-        leave.height - 1
-      );
-
-      this.rooms.push(room);
-
-      centers.push({
-        x: Math.floor(room.x + room.width / 2),
-        y: Math.floor(room.y + room.height / 2),
-      });
-    }
+    this.#generateRooms(width, height);
   }
 
   populateEnemies() {
