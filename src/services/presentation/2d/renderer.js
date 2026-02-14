@@ -54,7 +54,16 @@ export class Renderer2D {
             break;
           }
         }
-
+        for (const corridor of level.corridors) {
+          if (
+            corridor.path.filter((cur) => {
+              return cur.x === x && cur.y === y;
+            }).length !== 0
+          ) {
+            char = ".";
+            break;
+          }
+        }
         line += char;
       }
       content += line + "\n";

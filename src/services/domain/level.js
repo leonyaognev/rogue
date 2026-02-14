@@ -1,3 +1,4 @@
+import { Corridor } from "./corridor.js";
 import { Room } from "./room.js";
 
 function randomBetween(min, max) {
@@ -29,12 +30,16 @@ function makeLeaves(width, height) {
 }
 
 export class Level {
+  #centers;
+
   constructor(index = 0) {
     this.index = index;
     this.rooms = [];
     this.corridors = [];
     this.enemies = [];
     this.items = [];
+
+    this.#centers = [];
 
     this.generate();
     this.populateEnemies();
@@ -77,7 +82,33 @@ export class Level {
       const room = new Room(x, y, rw, rh);
       this.rooms.push(room);
 
-      console.log(room);
+      this.#centers.push({
+        x: Math.floor(room.x + room.width / 2),
+        y: Math.floor(room.y + room.height / 2),
+      });
+    }
+  }
+
+  #connectRooms() {
+    for (let i = 0; i < this.#centers.length - 1; i++) {
+      const start = this.#centers[i];
+      const nearest = this.#nearestCenters(this.#centers, i)[0];
+
+      const path = [];
+
+      const xStep = start.x < nearest.x ? 1 : -1;
+      for (let x = start.x; x !== nearest.x; x += xStep) {
+        path.push({ x, y: start.y });
+      }
+
+      const yStep = start.y < nearest.y ? 1 : -1;
+      for (let y = start.y; y !== nearest.y; y += yStep) {
+        path.push({ x: nearest.x, y });
+      }
+
+      console.log(path);
+
+      this.corridors.push(new Corridor(this.rooms[i], this.rooms[i + 1], path));
     }
   }
 
@@ -85,6 +116,7 @@ export class Level {
     const width = process.stdout.columns;
     const height = process.stdout.rows;
     this.#generateRooms(width, height);
+    this.#connectRooms();
   }
 
   populateEnemies() {
