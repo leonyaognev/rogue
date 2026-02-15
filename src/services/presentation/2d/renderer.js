@@ -21,48 +21,25 @@ export class Renderer2D {
   }
 
   refresh(level, entities, player, enemies) {
-    const width = Math.min(
-      this.width,
-      Math.max(...level.rooms.map((r) => r.x + r.width))
-    );
-    const height = Math.min(
-      this.height,
-      Math.max(...level.rooms.map((r) => r.y + r.height))
-    );
-
     let content = "";
-    for (let y = 0; y < height; y++) {
+    for (let y = 0; y < level.map.length; y++) {
       let line = "";
-      for (let x = 0; x < width; x++) {
+      for (let x = 0; x < level.map[0].length; x++) {
         let char = " ";
-
-        for (const room of level.rooms) {
-          if (
-            (y === room.y || y === room.y + room.height - 1) &&
-            x >= room.x &&
-            x < room.x + room.width
-          ) {
-            char = "#";
+        const ch = level.map[y][x];
+        switch (ch) {
+          case 0:
+            char = " ";
             break;
-          }
-          if (
-            (x === room.x || x === room.x + room.width - 1) &&
-            y > room.y &&
-            y < room.y + room.height - 1
-          ) {
-            char = "#";
-            break;
-          }
-        }
-        for (const corridor of level.corridors) {
-          if (
-            corridor.path.filter((cur) => {
-              return cur.x === x && cur.y === y;
-            }).length !== 0
-          ) {
+          case 1:
             char = ".";
             break;
-          }
+          case 2:
+            char = "#";
+            break;
+          case 3:
+            char = ".";
+            break;
         }
         line += char;
       }

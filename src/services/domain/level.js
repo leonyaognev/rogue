@@ -30,8 +30,6 @@ function makeLeaves(width, height) {
 }
 
 export class Level {
-  #centers;
-
   constructor(index = 0) {
     this.index = index;
     this.rooms = [];
@@ -39,26 +37,16 @@ export class Level {
     this.enemies = [];
     this.items = [];
 
-    this.#centers = [];
+    this.width = process.stdout.columns || 80;
+    this.height = process.stdout.rows || 24;
+
+    this.map = new Array(this.height)
+      .fill(0)
+      .map(() => new Array(this.width).fill(0));
 
     this.generate();
     this.populateEnemies();
     this.populateItems();
-  }
-
-  #distance(a, b) {
-    const dx = a.x - b.x;
-    const dy = a.y - b.y;
-    return Math.sqrt(dx * dx + dy * dy);
-  }
-
-  #nearestCenters(centers, index) {
-    const origin = centers[index];
-
-    return centers
-      .filter((c) => c !== origin)
-      .slice()
-      .sort((a, b) => this.#distance(origin, a) - this.#distance(origin, b));
   }
 
   #generateRooms(width, height) {
@@ -67,56 +55,158 @@ export class Level {
     const minRoomSize = 3;
 
     for (const leave of leaves) {
-      const x = randomBetween(leave.x, leave.x + leave.width - minRoomSize - 4);
+      const x = randomBetween(
+        leave.x + 1,
+        leave.x + leave.width - minRoomSize - 1
+      );
       const y = randomBetween(
-        leave.y,
-        leave.y + leave.height - minRoomSize - 4
+        leave.y + 1,
+        leave.y + leave.height - minRoomSize - 1
       );
 
-      const maxWidth = leave.x + leave.width - x;
-      const maxHeight = leave.y + leave.height - y;
+      const maxWidth = leave.x + leave.width - x - 1;
+      const maxHeight = leave.y + leave.height - y - 1;
 
       const rw = randomBetween(minRoomSize, Math.max(minRoomSize, maxWidth));
       const rh = randomBetween(minRoomSize, Math.max(minRoomSize, maxHeight));
 
       const room = new Room(x, y, rw, rh);
-      this.rooms.push(room);
+      console.log(room);
+      for (let i = x - 1; i < x + rw + 1; i++) {
+        for (let j = y - 1; j < y + rh + 1; j++) {
+          this.map[j][i] = 2;
+        }
+      }
+      for (let i = x; i < x + rw; i++) {
+        for (let j = y; j < y + rh; j++) {
+          this.map[j][i] = 1;
+        }
+      }
 
-      this.#centers.push({
-        x: Math.floor(room.x + room.width / 2),
-        y: Math.floor(room.y + room.height / 2),
-      });
+      this.rooms.push(room);
     }
   }
 
+  #buildPath(start, end) {
+    const isFree = (x, y) => {
+      if (this.map[y][x] === 0) {
+        this.map[y][x] = 3;
+        return true;
+      }
+      return false;
+    };
+
+    const doors = [];
+
+    const isDoor = (x, y) => {
+      if (this.map[y][x] === 2) {
+        this.map[y][x] = 3;
+        doors.push({ center: { x: x, y: y } });
+        return true;
+      }
+      return false;
+    };
+
+    const path = [];
+
+    let midX = Math.floor((start.center.x + end.center.x) / 2);
+    let midY = Math.floor((start.center.y + end.center.y) / 2);
+
+    let xStep = start.center.x < end.center.x ? 1 : -1;
+    for (let x = start.center.x; x !== midX; x += xStep) {
+      isDoor(x, start.center.y);
+    }
+
+    let yStep = start.center.y < end.center.y ? 1 : -1;
+    for (let y = start.center.y; y !== midY; y += yStep) {
+      isDoor(midX, y);
+    }
+
+    let xStep2 = start.center.x < end.center.x ? 1 : -1;
+    for (let x = midX; x !== end.center.x; x += xStep2) {
+      isDoor(x, midY);
+    }
+
+    let yStep2 = start.center.y < end.center.y ? 1 : -1;
+    for (let y = midY; y !== end.center.y; y += yStep2) {
+      isDoor(end.center.x, y);
+    }
+
+    start = doors[0];
+    end = doors[1];
+
+    midX = Math.floor((start.center.x + end.center.x) / 2);
+    midY = Math.floor((start.center.y + end.center.y) / 2);
+
+    xStep = start.center.x < end.center.x ? 1 : -1;
+    for (let x = start.center.x; x !== midX; x += xStep) {
+      if (isFree(x, start.center.y)) {
+        path.push({ x, y: start.center.y });
+      }
+    }
+
+    yStep = start.center.y < end.center.y ? 1 : -1;
+    for (let y = start.center.y; y !== midY; y += yStep) {
+      if (isFree(midX, y)) {
+        path.push({ x: midX, y });
+      }
+    }
+
+    xStep2 = start.center.x < end.center.x ? 1 : -1;
+    for (let x = midX; x !== end.center.x; x += xStep2) {
+      if (isFree(x, midY)) {
+        path.push({ x, y: midY });
+      }
+    }
+
+    yStep2 = start.center.y < end.center.y ? 1 : -1;
+    for (let y = midY; y !== end.center.y; y += yStep2) {
+      if (isFree(end.center.x, y)) {
+        path.push({ x: end.center.x, y });
+      }
+    }
+
+    return path;
+  }
+
   #connectRooms() {
-    for (let i = 0; i < this.#centers.length - 1; i++) {
-      const start = this.#centers[i];
-      const nearest = this.#nearestCenters(this.#centers, i)[0];
+    const connected = new Set();
+    const remaining = new Set(this.rooms);
+    connected.add(this.rooms[0]);
+    remaining.delete(this.rooms[0]);
 
-      const path = [];
+    while (remaining.size > 0) {
+      let bestPair = null;
+      let bestDistance = Infinity;
 
-      const xStep = start.x < nearest.x ? 1 : -1;
-      for (let x = start.x; x !== nearest.x; x += xStep) {
-        path.push({ x, y: start.y });
+      for (const a of connected) {
+        for (const b of remaining) {
+          const d = a.distance(b);
+          if (d < bestDistance) {
+            bestDistance = d;
+            bestPair = [a, b];
+          }
+        }
       }
 
-      const yStep = start.y < nearest.y ? 1 : -1;
-      for (let y = start.y; y !== nearest.y; y += yStep) {
-        path.push({ x: nearest.x, y });
-      }
+      const [start, end] = bestPair;
+      const path = this.#buildPath(start, end);
 
-      console.log(path);
-
-      this.corridors.push(new Corridor(this.rooms[i], this.rooms[i + 1], path));
+      this.corridors.push(new Corridor(start, end, path));
+      connected.add(end);
+      remaining.delete(end);
     }
   }
 
   generate() {
-    const width = process.stdout.columns;
-    const height = process.stdout.rows;
-    this.#generateRooms(width, height);
+    this.#generateRooms(this.width, this.height);
     this.#connectRooms();
+  }
+
+  display() {
+    for (const row of this.map) {
+      console.log(row.join(""));
+    }
   }
 
   populateEnemies() {
