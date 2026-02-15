@@ -1,3 +1,5 @@
+import { PathCost, TileType } from "../constants.js";
+
 class Node {
   constructor(x, y, g, h, f, parent) {
     this.x = x;
@@ -64,11 +66,25 @@ export function aStar(grid, start, end) {
       )
         continue;
 
-      if (grid[neighbor.y][neighbor.x] === 3) continue;
-
       if (closedSet.has(`${neighbor.x}, ${neighbor.y}`)) continue;
 
-      const gScore = current.g + grid[neighbor.y][neighbor.x] === 2 ? 1 : 10;
+      let cost = 1;
+      switch (grid[neighbor.y][neighbor.x]) {
+        case TileType.EMPTY:
+          cost = PathCost.EMPTY;
+          break;
+        case TileType.FLOOR:
+          cost = PathCost.FLOOR;
+          break;
+        case TileType.WALL:
+          cost = PathCost.WALL;
+          break;
+        case TileType.CORRIDOR:
+          cost = PathCost.CORRIDOR;
+          break;
+      }
+
+      const gScore = current.g + cost;
       const hScore = heuristic(neighbor, end);
       const fScore = gScore + hScore;
 

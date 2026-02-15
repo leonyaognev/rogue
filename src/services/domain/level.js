@@ -1,3 +1,4 @@
+import { LevelConfig, TileType } from "./constants.js";
 import { Corridor } from "./corridor.js";
 import { Room } from "./room.js";
 import { aStar } from "./utils/AStar.js";
@@ -16,13 +17,13 @@ class Node {
 }
 
 function makeLeaves(width, height) {
-  const pw = width / 3;
-  const ph = height / 3;
+  const pw = width / LevelConfig.GRID_DIVISIONS;
+  const ph = height / LevelConfig.GRID_DIVISIONS;
 
   const leaves = [];
 
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
+  for (let i = 0; i < LevelConfig.GRID_DIVISIONS; i++) {
+    for (let j = 0; j < LevelConfig.GRID_DIVISIONS; j++) {
       leaves.push(new Node(pw * i, ph * j, pw, ph));
     }
   }
@@ -38,12 +39,12 @@ export class Level {
     this.enemies = [];
     this.items = [];
 
-    this.width = process.stdout.columns || 80;
-    this.height = process.stdout.rows || 24;
+    this.width = process.stdout.columns || LevelConfig.DEFAULT_WIDTH;
+    this.height = process.stdout.rows || LevelConfig.DEFAULT_HEIGHT;
 
     this.map = new Array(this.height)
-      .fill(0)
-      .map(() => new Array(this.width).fill(0));
+      .fill(TileType.EMPTY)
+      .map(() => new Array(this.width).fill(TileType.EMPTY));
 
     this.generate();
     this.populateEnemies();
@@ -53,20 +54,20 @@ export class Level {
   #generateRooms(width, height) {
     const leaves = makeLeaves(width, height);
 
-    const minRoomSize = 3;
+    const minRoomSize = LevelConfig.MIN_ROOM_SIZE;
 
     for (const leave of leaves) {
       const x = randomBetween(
-        leave.x + 1,
-        leave.x + leave.width - minRoomSize - 1
+        leave.x + 2,
+        leave.x + leave.width - minRoomSize - 2
       );
       const y = randomBetween(
-        leave.y + 1,
-        leave.y + leave.height - minRoomSize - 1
+        leave.y + 2,
+        leave.y + leave.height - minRoomSize - 2
       );
 
-      const maxWidth = leave.x + leave.width - x - 1;
-      const maxHeight = leave.y + leave.height - y - 1;
+      const maxWidth = leave.x + leave.width - x - 2;
+      const maxHeight = leave.y + leave.height - y - 2;
 
       const rw = randomBetween(minRoomSize, Math.max(minRoomSize, maxWidth));
       const rh = randomBetween(minRoomSize, Math.max(minRoomSize, maxHeight));
@@ -74,12 +75,12 @@ export class Level {
       const room = new Room(x, y, rw, rh);
       for (let i = x - 1; i < x + rw + 1; i++) {
         for (let j = y - 1; j < y + rh + 1; j++) {
-          this.map[j][i] = 2;
+          this.map[j][i] = TileType.WALL;
         }
       }
       for (let i = x; i < x + rw; i++) {
         for (let j = y; j < y + rh; j++) {
-          this.map[j][i] = 1;
+          this.map[j][i] = TileType.FLOOR;
         }
       }
 
@@ -89,10 +90,9 @@ export class Level {
 
   #buildPath(start, end) {
     const path = aStar(this.map, start.center, end.center);
-    console.log(path);
     for (const cord of path) {
-      if (this.map[cord.y][cord.x] !== 1) {
-        this.map[cord.y][cord.x] = 3;
+      if (this.map[cord.y][cord.x] !== TileType.FLOOR) {
+        this.map[cord.y][cord.x] = TileType.CORRIDOR;
       }
     }
 
