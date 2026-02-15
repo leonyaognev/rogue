@@ -1,5 +1,6 @@
 import { Corridor } from "./corridor.js";
 import { Room } from "./room.js";
+import { aStar } from "./utils/AStar.js";
 
 function randomBetween(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -71,7 +72,6 @@ export class Level {
       const rh = randomBetween(minRoomSize, Math.max(minRoomSize, maxHeight));
 
       const room = new Room(x, y, rw, rh);
-      console.log(room);
       for (let i = x - 1; i < x + rw + 1; i++) {
         for (let j = y - 1; j < y + rh + 1; j++) {
           this.map[j][i] = 2;
@@ -88,81 +88,11 @@ export class Level {
   }
 
   #buildPath(start, end) {
-    const isFree = (x, y) => {
-      if (this.map[y][x] === 0) {
-        this.map[y][x] = 3;
-        return true;
-      }
-      return false;
-    };
-
-    const doors = [];
-
-    const isDoor = (x, y) => {
-      if (this.map[y][x] === 2) {
-        this.map[y][x] = 3;
-        doors.push({ center: { x: x, y: y } });
-        return true;
-      }
-      return false;
-    };
-
-    const path = [];
-
-    let midX = Math.floor((start.center.x + end.center.x) / 2);
-    let midY = Math.floor((start.center.y + end.center.y) / 2);
-
-    let xStep = start.center.x < end.center.x ? 1 : -1;
-    for (let x = start.center.x; x !== midX; x += xStep) {
-      isDoor(x, start.center.y);
-    }
-
-    let yStep = start.center.y < end.center.y ? 1 : -1;
-    for (let y = start.center.y; y !== midY; y += yStep) {
-      isDoor(midX, y);
-    }
-
-    let xStep2 = start.center.x < end.center.x ? 1 : -1;
-    for (let x = midX; x !== end.center.x; x += xStep2) {
-      isDoor(x, midY);
-    }
-
-    let yStep2 = start.center.y < end.center.y ? 1 : -1;
-    for (let y = midY; y !== end.center.y; y += yStep2) {
-      isDoor(end.center.x, y);
-    }
-
-    start = doors[0];
-    end = doors[1];
-
-    midX = Math.floor((start.center.x + end.center.x) / 2);
-    midY = Math.floor((start.center.y + end.center.y) / 2);
-
-    xStep = start.center.x < end.center.x ? 1 : -1;
-    for (let x = start.center.x; x !== midX; x += xStep) {
-      if (isFree(x, start.center.y)) {
-        path.push({ x, y: start.center.y });
-      }
-    }
-
-    yStep = start.center.y < end.center.y ? 1 : -1;
-    for (let y = start.center.y; y !== midY; y += yStep) {
-      if (isFree(midX, y)) {
-        path.push({ x: midX, y });
-      }
-    }
-
-    xStep2 = start.center.x < end.center.x ? 1 : -1;
-    for (let x = midX; x !== end.center.x; x += xStep2) {
-      if (isFree(x, midY)) {
-        path.push({ x, y: midY });
-      }
-    }
-
-    yStep2 = start.center.y < end.center.y ? 1 : -1;
-    for (let y = midY; y !== end.center.y; y += yStep2) {
-      if (isFree(end.center.x, y)) {
-        path.push({ x: end.center.x, y });
+    const path = aStar(this.map, start.center, end.center);
+    console.log(path);
+    for (const cord of path) {
+      if (this.map[cord.y][cord.x] !== 1) {
+        this.map[cord.y][cord.x] = 3;
       }
     }
 
@@ -201,12 +131,6 @@ export class Level {
   generate() {
     this.#generateRooms(this.width, this.height);
     this.#connectRooms();
-  }
-
-  display() {
-    for (const row of this.map) {
-      console.log(row.join(""));
-    }
   }
 
   populateEnemies() {

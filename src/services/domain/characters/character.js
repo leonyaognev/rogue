@@ -18,12 +18,12 @@ export class Character {
     this.agility = agility;
     this.strength = strength;
     this.weapon = weapon;
-    this.chords = { x: 0, y: 0 };
+    this.cords = { x: 0, y: 0 };
   }
 
   move(x, y) {
-    this.chords.x += x;
-    this.chords.y += y;
+    this.cords.x += x;
+    this.cords.y += y;
   }
 
   #checkHit(target) {
