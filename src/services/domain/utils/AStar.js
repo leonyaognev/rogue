@@ -1,5 +1,73 @@
 import { PathCost, TileType } from "../constants.js";
 
+class MinHeap {
+  #items;
+  constructor() {
+    this.#items = [];
+  }
+
+  push(value) {
+    this.#items.push(value);
+    this.#bubbleUp();
+  }
+
+  pop() {
+    const top = this.#items[0];
+    const end = this.#items.pop();
+    if (this.#items.length > 0) {
+      this.#items[0] = end;
+      this.#bubbleDown();
+    }
+    return top;
+  }
+
+  get length() {
+    return this.#items.length;
+  }
+
+  #bubbleUp() {
+    let idx = this.#items.length - 1;
+    const node = this.#items[idx];
+
+    while (idx > 0) {
+      const parentIdx = Math.floor((idx - 1) / 2);
+      const parent = this.#items[parentIdx];
+      if (node.f >= parent.f) break;
+      this.#items[idx] = parent;
+      this.#items[parentIdx] = node;
+      idx = parentIdx;
+    }
+  }
+
+  #bubbleDown() {
+    let idx = 0;
+    const node = this.#items[idx];
+
+    while (true) {
+      const leftIdx = idx * 2 + 1;
+      const rightIdx = idx * 2 + 2;
+
+      let swapIdx = null;
+
+      if (leftIdx < this.#items.length && this.#items[leftIdx].f < node.f) {
+        swapIdx = leftIdx;
+      }
+      if (
+        rightIdx < this.#items.length &&
+        this.#items[rightIdx].f <
+          (swapIdx === null ? node.f : this.#items[swapIdx].f)
+      ) {
+        swapIdx = rightIdx;
+      }
+      if (swapIdx === null) break;
+
+      this.#items[idx] = this.#items[swapIdx];
+      this.#items[swapIdx] = node;
+      idx = swapIdx;
+    }
+  }
+}
+
 class Node {
   constructor(x, y, g, h, f, parent) {
     this.x = x;
@@ -12,7 +80,8 @@ class Node {
 }
 
 export function aStar(grid, start, end) {
-  const openSet = [];
+  const openSet = new MinHeap();
+  const openMap = new Map();
   const closedSet = new Set();
 
   const rows = grid.length;
@@ -34,8 +103,7 @@ export function aStar(grid, start, end) {
   );
 
   while (openSet.length > 0) {
-    openSet.sort((a, b) => a.f - b.f);
-    const current = openSet.shift();
+    const current = openSet.pop();
 
     if (current.x === end.x && current.y === end.y) {
       const path = [];
@@ -48,7 +116,7 @@ export function aStar(grid, start, end) {
       return path.reverse();
     }
 
-    closedSet.add(`${current.x}, ${current.y}`);
+    closedSet.add(`${current.x},${current.y}`);
 
     const neighbors = [
       { x: current.x + 1, y: current.y },
@@ -58,18 +126,16 @@ export function aStar(grid, start, end) {
     ];
 
     for (const neighbor of neighbors) {
-      if (
-        neighbor.x < 0 ||
-        neighbor.y < 0 ||
-        neighbor.x >= cols ||
-        neighbor.y >= rows
-      )
-        continue;
+      const nx = neighbor.x;
+      const ny = neighbor.y;
 
-      if (closedSet.has(`${neighbor.x}, ${neighbor.y}`)) continue;
+      if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue;
+
+      const key = `${nx},${ny}`;
+      if (closedSet.has(key)) continue;
 
       let cost = 1;
-      switch (grid[neighbor.y][neighbor.x]) {
+      switch (grid[ny][nx]) {
         case TileType.EMPTY:
           cost = PathCost.EMPTY;
           break;
@@ -88,14 +154,12 @@ export function aStar(grid, start, end) {
       const hScore = heuristic(neighbor, end);
       const fScore = gScore + hScore;
 
-      const exists = openSet.find(
-        (n) => n.x === neighbor.x && n.y === neighbor.y
-      );
+      const exists = openMap.get(key);
 
       if (!exists) {
-        openSet.push(
-          new Node(neighbor.x, neighbor.y, gScore, hScore, fScore, current)
-        );
+        const neighborNode = new Node(nx, ny, gScore, hScore, fScore, current);
+        openSet.push(neighborNode);
+        openMap.set(key, neighborNode);
       } else if (gScore < exists.g) {
         exists.g = gScore;
         exists.h = hScore;
