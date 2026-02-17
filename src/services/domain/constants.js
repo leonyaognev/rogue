@@ -9,7 +9,9 @@ export const PathCost = Object.freeze({
   EMPTY: 1,
   FLOOR: 1,
   WALL: 10,
-  CORRIDOR: 10,
+  CORRIDOR: 5,
+  NEAR_CORRIDOR: 5,
+  ROTATE: 1,
 });
 
 export const LevelConfig = Object.freeze({
