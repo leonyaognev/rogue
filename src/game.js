@@ -8,7 +8,7 @@ export class Game {
   constructor(app) {
     this.app = app;
 
-    this.level = new Level();
+    this.level = new Level(process.stdout.columns, process.stdout.rows);
     this.player = new Player("player", 100, 20, 20, null, {
       x: randomBetween(
         this.level.startRoom.x,
@@ -19,7 +19,6 @@ export class Game {
         this.level.startRoom.y + this.level.startRoom.height - 1
       ),
     });
-    console.log(this.player);
 
     this.input = InputInit(this.app.renderer.screen);
 

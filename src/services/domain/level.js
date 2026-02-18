@@ -1,7 +1,7 @@
 import { LevelConfig, TileType } from "./constants.js";
 import { Corridor } from "./corridor.js";
 import { Room } from "./room.js";
-import { aStar } from "./utils/AStar.js";
+import { aStarForCorridors, aStarForEnd } from "./utils/AStar.js";
 import { randomBetween } from "./utils/randomBetween.js";
 
 class Node {
@@ -29,15 +29,16 @@ function makeLeaves(width, height) {
 }
 
 export class Level {
-  constructor(index = 0) {
-    this.index = index;
+  constructor(
+    width = LevelConfig.DEFAULT_WIDTH,
+    height = LevelConfig.DEFAULT_HEIGHT
+  ) {
     this.rooms = [];
     this.corridors = [];
     this.enemies = [];
     this.items = [];
-
-    this.width = process.stdout.columns || LevelConfig.DEFAULT_WIDTH;
-    this.height = process.stdout.rows || LevelConfig.DEFAULT_HEIGHT;
+    this.width = width;
+    this.height = height;
 
     this.map = new Array(this.height)
       .fill(TileType.EMPTY)
@@ -46,9 +47,44 @@ export class Level {
     this.generate();
 
     this.startRoom = this.rooms[randomBetween(0, this.rooms.length - 1)];
+    this.endRoom = this.#searchEndRoom();
 
     this.populateEnemies();
     this.populateItems();
+  }
+
+  generate() {
+    this.#generateRooms(this.width, this.height);
+    this.#connectRooms();
+  }
+
+  populateEnemies() {
+    /* добавить монстров */
+  }
+
+  populateItems() {
+    /* добавить предметы */
+  }
+
+  #searchEndRoom() {
+    const ways = [];
+
+    for (const room of this.rooms) {
+      if (room === this.startRoom) continue;
+
+      const path = aStarForEnd(
+        this.map,
+        this.startRoom.center,
+        room.center
+      ).length;
+
+      ways.push({ path: path, room: room });
+    }
+
+    return ways.reduce((acc, cur) => {
+      if (cur.path > acc.path) acc = cur;
+      return acc;
+    }, ways[0]).room;
   }
 
   #generateRooms(width, height) {
@@ -89,10 +125,12 @@ export class Level {
   }
 
   #buildPath(start, end) {
-    const path = aStar(this.map, start.center, end.center);
+    let path = aStarForCorridors(this.map, start.center, end.center);
     for (const cord of path) {
       if (this.map[cord.y][cord.x] !== TileType.FLOOR) {
         this.map[cord.y][cord.x] = TileType.CORRIDOR;
+      } else {
+        path = path.filter((el) => el !== cord);
       }
     }
 
@@ -126,18 +164,5 @@ export class Level {
       connected.add(end);
       remaining.delete(end);
     }
-  }
-
-  generate() {
-    this.#generateRooms(this.width, this.height);
-    this.#connectRooms();
-  }
-
-  populateEnemies() {
-    /* добавить монстров */
-  }
-
-  populateItems() {
-    /* добавить предметы */
   }
 }

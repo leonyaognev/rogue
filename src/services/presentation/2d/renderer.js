@@ -42,6 +42,9 @@ export class Renderer2D {
             break;
         }
 
+        if (level.endRoom.center.x === x && level.endRoom.center.y === y) {
+          char = "0";
+        }
         if (player.cords.x === x && player.cords.y === y) {
           char = "@";
         }
