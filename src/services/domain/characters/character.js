@@ -21,9 +21,9 @@ export class Character {
     this.cords = cords;
   }
 
-  move(x, y) {
-    this.cords.x += x;
-    this.cords.y += y;
+  move(cords) {
+    this.cords.x = cords.x;
+    this.cords.y = cords.y;
   }
 
   #checkHit(target) {

@@ -1,7 +1,8 @@
 import { LevelConfig, TileType } from "./constants.js";
 import { Corridor } from "./corridor.js";
 import { Room } from "./room.js";
-import { aStarForCorridors, aStarForEnd } from "./utils/AStar.js";
+import { CorridorPathfinder } from "./utils/aStar/finders/CorridorPathfinder.js";
+import { endPathFinder } from "./utils/aStar/finders/endPathFinder.js";
 import { randomBetween } from "./utils/randomBetween.js";
 
 class Node {
@@ -72,12 +73,9 @@ export class Level {
     for (const room of this.rooms) {
       if (room === this.startRoom) continue;
 
-      const path = aStarForEnd(
-        this.map,
-        this.startRoom.center,
-        room.center
-      ).length;
+      const finder = new endPathFinder(this.map);
 
+      const path = finder.find(this.startRoom.center, room.center).length;
       ways.push({ path: path, room: room });
     }
 
@@ -125,7 +123,9 @@ export class Level {
   }
 
   #buildPath(start, end) {
-    let path = aStarForCorridors(this.map, start.center, end.center);
+    const finder = new CorridorPathfinder(this.map);
+
+    let path = finder.find(start.center, end.center);
     for (const cord of path) {
       if (this.map[cord.y][cord.x] !== TileType.FLOOR) {
         this.map[cord.y][cord.x] = TileType.CORRIDOR;

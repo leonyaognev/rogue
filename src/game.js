@@ -8,17 +8,20 @@ export class Game {
   constructor(app) {
     this.app = app;
 
-    this.level = new Level(process.stdout.columns, process.stdout.rows);
-    this.player = new Player("player", 100, 20, 20, null, {
-      x: randomBetween(
-        this.level.startRoom.x,
-        this.level.startRoom.x + this.level.startRoom.width - 1
-      ),
-      y: randomBetween(
-        this.level.startRoom.y,
-        this.level.startRoom.y + this.level.startRoom.height - 1
-      ),
-    });
+    this.rows = process.stdout.rows;
+    this.columns = process.stdout.columns;
+
+    this.level = new Level(this.columns, this.rows);
+    this.currentLevel = 1;
+
+    this.player = new Player(
+      "player",
+      100,
+      20,
+      20,
+      null,
+      this.#startPossitionPlayerCords()
+    );
 
     this.input = InputInit(this.app.renderer.screen);
 
@@ -34,6 +37,14 @@ export class Game {
 
   #update() {
     this.#playerMove();
+
+    if (this.#isEndLevel()) {
+      this.level = new Level(this.columns, this.rows);
+      this.player.move(
+        this.#startPossitionPlayerCords()
+      );
+      this.currentLevel++;
+    }
   }
 
   #playerMove() {
@@ -61,6 +72,26 @@ export class Game {
       this.level.entities,
       this.player,
       this.level.enemies
+    );
+  }
+
+  #startPossitionPlayerCords() {
+    return {
+      x: randomBetween(
+        this.level.startRoom.x,
+        this.level.startRoom.x + this.level.startRoom.width - 1
+      ),
+      y: randomBetween(
+        this.level.startRoom.y,
+        this.level.startRoom.y + this.level.startRoom.height - 1
+      ),
+    };
+  }
+
+  #isEndLevel() {
+    return (
+      this.player.cords.x === this.level.endRoom.center.x &&
+      this.player.cords.y === this.level.endRoom.center.y
     );
   }
 }
