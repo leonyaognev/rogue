@@ -3,7 +3,7 @@ import { aStar } from "../aStar.js";
 export class baseFinder {
   constructor(grid) {
     this.grid = grid;
-    this.astar = aStar;
+    this.FinderClass = aStar;
   }
 
   find(start, end) {}

@@ -3,7 +3,7 @@ import { baseFinder } from "./baseFinder.js";
 
 export class endPathFinder extends baseFinder {
   find(start, end) {
-    const pathFinder = new this.astar(
+    const pathFinder = new this.FinderClass(
       this.grid,
       start,
       end,

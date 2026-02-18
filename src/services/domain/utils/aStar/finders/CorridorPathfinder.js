@@ -3,7 +3,7 @@ import { baseFinder } from "./baseFinder.js";
 
 export class CorridorPathfinder extends baseFinder {
   find(start, end) {
-    const pathFinder = new this.astar(
+    const pathFinder = new this.FinderClass(
       this.grid,
       start,
       end,
@@ -57,7 +57,7 @@ export class CorridorPathfinder extends baseFinder {
         const nx = x + dx;
         const ny = y + dy;
 
-        if (!this.#isInside(nx, ny, this.grid)) continue;
+        if (!this.#isInside(nx, ny)) continue;
         if (this.grid[ny][nx] === TileType.CORRIDOR) {
           return PathCost.NEAR_CORRIDOR;
         }

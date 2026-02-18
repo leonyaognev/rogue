@@ -13,17 +13,7 @@ class Node {
 }
 
 export class aStar {
-  constructor(
-    grid,
-    start,
-    end,
-    costFn = () => {
-      1;
-    },
-    isBlockedFn = () => {
-      false;
-    }
-  ) {
+  constructor(grid, start, end, costFn = () => 1, isBlockedFn = () => false) {
     this.openSet = new MinHeap();
     this.openMap = new Map();
     this.closedSet = new Set();
