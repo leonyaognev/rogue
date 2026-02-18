@@ -41,6 +41,11 @@ export class Renderer2D {
             char = ".";
             break;
         }
+
+        if (player.cords.x === x && player.cords.y === y) {
+          char = "@";
+        }
+
         line += char;
       }
       content += line + "\n";

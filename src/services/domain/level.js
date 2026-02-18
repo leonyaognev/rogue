@@ -2,10 +2,7 @@ import { LevelConfig, TileType } from "./constants.js";
 import { Corridor } from "./corridor.js";
 import { Room } from "./room.js";
 import { aStar } from "./utils/AStar.js";
-
-function randomBetween(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
+import { randomBetween } from "./utils/randomBetween.js";
 
 class Node {
   constructor(x, y, width, height) {
@@ -47,6 +44,9 @@ export class Level {
       .map(() => new Array(this.width).fill(TileType.EMPTY));
 
     this.generate();
+
+    this.startRoom = this.rooms[randomBetween(0, this.rooms.length - 1)];
+
     this.populateEnemies();
     this.populateItems();
   }

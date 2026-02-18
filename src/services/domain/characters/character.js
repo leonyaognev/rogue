@@ -11,14 +11,14 @@ const CombatConfig = {
 };
 
 export class Character {
-  constructor(name, maxHP, hp, agility, strength, weapon = null) {
+  constructor(name, maxHP, agility, strength, weapon = null, cords) {
     this.name = name;
     this.maxHP = maxHP;
-    this.hp = hp;
+    this.hp = maxHP;
     this.agility = agility;
     this.strength = strength;
     this.weapon = weapon;
-    this.cords = { x: 0, y: 0 };
+    this.cords = cords;
   }
 
   move(x, y) {
