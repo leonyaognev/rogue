@@ -1,3 +1,4 @@
+import { Zombie } from "./services/domain/characters/enemies/zombie.js";
 import { Player } from "./services/domain/characters/player.js";
 import { TileType } from "./services/domain/constants.js";
 import { Level } from "./services/domain/level.js";
@@ -19,7 +20,6 @@ export class Game {
       100,
       20,
       20,
-      null,
       this.#startPossitionPlayerCords()
     );
 
@@ -40,16 +40,29 @@ export class Game {
 
     if (this.#isEndLevel()) {
       this.level = new Level(this.columns, this.rows);
-      this.player.move(
-        this.#startPossitionPlayerCords()
-      );
+      this.player.move(this.#startPossitionPlayerCords());
       this.currentLevel++;
+    }
+  }
+
+  #enemiesMove() {
+    for (const enemy of this.level.enemies) {
+      enemy.movePattern(this.player);
     }
   }
 
   #playerMove() {
     const newX = this.player.cords.x + this.input.right - this.input.left;
     const newY = this.player.cords.y + this.input.down - this.input.up;
+
+    if (
+      this.input.right ||
+      this.input.left ||
+      this.input.down ||
+      this.input.up
+    ) {
+      this.#enemiesMove(this.player);
+    }
 
     if (
       this.level.map[newY][newX] === TileType.FLOOR ||

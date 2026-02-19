@@ -1,3 +1,4 @@
+import { Zombie } from "./characters/enemies/zombie.js";
 import { LevelConfig, TileType } from "./constants.js";
 import { Corridor } from "./corridor.js";
 import { Room } from "./room.js";
@@ -60,7 +61,26 @@ export class Level {
   }
 
   populateEnemies() {
-    /* добавить монстров */
+    this.enemies.push(
+      new Zombie(
+        "zombie",
+        100,
+        20,
+        20,
+        {
+          x: randomBetween(
+            this.rooms[5].x,
+            this.rooms[5].x + this.rooms[5].width - 1
+          ),
+          y: randomBetween(
+            this.rooms[5].y,
+            this.rooms[5].y + this.rooms[5].height - 1
+          ),
+        },
+        5,
+        this
+      )
+    );
   }
 
   populateItems() {

@@ -45,6 +45,11 @@ export class Renderer2D {
         if (level.endRoom.center.x === x && level.endRoom.center.y === y) {
           char = "0";
         }
+        for (const enemy of enemies) {
+          if (enemy.cords.x === x && enemy.cords.y === y) {
+            char = "Z";
+          }
+        }
         if (player.cords.x === x && player.cords.y === y) {
           char = "@";
         }
