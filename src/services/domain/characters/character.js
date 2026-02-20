@@ -1,15 +1,3 @@
-const CombatConfig = {
-  hit: {
-    baseChance: 0.6,
-    agilityFactor: 0.05,
-    minChance: 0.1,
-    maxChance: 0.95,
-  },
-  damage: {
-    variance: 3,
-  },
-};
-
 export class Character {
   #isSleep;
 

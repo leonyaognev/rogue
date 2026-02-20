@@ -1,4 +1,4 @@
-import { PathCost, TileType } from "../../../constants.js";
+import { PathCost, TileType } from "../../../../../constants.js";
 import { baseFinder } from "./baseFinder.js";
 
 export class CorridorPathfinder extends baseFinder {

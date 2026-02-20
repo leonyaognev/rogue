@@ -1,8 +1,4 @@
-import { Ghost } from "./characters/enemies/ghost.js";
-import { Ogre } from "./characters/enemies/ogre.js";
-import { Snake } from "./characters/enemies/snake.js";
-import { Zombie } from "./characters/enemies/zombie.js";
-import { LevelConfig, TileType } from "./constants.js";
+import { LevelConfig, TileType } from "../../constants.js";
 import { Corridor } from "./corridor.js";
 import { Room } from "./room.js";
 import { CorridorPathfinder } from "./utils/aStar/finders/CorridorPathfinder.js";
@@ -63,28 +59,7 @@ export class Level {
     this.#connectRooms();
   }
 
-  populateEnemies() {
-    this.enemies.push(
-      new Zombie(
-        "Zombie",
-        100,
-        20,
-        20,
-        {
-          x: randomBetween(
-            this.rooms[5].x,
-            this.rooms[5].x + this.rooms[5].width - 1
-          ),
-          y: randomBetween(
-            this.rooms[5].y,
-            this.rooms[5].y + this.rooms[5].height - 1
-          ),
-        },
-        5,
-        this
-      )
-    );
-  }
+  populateEnemies() {}
 
   populateItems() {
     /* добавить предметы */
@@ -112,19 +87,20 @@ export class Level {
     const leaves = makeLeaves(width, height);
 
     const minRoomSize = LevelConfig.MIN_ROOM_SIZE;
+    const roomOffset = LevelConfig.ROOM_OFFSET;
 
     for (const leave of leaves) {
       const x = randomBetween(
-        leave.x + 2,
-        leave.x + leave.width - minRoomSize - 2
+        leave.x + roomOffset,
+        leave.x + leave.width - minRoomSize - roomOffset
       );
       const y = randomBetween(
-        leave.y + 2,
-        leave.y + leave.height - minRoomSize - 2
+        leave.y + roomOffset,
+        leave.y + leave.height - minRoomSize - roomOffset
       );
 
-      const maxWidth = leave.x + leave.width - x - 2;
-      const maxHeight = leave.y + leave.height - y - 2;
+      const maxWidth = leave.x + leave.width - x - roomOffset;
+      const maxHeight = leave.y + leave.height - y - roomOffset;
 
       const rw = randomBetween(minRoomSize, Math.max(minRoomSize, maxWidth));
       const rh = randomBetween(minRoomSize, Math.max(minRoomSize, maxHeight));

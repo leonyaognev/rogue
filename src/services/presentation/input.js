@@ -1,4 +1,5 @@
 import blessed from "blessed";
+import { GameConfig } from "../../constants.js";
 
 class GameInput {
   constructor() {
@@ -57,7 +58,7 @@ export function InputInit(
       case lowerKeys[8]:
       case upperKeys[8]:
         screen.destroy();
-        process.exit(0);
+        process.exit(GameConfig.EXIT_CODE);
     }
   };
 

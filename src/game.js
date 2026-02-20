@@ -1,6 +1,6 @@
 import { Zombie } from "./services/domain/characters/enemies/zombie.js";
 import { Player } from "./services/domain/characters/player.js";
-import { TileType } from "./services/domain/constants.js";
+import { GameConfig, PlayerConfig, TileType } from "./constants.js";
 import { Level } from "./services/domain/level.js";
 import { randomBetween } from "./services/domain/utils/randomBetween.js";
 import { InputInit } from "./services/presentation/input.js";
@@ -17,9 +17,9 @@ export class Game {
 
     this.player = new Player(
       "player",
-      100,
-      20,
-      20,
+      PlayerConfig.DEFAULT_HP,
+      PlayerConfig.DEFAULT_AGILITY,
+      PlayerConfig.DEFAULT_STRENGTH,
       this.level.startRoom.center,
       this.level
     );
@@ -31,7 +31,7 @@ export class Game {
     setInterval(() => {
       this.#update();
       this.#refresh();
-    }, 17);
+    }, GameConfig.TICK_RATE);
   }
 
   #update() {
@@ -46,7 +46,7 @@ export class Game {
     if (this.player.hp <= 0) {
       this.app.renderer.screen.destroy();
       console.log("fuck up");
-      process.exit(0);
+      process.exit(GameConfig.EXIT_CODE);
     }
   }
 

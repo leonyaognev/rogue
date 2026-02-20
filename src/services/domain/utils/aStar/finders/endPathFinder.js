@@ -1,4 +1,4 @@
-import { TileType } from "../../../constants.js";
+import { TileType } from "../../../../../constants.js";
 import { baseFinder } from "./baseFinder.js";
 
 export class endPathFinder extends baseFinder {

@@ -1,4 +1,5 @@
 import blessed from "blessed";
+import { TileChar, TileType } from "../../../constants.js";
 
 export class Renderer2D {
   constructor(screen) {
@@ -25,25 +26,25 @@ export class Renderer2D {
     for (let y = 0; y < level.map.length; y++) {
       let line = "";
       for (let x = 0; x < level.map[0].length; x++) {
-        let char = " ";
+        let char = TileChar.EMPTY;
         const ch = level.map[y][x];
         switch (ch) {
-          case 0:
-            char = " ";
+          case TileType.EMPTY:
+            char = TileChar.EMPTY;
             break;
-          case 1:
-            char = ".";
+          case TileType.FLOOR:
+            char = TileChar.FLOOR;
             break;
-          case 2:
-            char = "#";
+          case TileType.WALL:
+            char = TileChar.WALL;
             break;
-          case 3:
-            char = ".";
+          case TileType.CORRIDOR:
+            char = TileChar.CORRIDOR;
             break;
         }
 
         if (level.endRoom.center.x === x && level.endRoom.center.y === y) {
-          char = "0";
+          char = TileChar.END_ROOM;
         }
         for (const enemy of enemies) {
           if (enemy.cords.x === x && enemy.cords.y === y && enemy.visible) {
@@ -51,7 +52,7 @@ export class Renderer2D {
           }
         }
         if (player.cords.x === x && player.cords.y === y) {
-          char = "@";
+          char = TileChar.PLAYER;
         }
 
         line += char;

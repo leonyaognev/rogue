@@ -1,4 +1,4 @@
-import { TileType } from "../constants.js";
+import { TileType } from "../../../constants.js";
 import { enemyPathFinder } from "../utils/aStar/finders/enemyPathFinder.js";
 import { Character } from "./character.js";
 

@@ -1,10 +1,4 @@
-export const ItemType = Object.freeze({
-  food: "food",
-  potion: "potion",
-  scroll: "scroll",
-  weapon: "weapon",
-  treasure: "treasure",
-});
+import { ItemType } from "../../constants";
 
 export class Item {
   constructor(
