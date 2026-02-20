@@ -26,30 +26,12 @@ export class Character {
   }
 
   move(cords) {
-    this.cords.x = cords.x;
-    this.cords.y = cords.y;
-  }
-
-  #checkHit(target) {
-    const chance =
-      CombatConfig.hit.baseChance +
-      (this.agility - target.agility) * CombatConfig.hit.agilityFactor;
-
-    const clamped = Math.max(
-      CombatConfig.hit.minChance,
-      Math.min(CombatConfig.hit.maxChance, chance)
-    );
-
-    return Math.random() < clamped;
-  }
-
-  #calculateDamage() {
-    const weaponBonus = this.weapon?.strengthBonus ?? 0;
-
-    const base = this.strength + weaponBonus;
-    const variance = Math.floor(Math.random() * CombatConfig.damage.variance);
-
-    return base + variance;
+    if (!this.#isSleep) {
+      this.cords.x = cords.x;
+      this.cords.y = cords.y;
+    } else {
+      this.#isSleep--;
+    }
   }
 
   attack(target) {
@@ -72,5 +54,27 @@ export class Character {
     if (time > 0) {
       this.sleep = time;
     }
+  }
+
+  #checkHit(target) {
+    const chance =
+      CombatConfig.hit.baseChance +
+      (this.agility - target.agility) * CombatConfig.hit.agilityFactor;
+
+    const clamped = Math.max(
+      CombatConfig.hit.minChance,
+      Math.min(CombatConfig.hit.maxChance, chance)
+    );
+
+    return Math.random() < clamped;
+  }
+
+  #calculateDamage() {
+    const weaponBonus = this.weapon?.strengthBonus ?? 0;
+
+    const base = this.strength + weaponBonus;
+    const variance = Math.floor(Math.random() * CombatConfig.damage.variance);
+
+    return base + variance;
   }
 }

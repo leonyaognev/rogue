@@ -56,19 +56,19 @@ export class Game {
     const newY = this.player.cords.y + this.input.down - this.input.up;
 
     if (
+      this.level.map[newY][newX] === TileType.FLOOR ||
+      this.level.map[newY][newX] === TileType.CORRIDOR
+    ) {
+      this.player.move({ x: newX, y: newY });
+    }
+
+    if (
       this.input.right ||
       this.input.left ||
       this.input.down ||
       this.input.up
     ) {
       this.#enemiesMove(this.player);
-    }
-
-    if (
-      this.level.map[newY][newX] === TileType.FLOOR ||
-      this.level.map[newY][newX] === TileType.CORRIDOR
-    ) {
-      this.player.move({ x: newX, y: newY });
     }
 
     this.input.up =

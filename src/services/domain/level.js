@@ -65,8 +65,8 @@ export class Level {
 
   populateEnemies() {
     this.enemies.push(
-      new Ghost(
-        "Ghost",
+      new Zombie(
+        "Zombie",
         100,
         20,
         20,

@@ -17,7 +17,7 @@ export class Enemy extends Character {
     this.level = level;
     this.path = [];
     this.angry = false;
-    this.visible = 0;
+    this.visible = 1;
 
     this.finder = new enemyPathFinder(this.level.map);
   }

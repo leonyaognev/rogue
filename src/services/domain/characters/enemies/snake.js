@@ -1,6 +1,10 @@
 import { Enemy, EnemyprotectedMethods } from "../enemy.js";
 
 export class Snake extends Enemy {
+  #sleepChance;
+  #diagonalDirectionVertical;
+  #diagonalDirectionHorizantal;
+
   constructor(name, maxHp, agility, strength, cords, hostility, level) {
     super(
       name,
@@ -12,9 +16,9 @@ export class Snake extends Enemy {
       level
     );
 
-    this.sleepChance = 0.3;
-    this.diagonalDirectionVertical = 1;
-    this.diagonalDirectionHorizantal = 1;
+    this.#sleepChance = 0.3;
+    this.#diagonalDirectionVertical = 1;
+    this.#diagonalDirectionHorizantal = 1;
   }
 
   movePattern(player) {
@@ -37,8 +41,8 @@ export class Snake extends Enemy {
 
     const x = this.cords.x;
     const y = this.cords.y;
-    let dx = this.diagonalDirectionHorizantal;
-    let dy = this.diagonalDirectionVertical;
+    let dx = this.#diagonalDirectionHorizantal;
+    let dy = this.#diagonalDirectionVertical;
 
     const Path = [];
 
@@ -64,15 +68,15 @@ export class Snake extends Enemy {
 
     Path.push({ x: nextX, y: nextY });
 
-    this.diagonalDirectionHorizantal = dx;
-    this.diagonalDirectionVertical = dy;
+    this.#diagonalDirectionHorizantal = dx;
+    this.#diagonalDirectionVertical = dy;
     this.path = Path;
   }
 
   attack(target) {
     const result = super.attack(target);
 
-    if (!result && Math.random() < this.sleepChance) {
+    if (!result && Math.random() < this.#sleepChance) {
       target.sleep(1);
     }
 
