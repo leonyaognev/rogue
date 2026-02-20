@@ -6,12 +6,9 @@ export class Snake extends Enemy {
     this.sleepChance = 0.3;
     this.diagonalDirectionVertical = 1;
     this.diagonalDirectionHorizantal = 1;
-    this.turnCounter = 0;
   }
 
   movePattern(player) {
-    this.turnCounter++;
-
     if (this[EnemyprotectedMethods.playerIsNotNear](player)) {
       this.#randomDiagonalMove();
       this.angry = false;

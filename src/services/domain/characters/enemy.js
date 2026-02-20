@@ -7,6 +7,7 @@ export const EnemyprotectedMethods = Object.freeze({
   playerIsNotNear: Symbol("protected"),
   nextStep: Symbol("protected"),
   isInstance: Symbol("protected"),
+  getNewTarget: Symbol("protected"),
 });
 
 export class Enemy extends Character {
@@ -16,6 +17,7 @@ export class Enemy extends Character {
     this.level = level;
     this.path = [];
     this.angry = false;
+    this.visible = 0;
 
     this.finder = new enemyPathFinder(this.level.map);
   }
@@ -30,6 +32,21 @@ export class Enemy extends Character {
         this.cords.y >= room.y &&
         this.cords.y < room.y + room.height
     );
+  }
+
+  [EnemyprotectedMethods.getNewTarget]() {
+    const targets = [];
+
+    const room = this.getCurrentRoom();
+
+    for (let y = room.y; y < room.y + room.height; y++) {
+      for (let x = room.x; x < room.x + room.width; x++) {
+        if (this[EnemyprotectedMethods.isInstance](x, y))
+          targets.push({ x, y });
+      }
+    }
+
+    return targets[Math.floor(Math.random() * targets.length)];
   }
 
   [EnemyprotectedMethods.isInstance](x, y) {

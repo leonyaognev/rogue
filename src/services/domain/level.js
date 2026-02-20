@@ -1,3 +1,4 @@
+import { Ghost } from "./characters/enemies/ghost.js";
 import { Ogre } from "./characters/enemies/ogre.js";
 import { Snake } from "./characters/enemies/snake.js";
 import { Zombie } from "./characters/enemies/zombie.js";
@@ -64,8 +65,8 @@ export class Level {
 
   populateEnemies() {
     this.enemies.push(
-      new Ogre(
-        "Ogre",
+      new Ghost(
+        "Ghost",
         100,
         20,
         20,
