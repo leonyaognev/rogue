@@ -78,6 +78,7 @@ export class aStar {
       this.openSet.update(exists);
     }
   }
+
   #neighbors(current) {
     return [
       { x: current.x + 1, y: current.y },

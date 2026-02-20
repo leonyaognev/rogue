@@ -11,6 +11,8 @@ const CombatConfig = {
 };
 
 export class Character {
+  #isSleep;
+
   constructor(name, maxHP, agility, strength, cords) {
     this.name = name;
     this.maxHP = maxHP;
@@ -19,6 +21,8 @@ export class Character {
     this.strength = strength;
     this.weapon = null;
     this.cords = cords;
+
+    this.#isSleep;
   }
 
   move(cords) {
@@ -54,14 +58,19 @@ export class Character {
     }
 
     const damage = this.#calculateDamage();
-    const died = target.takeDamage(damage);
 
-    return died ? 1 : 0;
+    return target.takeDamage(damage);
   }
 
   takeDamage(amount) {
     this.hp -= amount;
 
     return this.hp <= 0;
+  }
+
+  sleep(time) {
+    if (time > 0) {
+      this.sleep = time;
+    }
   }
 }

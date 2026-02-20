@@ -47,7 +47,7 @@ export class Renderer2D {
         }
         for (const enemy of enemies) {
           if (enemy.cords.x === x && enemy.cords.y === y) {
-            char = "Z";
+            char = enemy.name[0];
           }
         }
         if (player.cords.x === x && player.cords.y === y) {

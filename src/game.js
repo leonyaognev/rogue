@@ -68,8 +68,7 @@ export class Game {
       this.level.map[newY][newX] === TileType.FLOOR ||
       this.level.map[newY][newX] === TileType.CORRIDOR
     ) {
-      this.player.cords.x = newX;
-      this.player.cords.y = newY;
+      this.player.move({ x: newX, y: newY });
     }
 
     this.input.up =
