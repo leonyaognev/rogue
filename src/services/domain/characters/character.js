@@ -1,3 +1,5 @@
+import { CombatConfig } from "../../../constants.js";
+
 export class Character {
   #isSleep;
 
@@ -30,23 +32,22 @@ export class Character {
 
   attack(target) {
     if (!this.#checkHit(target)) {
-      return 0;
+      return false;
     }
 
     const damage = this.#calculateDamage();
 
-    return target.takeDamage(damage);
+    target.takeDamage(damage);
+    return true;
   }
 
   takeDamage(amount) {
     this.hp -= amount;
-
-    return this.hp <= 0;
   }
 
   sleep(time) {
     if (time > 0) {
-      this.sleep = time;
+      this.isSleep = time;
     }
   }
 

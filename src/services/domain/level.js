@@ -1,4 +1,5 @@
 import { LevelConfig, TileType } from "../../constants.js";
+import { createRandomEnemy, enemyClasses } from "./characters/enemyFactory.js";
 import { Corridor } from "./corridor.js";
 import { Room } from "./room.js";
 import { CorridorPathfinder } from "./utils/aStar/finders/CorridorPathfinder.js";
@@ -32,7 +33,8 @@ function makeLeaves(width, height) {
 export class Level {
   constructor(
     width = LevelConfig.DEFAULT_WIDTH,
-    height = LevelConfig.DEFAULT_HEIGHT
+    height = LevelConfig.DEFAULT_HEIGHT,
+    number = 1
   ) {
     this.rooms = [];
     this.corridors = [];
@@ -40,6 +42,7 @@ export class Level {
     this.items = [];
     this.width = width;
     this.height = height;
+    this.number = number;
 
     this.map = new Array(this.height)
       .fill(TileType.EMPTY)
@@ -59,7 +62,42 @@ export class Level {
     this.#connectRooms();
   }
 
-  populateEnemies() {}
+  #isInstanceForEnemy(x, y) {
+    if (this.map[y][x] !== TileType.FLOOR) {
+      return false;
+    }
+
+    return true;
+  }
+
+  populateEnemies() {
+    const cords = [];
+    for (let y = 0; y < this.map.length; y++) {
+      for (let x = 0; x < this.map[0].length; x++) {
+        if (this.#isInstanceForEnemy(x, y)) cords.push({ x, y });
+      }
+    }
+
+    const enemiesCount = 7 + Math.floor(this.number * 0.2);
+    const enemies = enemyClasses.slice(
+      0,
+      Math.min(Math.floor(this.number / 4) + 1, enemyClasses.length)
+    );
+
+    for (let i = 0; i < enemiesCount; i++) {
+      const levelFactor = 1 + this.number * 0.15;
+      const enemy = createRandomEnemy(enemies, {
+        maxHp: Math.floor(randomBetween(30, 60) * levelFactor),
+        agility: Math.floor(randomBetween(1, 6) * levelFactor),
+        strength: Math.floor(randomBetween(1, 6) * levelFactor),
+        cords: cords.splice(Math.floor(Math.random() * cords.length), 1)[0],
+        hostility: Math.floor(randomBetween(3, 7) * levelFactor),
+        level: this,
+      });
+
+      this.enemies.push(enemy);
+    }
+  }
 
   populateItems() {
     /* добавить предметы */

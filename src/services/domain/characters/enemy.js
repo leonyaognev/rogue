@@ -36,7 +36,10 @@ export class Enemy extends Character {
   [EnemyprotectedMethods.getNewTarget]() {
     const targets = [];
 
-    const room = this.getCurrentRoom();
+    let room = this.getCurrentRoom();
+    if (!room) {
+      room = { x: this.cords.x, y: this.cords.y, width: 10, height: 10 };
+    }
 
     for (let y = room.y; y < room.y + room.height; y++) {
       for (let x = room.x; x < room.x + room.width; x++) {

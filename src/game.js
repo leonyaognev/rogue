@@ -12,8 +12,8 @@ export class Game {
     this.rows = process.stdout.rows;
     this.columns = process.stdout.columns;
 
-    this.level = new Level(this.columns, this.rows);
     this.currentLevel = 1;
+    this.level = new Level(this.columns, this.rows, this.currentLevel);
 
     this.player = new Player(
       "player",
@@ -38,9 +38,9 @@ export class Game {
     this.#playerMove();
 
     if (this.#isEndLevel()) {
-      this.level = new Level(this.columns, this.rows);
-      this.player.move(this.level.startRoom.center);
       this.currentLevel++;
+      this.level = new Level(this.columns, this.rows, this.currentLevel);
+      this.player.move(this.level.startRoom.center);
     }
 
     if (this.player.hp <= 0) {
@@ -67,7 +67,8 @@ export class Game {
 
     if (targetTile === TileType.FLOOR || targetTile === TileType.CORRIDOR) {
       if (enemyAtTarget) {
-        if (this.player.attack(enemyAtTarget)) {
+        this.player.attack(enemyAtTarget);
+        if (enemyAtTarget.hp <= 0) {
           const index = this.level.enemies.indexOf(enemyAtTarget);
           if (index !== -1) this.level.enemies.splice(index, 1);
         }

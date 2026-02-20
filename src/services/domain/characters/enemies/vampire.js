@@ -1,20 +1,20 @@
 import { Enemy, EnemyprotectedMethods } from "../enemy.js";
 
 export class Vampire extends Enemy {
-  #countHits;
+  #alreadyHit;
 
   constructor(name, maxHp, agility, strength, cords, hostility, level) {
     super(
       name,
-      maxHp * 0.9,
-      agility * 0.9,
-      strength * 0.6,
+      maxHp * 0.8,
+      agility * 0.8,
+      strength * 0.5,
       cords,
-      hostility * 0.9,
+      hostility * 0.8,
       level
     );
 
-    this.#countHits = 0;
+    this.#alreadyHit = 0;
   }
 
   movePattern(player) {
@@ -38,12 +38,13 @@ export class Vampire extends Enemy {
   }
 
   takeDamage(amount) {
-    if (this.#countHits) return super.takeDamage(amount);
+    this.#alreadyHit = true;
+    if (this.#alreadyHit) return super.takeDamage(amount);
   }
 
   attack(target) {
-    target.maxHp--;
-
-    return super.attack(target);
+    if (super.attack(target)) {
+      target.maxHP--;
+    }
   }
 }

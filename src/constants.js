@@ -62,3 +62,10 @@ export const LevelConfig = Object.freeze({
   DEFAULT_HEIGHT: 24,
   ROOM_OFFSET: 2,
 });
+
+export const DefaultEnemy = Object.freeze({
+  maxHp: 100,
+  agility: 10,
+  strength: 10,
+  hostility: 3,
+});
