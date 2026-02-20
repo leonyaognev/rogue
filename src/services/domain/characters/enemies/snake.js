@@ -2,7 +2,16 @@ import { Enemy, EnemyprotectedMethods } from "../enemy.js";
 
 export class Snake extends Enemy {
   constructor(name, maxHp, agility, strength, cords, hostility, level) {
-    super(name, maxHp, agility, strength, cords, hostility, level);
+    super(
+      name,
+      maxHp * 0.65,
+      agility * 1,
+      strength * 0.7,
+      cords,
+      hostility * 0.85,
+      level
+    );
+
     this.sleepChance = 0.3;
     this.diagonalDirectionVertical = 1;
     this.diagonalDirectionHorizantal = 1;

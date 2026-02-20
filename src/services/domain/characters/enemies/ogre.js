@@ -1,6 +1,18 @@
 import { Enemy, EnemyprotectedMethods } from "../enemy.js";
 
 export class Ogre extends Enemy {
+  constructor(name, maxHp, agility, strength, cords, hostility, level) {
+    super(
+      name,
+      maxHp * 1,
+      agility * 0.25,
+      strength * 1,
+      cords,
+      hostility * 0.6,
+      level
+    );
+  }
+
   movePattern(player) {
     if (this[EnemyprotectedMethods.playerIsNotNear](player)) {
       this.#randomTarget();
