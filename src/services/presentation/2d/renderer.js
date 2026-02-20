@@ -56,8 +56,11 @@ export class Renderer2D {
 
         line += char;
       }
-      content += line + "\n";
+      content += `${line}\n`;
     }
+
+    const health = `${String(player.hp)}/${String(player.maxHP)}`;
+    content = health + content.slice(health.length);
 
     this.box.setContent(content);
     this.screen.render();

@@ -20,7 +20,7 @@ export class Zombie extends Enemy {
       this[EnemyprotectedMethods.playerTarget](player);
     }
 
-    this[EnemyprotectedMethods.nextStep]();
+    this[EnemyprotectedMethods.nextStep](player);
   }
 
   #randomTarget() {

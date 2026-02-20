@@ -1,6 +1,6 @@
-import { Enemy } from "../enemy.js";
+import { Enemy, EnemyprotectedMethods } from "../enemy.js";
 
-export class Vimpire extends Enemy {
+export class Vampire extends Enemy {
   #countHits;
 
   constructor(name, maxHp, agility, strength, cords, hostility, level) {
@@ -24,7 +24,7 @@ export class Vimpire extends Enemy {
       this[EnemyprotectedMethods.playerTarget](player);
     }
 
-    this[EnemyprotectedMethods.nextStep]();
+    this[EnemyprotectedMethods.nextStep](player);
   }
 
   #randomTarget() {

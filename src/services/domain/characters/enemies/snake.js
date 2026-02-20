@@ -30,7 +30,7 @@ export class Snake extends Enemy {
       this.angry = true;
     }
 
-    this[EnemyprotectedMethods.nextStep]();
+    this[EnemyprotectedMethods.nextStep](player);
   }
 
   #randomDiagonalMove() {

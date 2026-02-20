@@ -20,12 +20,11 @@ export class Game {
       100,
       20,
       20,
-      this.#startPossitionPlayerCords()
+      this.level.startRoom.center,
+      this.level
     );
 
     this.input = InputInit(this.app.renderer.screen);
-
-    this.isRunning = true;
   }
 
   run() {
@@ -40,8 +39,14 @@ export class Game {
 
     if (this.#isEndLevel()) {
       this.level = new Level(this.columns, this.rows);
-      this.player.move(this.#startPossitionPlayerCords());
+      this.player.move(this.level.startRoom.center);
       this.currentLevel++;
+    }
+
+    if (this.player.hp <= 0) {
+      this.app.renderer.screen.destroy();
+      console.log("fuck up");
+      process.exit(0);
     }
   }
 
@@ -55,11 +60,20 @@ export class Game {
     const newX = this.player.cords.x + this.input.right - this.input.left;
     const newY = this.player.cords.y + this.input.down - this.input.up;
 
-    if (
-      this.level.map[newY][newX] === TileType.FLOOR ||
-      this.level.map[newY][newX] === TileType.CORRIDOR
-    ) {
-      this.player.move({ x: newX, y: newY });
+    const targetTile = this.level.map[newY][newX];
+    const enemyAtTarget = this.level.enemies.find(
+      (enemy) => enemy.cords.x === newX && enemy.cords.y === newY
+    );
+
+    if (targetTile === TileType.FLOOR || targetTile === TileType.CORRIDOR) {
+      if (enemyAtTarget) {
+        if (this.player.attack(enemyAtTarget)) {
+          const index = this.level.enemies.indexOf(enemyAtTarget);
+          if (index !== -1) this.level.enemies.splice(index, 1);
+        }
+      } else {
+        this.player.move({ x: newX, y: newY });
+      }
     }
 
     if (
@@ -85,19 +99,6 @@ export class Game {
       this.player,
       this.level.enemies
     );
-  }
-
-  #startPossitionPlayerCords() {
-    return {
-      x: randomBetween(
-        this.level.startRoom.x,
-        this.level.startRoom.x + this.level.startRoom.width - 1
-      ),
-      y: randomBetween(
-        this.level.startRoom.y,
-        this.level.startRoom.y + this.level.startRoom.height - 1
-      ),
-    };
   }
 
   #isEndLevel() {

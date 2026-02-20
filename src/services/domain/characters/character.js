@@ -22,16 +22,22 @@ export class Character {
     this.weapon = null;
     this.cords = cords;
 
-    this.#isSleep;
+    this.#isSleep = 0;
+    this.visible = 1;
   }
 
   move(cords) {
+    const old_cords = { ...this.cords };
+
     if (!this.#isSleep) {
       this.cords.x = cords.x;
       this.cords.y = cords.y;
     } else {
       this.#isSleep--;
+      return false;
     }
+
+    return !(old_cords.x === this.cords.x && old_cords.y === this.cords.y);
   }
 
   attack(target) {

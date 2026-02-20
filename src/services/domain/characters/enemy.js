@@ -17,7 +17,6 @@ export class Enemy extends Character {
     this.level = level;
     this.path = [];
     this.angry = false;
-    this.visible = 1;
 
     this.finder = new enemyPathFinder(this.level.map);
   }
@@ -74,12 +73,12 @@ export class Enemy extends Character {
     return distance > this.hostility;
   }
 
-  [EnemyprotectedMethods.nextStep]() {
+  [EnemyprotectedMethods.nextStep](player) {
     if (this.path && this.path.length > 0) {
       const nextStep = this.path.shift();
-
-      this.cords.x = nextStep.x;
-      this.cords.y = nextStep.y;
+      if (nextStep.x === player.cords.x && nextStep.y === player.cords.y)
+        this.attack(player);
+      else this.move(nextStep);
     }
   }
 }

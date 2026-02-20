@@ -26,7 +26,7 @@ export class Ghost extends Enemy {
       this[EnemyprotectedMethods.playerTarget](player);
     }
 
-    this[EnemyprotectedMethods.nextStep]();
+    this[EnemyprotectedMethods.nextStep](player);
   }
 
   #randomTarget() {
