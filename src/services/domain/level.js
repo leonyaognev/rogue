@@ -1,3 +1,4 @@
+import { Ogre } from "./characters/enemies/ogre.js";
 import { Snake } from "./characters/enemies/snake.js";
 import { Zombie } from "./characters/enemies/zombie.js";
 import { LevelConfig, TileType } from "./constants.js";
@@ -63,8 +64,8 @@ export class Level {
 
   populateEnemies() {
     this.enemies.push(
-      new Snake(
-        "Snake",
+      new Ogre(
+        "Ogre",
         100,
         20,
         20,
