@@ -44,6 +44,7 @@ export const PlayerConfig = Object.freeze({
 
 export const GameConfig = Object.freeze({
   TICK_RATE: 17,
+  MAX_LEVEL: 21,
   EXIT_CODE: 0,
 });
 

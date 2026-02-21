@@ -53,6 +53,10 @@ export class Character {
     }
   }
 
+  isDead() {
+    return this.hp <= 0;
+  }
+
   #checkHit(target) {
     const chance =
       CombatConfig.hit.baseChance +

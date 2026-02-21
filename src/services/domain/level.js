@@ -114,6 +114,19 @@ export class Level {
     }
   }
 
+  getEnemyAt(x, y) {
+    return this.enemies.find(
+      (enemy) => enemy.cords.x === x && enemy.cords.y === y
+    );
+  }
+
+  removeEnemy(enemy) {
+    const index = this.enemies.indexOf(enemy);
+    if (index !== -1) {
+      this.enemies.splice(index, 1);
+    }
+  }
+
   #searchEndRoom() {
     const ways = [];
 

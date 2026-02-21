@@ -1,9 +1,9 @@
-import { Zombie } from "./services/domain/characters/enemies/zombie.js";
+import { GameConfig, PlayerConfig } from "./constants.js";
 import { Player } from "./services/domain/characters/player.js";
-import { GameConfig, PlayerConfig, TileType } from "./constants.js";
-import { Level } from "./services/domain/level.js";
-import { randomBetween } from "./services/domain/utils/randomBetween.js";
-import { InputInit } from "./services/presentation/input.js";
+import { GameLoop } from "./services/gameLoop.js";
+import { LevelManager } from "./services/levelManager.js";
+import { GameInput } from "./services/presentation/input.js";
+import { WorldController } from "./services/worldController.js";
 
 export class Game {
   constructor(app) {
@@ -12,105 +12,84 @@ export class Game {
     this.rows = process.stdout.rows;
     this.columns = process.stdout.columns;
 
-    this.currentLevel = 21;
-    this.level = new Level(this.columns, this.rows, this.currentLevel);
-
+    this.levelManager = new LevelManager(this.rows, this.columns);
     this.player = new Player(
       "player",
       PlayerConfig.DEFAULT_HP,
       PlayerConfig.DEFAULT_AGILITY,
       PlayerConfig.DEFAULT_STRENGTH,
-      this.level.startRoom.center,
-      this.level
+      this.levelManager.level.startRoom.center,
+      this.levelManager.level
     );
 
-    this.input = InputInit(this.app.renderer.screen);
-  }
+    this.worldController = new WorldController(
+      this.levelManager.level,
+      this.player
+    );
 
-  run() {
-    setInterval(() => {
+    this.gameInput = new GameInput(
+      this.app.renderer.screen,
+      this.#actionOnInput.bind(this)
+    );
+
+    this.gameLoop = new GameLoop(() => {
       this.#update();
       this.#refresh();
     }, GameConfig.TICK_RATE);
+
+    this.gameInput.bind();
+  }
+
+  run() {
+    this.gameLoop.start();
   }
 
   #update() {
-    this.#playerMove();
-
-    if (this.#isEndLevel()) {
-      this.currentLevel++;
-      if (this.currentLevel > 21) {
+    if (this.worldController.isEndLevel()) {
+      this.levelManager.nextLevel();
+      if (this.levelManager.isLevelMax()) {
+        this.gameLoop.stop();
         this.app.renderer.screen.destroy();
         console.log("You fucking won");
         process.exit(GameConfig.EXIT_CODE);
       }
-      this.level = new Level(this.columns, this.rows, this.currentLevel);
-      this.player.move(this.level.startRoom.center);
+      this.player.move(this.levelManager.level.startRoom.center);
     }
 
-    if (this.player.hp <= 0) {
+    if (this.player.isDead()) {
       this.app.renderer.screen.destroy();
       console.log("fuck up");
       process.exit(GameConfig.EXIT_CODE);
     }
   }
 
-  #enemiesMove() {
-    for (const enemy of this.level.enemies) {
-      enemy.movePattern(this.player);
+  #actionOnInput(action) {
+    switch (action) {
+      case "up":
+        this.worldController.movePlayer(0, -1);
+        this.worldController.moveEnemies();
+        break;
+      case "down":
+        this.worldController.movePlayer(0, 1);
+        this.worldController.moveEnemies();
+        break;
+      case "left":
+        this.worldController.movePlayer(-1, 0);
+        this.worldController.moveEnemies();
+        break;
+      case "right":
+        this.worldController.movePlayer(1, 0);
+        this.worldController.moveEnemies();
+        break;
     }
-  }
-
-  #playerMove() {
-    const newX = this.player.cords.x + this.input.right - this.input.left;
-    const newY = this.player.cords.y + this.input.down - this.input.up;
-
-    const targetTile = this.level.map[newY][newX];
-    const enemyAtTarget = this.level.enemies.find(
-      (enemy) => enemy.cords.x === newX && enemy.cords.y === newY
-    );
-
-    if (targetTile === TileType.FLOOR || targetTile === TileType.CORRIDOR) {
-      if (enemyAtTarget) {
-        this.player.attack(enemyAtTarget);
-        if (enemyAtTarget.hp <= 0) {
-          const index = this.level.enemies.indexOf(enemyAtTarget);
-          if (index !== -1) this.level.enemies.splice(index, 1);
-        }
-      } else {
-        this.player.move({ x: newX, y: newY });
-      }
-    }
-
-    if (
-      this.input.right ||
-      this.input.left ||
-      this.input.down ||
-      this.input.up
-    ) {
-      this.#enemiesMove(this.player);
-    }
-
-    this.input.up =
-      this.input.down =
-      this.input.left =
-      this.input.right =
-        false;
   }
 
   #refresh() {
     this.app.renderer.refresh(
-      this.level,
-      this.level.entities,
+      this.levelManager.level,
+      this.levelManager.level.items,
       this.player,
-      this.level.enemies
-    );
-  }
-
-  #isEndLevel() {
-    return (
-      this.player.cords.x === this.level.endRoom.center.x &&
-      this.player.cords.y === this.level.endRoom.center.y
+      this.levelManager.level.enemies
     );
   }
 }

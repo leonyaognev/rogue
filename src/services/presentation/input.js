@@ -1,68 +1,58 @@
-import blessed from "blessed";
 import { GameConfig } from "../../constants.js";
 
-class GameInput {
-  constructor() {
-    this.up = false;
-    this.down = false;
-    this.left = false;
-    this.right = false;
-    this.weapons = false;
-    this.elxirs = false;
-    this.food = false;
-    this.scroll = false;
+export class GameInput {
+  #hendler;
+  #keyMap;
+
+  constructor(screen, onAction, keys = defaultKeys()) {
+    this.screen = screen;
+    this.onAction = onAction;
+
+    this.#keyMap = this.#createKeyMap(keys);
+
+    this.#hendler = (ch) => {
+      const action = this.#keyMap[ch];
+      if (!action) return;
+
+      if (action === "exit") {
+        this.screen.destroy();
+        process.exit(GameConfig.EXIT_CODE);
+      }
+
+      this.onAction(action);
+    };
+  }
+
+  bind() {
+    this.screen.key(Object.keys(this.#keyMap), this.#hendler);
+  }
+
+  unbind() {
+    this.screen.unkey(Object.keys(this.#keyMap), this.#hendler);
+  }
+
+  #createKeyMap(config) {
+    const map = {};
+
+    for (const [action, key] of Object.entries(config)) {
+      map[key[0]] = action;
+      map[key[0].toUpperCase()] = action;
+    }
+
+    return map;
   }
 }
 
-export function InputInit(
-  screen,
-  lowerKeys = ["k", "j", "h", "l", "w", "e", "f", "s", "q"]
-) {
-  const input = new GameInput();
-  const upperKeys = lowerKeys.map((key) => key.toUpperCase());
-
-  const func = (ch) => {
-    switch (ch) {
-      case lowerKeys[0]:
-      case upperKeys[0]:
-        input.up = true;
-        break;
-      case lowerKeys[1]:
-      case upperKeys[1]:
-        input.down = true;
-        break;
-      case lowerKeys[2]:
-      case upperKeys[2]:
-        input.left = true;
-        break;
-      case lowerKeys[3]:
-      case upperKeys[3]:
-        input.right = true;
-        break;
-      case lowerKeys[4]:
-      case upperKeys[4]:
-        input.weapons = true;
-        break;
-      case lowerKeys[5]:
-      case upperKeys[5]:
-        input.elxirs = true;
-        break;
-      case lowerKeys[6]:
-      case upperKeys[6]:
-        input.food = true;
-        break;
-      case lowerKeys[7]:
-      case upperKeys[7]:
-        input.scroll = true;
-        break;
-      case lowerKeys[8]:
-      case upperKeys[8]:
-        screen.destroy();
-        process.exit(GameConfig.EXIT_CODE);
-    }
+function defaultKeys() {
+  return {
+    up: ["k"],
+    down: ["j"],
+    left: ["h"],
+    right: ["l"],
+    weapons: ["w"],
+    elixirs: ["e"],
+    food: ["f"],
+    scroll: ["s"],
+    exit: ["q"],
   };
-
-  screen.key(lowerKeys, func);
-  screen.key(upperKeys, func);
-  return input;
 }
