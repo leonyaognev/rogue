@@ -62,9 +62,7 @@ export class Enemy extends Character {
   }
 
   [EnemyprotectedMethods.playerTarget](player) {
-    if (this.path.length < 1 || this.angry === false) {
-      this.path = this.finder.find(this.cords, player.cords).splice(1);
-    }
+    this.path = this.finder.find(this.cords, player.cords).splice(1);
     this.angry = true;
   }
 

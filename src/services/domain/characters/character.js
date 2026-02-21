@@ -12,6 +12,8 @@ export class Character {
     this.weapon = null;
     this.cords = cords;
 
+    this.potion = [];
+
     this.#isSleep = 0;
     this.visible = 1;
   }

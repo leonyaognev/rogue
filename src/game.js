@@ -12,7 +12,7 @@ export class Game {
     this.rows = process.stdout.rows;
     this.columns = process.stdout.columns;
 
-    this.currentLevel = 1;
+    this.currentLevel = 21;
     this.level = new Level(this.columns, this.rows, this.currentLevel);
 
     this.player = new Player(
@@ -39,6 +39,11 @@ export class Game {
 
     if (this.#isEndLevel()) {
       this.currentLevel++;
+      if (this.currentLevel > 21) {
+        this.app.renderer.screen.destroy();
+        console.log("You fucking won");
+        process.exit(GameConfig.EXIT_CODE);
+      }
       this.level = new Level(this.columns, this.rows, this.currentLevel);
       this.player.move(this.level.startRoom.center);
     }
