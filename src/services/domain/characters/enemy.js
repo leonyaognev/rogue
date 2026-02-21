@@ -77,6 +77,11 @@ export class Enemy extends Character {
   [EnemyprotectedMethods.nextStep](player) {
     if (this.path && this.path.length > 0) {
       const nextStep = this.path.shift();
+      for (const enemy of this.level.enemies.filter((cur) => cur !== this)) {
+        if (enemy.cords.x === nextStep.x && enemy.cords.y === nextStep.y) {
+          return;
+        }
+      }
       if (nextStep.x === player.cords.x && nextStep.y === player.cords.y)
         this.attack(player);
       else this.move(nextStep);

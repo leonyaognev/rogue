@@ -1,6 +1,7 @@
-import { LevelConfig, TileType } from "../../constants.js";
+import { ItemType, LevelConfig, TileType } from "../../constants.js";
 import { createRandomEnemy, enemyClasses } from "./characters/enemyFactory.js";
 import { Corridor } from "./corridor.js";
+import { createItemWithMultiplier, BaseItems } from "./item.js";
 import { Room } from "./room.js";
 import { CorridorPathfinder } from "./utils/aStar/finders/CorridorPathfinder.js";
 import { endPathFinder } from "./utils/aStar/finders/endPathFinder.js";
@@ -62,14 +63,6 @@ export class Level {
     this.#connectRooms();
   }
 
-  #isInstanceForEnemy(x, y) {
-    if (this.map[y][x] !== TileType.FLOOR) {
-      return false;
-    }
-
-    return true;
-  }
-
   populateEnemies() {
     const cords = [];
     for (let y = 0; y < this.map.length; y++) {
@@ -85,7 +78,7 @@ export class Level {
     );
 
     for (let i = 0; i < enemiesCount; i++) {
-      const levelFactor = 1 + this.number * 0.15;
+      const levelFactor = 1 + this.number * 0.2;
       const enemy = createRandomEnemy(enemies, {
         maxHp: Math.floor(randomBetween(30, 60) * levelFactor),
         agility: Math.floor(randomBetween(1, 6) * levelFactor),
@@ -100,7 +93,25 @@ export class Level {
   }
 
   populateItems() {
-    /* добавить предметы */
+    const cords = [];
+    for (let y = 0; y < this.map.length; y++) {
+      for (let x = 0; x < this.map[0].length; x++) {
+        if (this.#isInstanceForItem(x, y)) cords.push({ x, y });
+      }
+    }
+
+    const itemsCount = 10 - Math.floor(this.number * 0.2);
+
+    for (let i = 0; i < itemsCount; i++) {
+      const levelFactor = 1 + this.number * 0.19;
+      const baseItem = BaseItems[Math.floor(Math.random() * BaseItems.length)];
+      const item = createItemWithMultiplier(baseItem, levelFactor);
+
+      this.items.push({
+        item: item,
+        cords: cords.splice(Math.floor(Math.random() * cords.length), 1)[0],
+      });
+    }
   }
 
   #searchEndRoom() {
@@ -201,5 +212,27 @@ export class Level {
       connected.add(end);
       remaining.delete(end);
     }
+  }
+
+  #isInstanceForEnemy(x, y) {
+    if (this.items.length !== 0) {
+      for (const item of this.items) {
+        if (item.cords.x === x && item.cords.y === y) {
+          return false;
+        }
+      }
+    }
+    return !(this.map[y][x] !== TileType.FLOOR);
+  }
+
+  #isInstanceForItem(x, y) {
+    if (this.items.length !== 0) {
+      for (const enemy of this.enemies) {
+        if (enemy.cords.x === x && enemy.cords.y === y) {
+          return false;
+        }
+      }
+    }
+    return !(this.map[y][x] !== TileType.FLOOR);
   }
 }

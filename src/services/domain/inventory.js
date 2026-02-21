@@ -1,12 +1,13 @@
 import { ItemType, PlayerConfig } from "../../constants.js";
 
 export class Inventory {
-  constructor() {
+  constructor(maxItems = PlayerConfig.MAX_ITEMS) {
     this.items = { food: [], potion: [], scroll: [], weapon: [], treasure: [] };
+    this.maxItems = maxItems;
   }
 
   add(item) {
-    if (this.items[item.type].length >= 9) {
+    if (this.items[item.type].length >= this.maxItems) {
       return false;
     }
     this.items[item.type].push(item);
@@ -15,7 +16,7 @@ export class Inventory {
 
   remove(item) {
     const index = this.items[item.type].indexOf(item);
-    this.items[item.type].splace(index, 1);
+    return this.items[item.type].splace(index, 1);
   }
 
   list(type) {

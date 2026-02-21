@@ -1,28 +1,30 @@
-import { ItemType } from "../../constants";
+import { ItemType } from "../../constants.js";
 
 class Item {
   constructor(
     type,
     subtype,
-    hpBonus = 0,
-    maxHpBonus = 0,
-    agilityBonus = 0,
-    strengthBonus = 0,
-    value = 0,
-    duration = 0
+    baseHpBonus = 0,
+    baseMaxHpBonus = 0,
+    baseAgilityBonus = 0,
+    baseStrengthBonus = 0,
+    baseValue = 0,
+    duration = 0,
+    multiplier = 1
   ) {
-    this.type = type; // принимает значение из ItemType
+    this.type = type;
     this.subtype = subtype;
-    this.hpBonus = hpBonus;
-    this.maxHpBonus = maxHpBonus;
-    this.agilityBonus = agilityBonus;
-    this.strengthBonus = strengthBonus;
-    this.value = value;
-    this.duration = duration; // время действия для врменных бафов зелий
+    this.hpBonus = Math.floor(baseHpBonus * multiplier);
+    this.maxHpBonus = Math.floor(baseMaxHpBonus * multiplier);
+    this.agilityBonus = Math.floor(baseAgilityBonus * multiplier);
+    this.strengthBonus = Math.floor(baseStrengthBonus * multiplier);
+    this.value = Math.floor(baseValue * multiplier);
+    this.duration = duration;
+    this.multiplier = multiplier;
   }
 }
 
-export const items = [
+export const BaseItems = [
   new Item(ItemType.TREASURE, "gold_pouch", 0, 0, 0, 0, 50),
   new Item(ItemType.TREASURE, "jeweled_goblet", 0, 0, 0, 0, 120),
   new Item(ItemType.TREASURE, "ancient_crown", 0, 0, 0, 0, 300),
@@ -50,3 +52,17 @@ export const items = [
   new Item(ItemType.WEAPON, "assassin_dagger", 0, 0, 2, 4),
   new Item(ItemType.WEAPON, "war_hammer", 0, 5, 0, 8),
 ];
+
+export function createItemWithMultiplier(itemTemplate, multiplier = 1) {
+  return new Item(
+    itemTemplate.type,
+    itemTemplate.subtype,
+    itemTemplate.hpBonus,
+    itemTemplate.maxHpBonus,
+    itemTemplate.agilityBonus,
+    itemTemplate.strengthBonus,
+    itemTemplate.value,
+    itemTemplate.duration,
+    multiplier
+  );
+}
