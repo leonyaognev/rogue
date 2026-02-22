@@ -1,9 +1,11 @@
-import { TileType } from "../constants.js";
+import { TileType, TypesLogs } from "../constants.js";
+import { logger } from "./logger.js";
 
 export class WorldController {
   constructor(level, player) {
     this.level = level;
     this.player = player;
+    logger.log("WorldController initialized", TypesLogs.INFO);
   }
 
   isPlayerDead() {
@@ -28,13 +30,19 @@ export class WorldController {
     if (targetTile === TileType.FLOOR || targetTile === TileType.CORRIDOR) {
       if (enemyAtTarget) {
         this.player.attack(enemyAtTarget);
+        logger.log(`Player attacks ${enemyAtTarget.name}`, TypesLogs.INFO);
         if (enemyAtTarget.isDead()) {
           this.level.removeEnemy(enemyAtTarget);
+          logger.log(`${enemyAtTarget.name} defeated!`, TypesLogs.INFO);
         }
       } else {
         this.player.move({ x: newX, y: newY });
         if (itemAtTarget) {
           this.player.pickItem(itemAtTarget.item);
+          logger.log(
+            `Player picked up: ${itemAtTarget.item.subType}`,
+            TypesLogs.INFO
+          );
           this.level.removeItem(itemAtTarget);
         }
       }

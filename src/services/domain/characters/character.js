@@ -35,17 +35,26 @@ export class Character {
 
   attack(target) {
     if (!this.#checkHit(target)) {
+      logger.log(`${this.name} missed ${target.name}`, TypesLogs.MESSAGE);
       return false;
     }
 
     const damage = this.#calculateDamage();
 
     target.takeDamage(damage);
+    logger.log(
+      `${this.name} hits ${target.name} for ${damage} damage`,
+      TypesLogs.INFO
+    );
     return true;
   }
 
   takeDamage(amount) {
     this.hp -= amount;
+    logger.log(
+      `${this.name} takes ${Math.floor(amount)} damage. HP: ${Math.floor(this.hp)}/${Math.floor(this.maxHP)}`,
+      TypesLogs.MESSAGE
+    );
   }
 
   sleep(time) {

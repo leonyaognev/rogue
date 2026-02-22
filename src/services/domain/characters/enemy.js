@@ -1,4 +1,5 @@
-import { TileType } from "../../../constants.js";
+import { TileType, TypesLogs } from "../../../constants.js";
+import { logger } from "../../logger.js";
 import { enemyPathFinder } from "../utils/aStar/finders/enemyPathFinder.js";
 import { Character } from "./character.js";
 
@@ -19,6 +20,10 @@ export class Enemy extends Character {
     this.angry = false;
 
     this.finder = new enemyPathFinder(this.level.map);
+    logger.log(
+      `Enemy "${name}" spawned. HP: ${Math.floor(maxHp)}, Agility: ${Math.floor(agility)}, Strength: ${Math.floor(strength)}`,
+      TypesLogs.INFO
+    );
   }
 
   movePattern(player) {}

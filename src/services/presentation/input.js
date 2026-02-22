@@ -1,4 +1,5 @@
-import { GameConfig } from "../../constants.js";
+import { GameConfig, TypesLogs } from "../../constants.js";
+import { logger } from "../logger.js";
 
 export class GameInput {
   #hendler;
@@ -14,8 +15,11 @@ export class GameInput {
       const action = this.#keyMap[ch];
       if (!action) return;
 
+      logger.log(`Input received: ${action}`, TypesLogs.INFO);
+
       if (action === "exit") {
         this.screen.destroy();
+        logger.log("Exit requested by user", TypesLogs.INFO);
         process.exit(GameConfig.EXIT_CODE);
       }
 
@@ -25,10 +29,12 @@ export class GameInput {
 
   bind() {
     this.screen.key(Object.keys(this.#keyMap), this.#hendler);
+    logger.log("Input bindings activated", TypesLogs.INFO);
   }
 
   unbind() {
     this.screen.unkey(Object.keys(this.#keyMap), this.#hendler);
+    logger.log("Input bindings deactivated", TypesLogs.INFO);
   }
 
   #createKeyMap(config) {

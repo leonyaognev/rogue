@@ -158,6 +158,7 @@ class Logger {
       label: " Console ",
       tags: true,
       scrollable: true,
+      keys: true,
       alwaysScroll: true,
       scrollbar: {
         ch: " ",
@@ -176,13 +177,13 @@ class Logger {
         case TypesLogs.MESSAGE:
           this.logBox.log(mes.message);
           break;
-        case TypesLogs.info:
+        case TypesLogs.INFO:
           this.logBox.log(`{green-fg}[INFO] ${mes.message}`);
           break;
-        case TypesLogs.warn:
+        case TypesLogs.WARN:
           this.logBox.log(`{yellow-fg}[WARN] ${mes.message}`);
           break;
-        case TypesLogs.error:
+        case TypesLogs.ERROR:
           this.logBox.log(`{red-fg}[ERROR] ${mes.message}`);
           break;
       }

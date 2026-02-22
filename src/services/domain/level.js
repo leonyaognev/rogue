@@ -1,7 +1,8 @@
-import { ItemType, LevelConfig, TileType } from "../../constants.js";
+import { ItemType, LevelConfig, TileType, TypesLogs } from "../../constants.js";
+import { logger } from "../logger.js";
 import { createRandomEnemy, enemyClasses } from "./characters/enemyFactory.js";
 import { Corridor } from "./corridor.js";
-import { createItemWithMultiplier, BaseItems } from "./item.js";
+import { BaseItems, createItemWithMultiplier } from "./item.js";
 import { Room } from "./room.js";
 import { CorridorPathfinder } from "./utils/aStar/finders/CorridorPathfinder.js";
 import { endPathFinder } from "./utils/aStar/finders/endPathFinder.js";
@@ -56,6 +57,11 @@ export class Level {
 
     this.populateEnemies();
     this.populateItems();
+
+    logger.log(
+      `Level ${number} generated: ${this.rooms.length} rooms, ${this.enemies.length} enemies, ${this.items.length} items`,
+      TypesLogs.INFO
+    );
   }
 
   generate() {
@@ -90,6 +96,7 @@ export class Level {
 
       this.enemies.push(enemy);
     }
+    logger.log(`Spawned ${this.enemies.length} enemies`, TypesLogs.INFO);
   }
 
   populateItems() {
@@ -112,6 +119,7 @@ export class Level {
         cords: cords.splice(Math.floor(Math.random() * cords.length), 1)[0],
       });
     }
+    logger.log(`Placed ${this.items.length} items`, TypesLogs.INFO);
   }
 
   getItemAt(x, y) {

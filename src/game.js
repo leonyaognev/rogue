@@ -1,7 +1,8 @@
-import { GameConfig, ItemType, PlayerConfig } from "./constants.js";
+import { GameConfig, ItemType, PlayerConfig, TypesLogs } from "./constants.js";
 import { Player } from "./services/domain/characters/player.js";
 import { GameLoop } from "./services/gameLoop.js";
 import { LevelManager } from "./services/levelManager.js";
+import { logger } from "./services/logger.js";
 import { GameInput } from "./services/presentation/input.js";
 import { WorldController } from "./services/worldController.js";
 
@@ -38,19 +39,28 @@ export class Game {
     }, GameConfig.TICK_RATE);
 
     this.gameInput.bind();
+    logger.log(
+      `Game initialized. Level: ${this.levelManager.currentLevel}`,
+      TypesLogs.INFO
+    );
   }
 
   run() {
+    logger.log("Game started", TypesLogs.INFO);
     this.gameLoop.start();
   }
 
   #update() {
     if (this.worldController.isEndLevel()) {
       this.worldController.level = this.levelManager.nextLevel();
+      logger.log(
+        `Level completed! Advancing to level ${this.levelManager.currentLevel}`,
+        TypesLogs.INFO
+      );
       if (this.levelManager.isLevelMax()) {
         this.gameLoop.stop();
         this.app.renderer.screen.destroy();
-        console.log("You fucking won");
+        logger.log("You have won the game!", TypesLogs.INFO);
         process.exit(GameConfig.EXIT_CODE);
       }
       this.player.move(this.levelManager.level.startRoom.center);
@@ -58,7 +68,7 @@ export class Game {
 
     if (this.player.isDead()) {
       this.app.renderer.screen.destroy();
-      console.log("fuck up");
+      logger.log("Game over - Player died", TypesLogs.ERROR);
       process.exit(GameConfig.EXIT_CODE);
     }
   }
@@ -87,6 +97,7 @@ export class Game {
           this.player.inventory.list(ItemType.FOOD),
           (item) => {
             this.player.useItem(item);
+            logger.log(`Player used food: ${item.subType}`, TypesLogs.INFO);
           },
           () => {
             this.gameInput.bind();
@@ -99,6 +110,7 @@ export class Game {
           this.player.inventory.list(ItemType.SCROLL),
           (item) => {
             this.player.useItem(item);
+            logger.log(`Player used scroll: ${item.subType}`, TypesLogs.INFO);
           },
           () => {
             this.gameInput.bind();
