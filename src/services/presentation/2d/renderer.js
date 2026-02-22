@@ -1,5 +1,6 @@
 import blessed from "blessed";
-import { ItemType, TileChar, TileType } from "../../../constants.js";
+import { ItemType, TileChar, TileType, TypesLogs } from "../../../constants.js";
+import { logger } from "../../logger.js";
 
 export class Renderer2D {
   constructor(screen) {
@@ -8,17 +9,21 @@ export class Renderer2D {
       title: "rogue demo",
     });
 
-    this.width = process.stdout.columns;
-    this.height = process.stdout.rows;
-
-    this.box = blessed.box({
+    this.gameBox = blessed.box({
       top: 0,
       left: 0,
-      width: "100%",
+      width: "70%",
       height: "100%",
+      border: "line",
     });
 
-    this.screen.append(this.box);
+    this.logger = new Logger(this.screen, "30%", "100%");
+
+    this.screen.append(this.gameBox);
+
+    /// отнял 2 из-за line при генерации box
+    this.width = this.gameBox.width - 2;
+    this.height = this.gameBox.height - 2;
   }
 
   refresh(level, items, player, enemies) {
@@ -71,7 +76,8 @@ export class Renderer2D {
     const health = `${String(Math.floor(player.hp))}/${String(player.maxHP)}`;
     content = health + content.slice(health.length);
 
-    this.box.setContent(content);
+    this.gameBox.setContent(content);
+    this.logger.displayMessages();
     this.screen.render();
   }
 
@@ -138,5 +144,50 @@ export class Renderer2D {
     this.screen.key(["escape", "q"], exitHandler);
 
     this.screen.render();
+  }
+}
+
+class Logger {
+  constructor(screen, width, height) {
+    this.logBox = blessed.log({
+      parent: screen,
+      right: 0,
+      width: width,
+      height: height,
+      border: "line",
+      label: " Console ",
+      tags: true,
+      scrollable: true,
+      alwaysScroll: true,
+      scrollbar: {
+        ch: " ",
+        inverse: true,
+      },
+    });
+
+    this.screen = screen;
+    this.screen.append(this.logBox);
+  }
+
+  displayMessages() {
+    let mes = logger.getMessage();
+    while (mes) {
+      switch (mes.type) {
+        case TypesLogs.MESSAGE:
+          this.logBox.log(mes.message);
+          break;
+        case TypesLogs.info:
+          this.logBox.log(`{green-fg}[INFO] ${mes.message}`);
+          break;
+        case TypesLogs.warn:
+          this.logBox.log(`{yellow-fg}[WARN] ${mes.message}`);
+          break;
+        case TypesLogs.error:
+          this.logBox.log(`{red-fg}[ERROR] ${mes.message}`);
+          break;
+      }
+
+      mes = logger.getMessage();
+    }
   }
 }

@@ -2,18 +2,18 @@ import { GameConfig } from "../constants.js";
 import { Level } from "./domain/level.js";
 
 export class LevelManager {
-  constructor(rows, cols) {
-    this.rows = rows;
-    this.cols = cols;
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
 
     this.currentLevel = 1;
 
-    this.level = new Level(this.cols, this.rows, this.currentLevel);
+    this.level = new Level(this.width, this.height, this.currentLevel);
   }
 
   nextLevel() {
     this.currentLevel++;
-    this.level = new Level(this.cols, this.rows, this.currentLevel);
+    this.level = new Level(this.height, this.width, this.currentLevel);
     return this.level;
   }
 

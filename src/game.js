@@ -9,10 +9,10 @@ export class Game {
   constructor(app) {
     this.app = app;
 
-    this.rows = process.stdout.rows;
-    this.columns = process.stdout.columns;
-
-    this.levelManager = new LevelManager(this.rows, this.columns);
+    this.levelManager = new LevelManager(
+      this.app.renderer.width,
+      this.app.renderer.height
+    );
     this.player = new Player(
       "player",
       PlayerConfig.DEFAULT_HP,

@@ -70,3 +70,10 @@ export const DefaultEnemy = Object.freeze({
   strength: 10,
   hostility: 3,
 });
+
+export const TypesLogs = Object.freeze({
+  MESSAGE: "message",
+  INFO: "info",
+  WARN: "warn",
+  ERROR: "error",
+});

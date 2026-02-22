@@ -1,4 +1,5 @@
-import { CombatConfig } from "../../../constants.js";
+import { CombatConfig, TypesLogs } from "../../../constants.js";
+import { logger } from "../../logger.js";
 
 export class Character {
   #isSleep;
@@ -54,7 +55,11 @@ export class Character {
   }
 
   isDead() {
-    return this.hp <= 0;
+    if (this.hp <= 0) {
+      logger.log(`${this.name} has dead`, TypesLogs.MESSAGE);
+      return true;
+    }
+    return false;
   }
 
   #checkHit(target) {
