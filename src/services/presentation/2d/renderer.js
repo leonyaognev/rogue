@@ -1,6 +1,15 @@
 import blessed from "blessed";
-import { ItemType, TileChar, TileType, TypesLogs } from "../../../constants.js";
+import { TileChar, TileType, TypesLogs } from "../../../constants.js";
 import { logger } from "../../logger.js";
+
+function colorChar(char, fg = "white", bg = null) {
+  let result = `{${fg}-fg}`;
+  if (bg) result += `{${bg}-bg}`;
+  result += char;
+  if (bg) result += `{/${bg}-bg}`;
+  result += `{/${fg}-fg}`;
+  return result;
+}
 
 export class Renderer2D {
   constructor() {
@@ -18,22 +27,14 @@ export class Renderer2D {
       tags: true,
     });
 
-    this.logger = new Logger(this.screen, "30%", "100%");
+    this.logger = new Logger(this.screen, "30%", "50%");
+    this.playerDisplay = new PlayerDisplay(this.screen, "30%", "50%");
 
     this.screen.append(this.gameBox);
 
     // размеры игрового окна (отнимаем 2 из-за border)
     this.width = this.gameBox.width - 2;
     this.height = this.gameBox.height - 2;
-  }
-
-  colorChar(char, fg = "white", bg = null) {
-    let result = `{${fg}-fg}`;
-    if (bg) result += `{${bg}-bg}`;
-    result += char;
-    if (bg) result += `{/${bg}-bg}`;
-    result += `{/${fg}-fg}`;
-    return result;
   }
 
   refresh(level, items, player, enemies) {
@@ -46,37 +47,37 @@ export class Renderer2D {
 
         switch (ch) {
           case TileType.EMPTY:
-            char = this.colorChar(TileChar.EMPTY, "black");
+            char = colorChar(TileChar.EMPTY, "black");
             break;
           case TileType.FLOOR:
-            char = this.colorChar(TileChar.FLOOR, "cyan");
+            char = colorChar(TileChar.FLOOR, "cyan");
             break;
           case TileType.WALL:
-            char = this.colorChar(TileChar.WALL, "grey");
+            char = colorChar(TileChar.WALL, "grey");
             break;
           case TileType.CORRIDOR:
-            char = this.colorChar(TileChar.CORRIDOR, "cyan");
+            char = colorChar(TileChar.CORRIDOR, "cyan");
             break;
         }
 
         if (level.endRoom.center.x === x && level.endRoom.center.y === y) {
-          char = this.colorChar(TileChar.END_ROOM, "magenta");
+          char = colorChar(TileChar.END_ROOM, "magenta");
         }
 
         for (const item of items) {
           if (item.cords.x === x && item.cords.y === y) {
-            char = this.colorChar(item.item.type[0], "green");
+            char = colorChar(item.item.type[0], "green");
           }
         }
 
         for (const enemy of enemies) {
           if (enemy.cords.x === x && enemy.cords.y === y && enemy.visible) {
-            char = this.colorChar(enemy.name[0], "red");
+            char = colorChar(enemy.name[0], "red");
           }
         }
 
         if (player.cords.x === x && player.cords.y === y) {
-          char = this.colorChar(TileChar.PLAYER, "white", "blue");
+          char = colorChar(TileChar.PLAYER, "blue");
         }
 
         line += char;
@@ -84,11 +85,9 @@ export class Renderer2D {
       content += `${line}\n`;
     }
 
-    const health = `${Math.floor(player.hp)}/${player.maxHP} `;
-    content = this.colorChar(health, "yellow") + content.slice(health.length);
-
     this.gameBox.setContent(content);
     this.logger.displayMessages();
+    this.playerDisplay.displayPlayerInformation(player, level);
     this.screen.render();
   }
 
@@ -157,6 +156,8 @@ export class Renderer2D {
 }
 
 class Logger {
+  static #colors = ["red", "yellow", "green", "cyan", "blue", "magenta"];
+
   constructor(screen, width, height) {
     this.logBox = blessed.log({
       parent: screen,
@@ -170,10 +171,12 @@ class Logger {
       keys: true,
       alwaysScroll: true,
       scrollbar: { ch: " ", inverse: true },
+      bottom: 0,
     });
 
     this.screen = screen;
     this.screen.append(this.logBox);
+    this.color = 0;
   }
 
   displayMessages() {
@@ -181,7 +184,8 @@ class Logger {
     while (mes) {
       switch (mes.type) {
         case TypesLogs.MESSAGE:
-          this.logBox.log(`{cyan-fg}${mes.message}`);
+          this.logBox.log(`{${Logger.#colors[this.color]}-fg}${mes.message}`);
+          this.color = (this.color + 1) % Logger.#colors.length;
           break;
         case TypesLogs.INFO:
           this.logBox.log(`{green-fg}[INFO] ${mes.message}`);
@@ -196,5 +200,48 @@ class Logger {
 
       mes = logger.getMessage();
     }
+  }
+}
+
+class PlayerDisplay {
+  constructor(screen, width, height) {
+    this.playerBox = blessed.box({
+      parent: screen,
+      right: 0,
+      width: width,
+      height: height,
+      border: "line",
+      label: " penis ",
+      tags: true,
+      scrollable: true,
+      keys: true,
+      alwaysScroll: true,
+      scrollbar: { ch: " ", inverse: true },
+    });
+
+    this.screen = screen;
+    this.screen.append(this.playerBox);
+  }
+
+  displayPlayerInformation(player, level) {
+    const bufs = player.potionsBufs();
+    let content = "";
+
+    const curLevel = `current level: ${level.number} `;
+    content += `${colorChar(curLevel, "white")}\n`;
+
+    const health = `health: ${Math.floor(player.hp)}/${player.maxHP} `;
+    content += `${colorChar(health, "red")}\n`;
+
+    const strength = `strength: ${Math.floor(player.strength + bufs.strength)}`;
+    content += `${colorChar(strength, "gray")}\n`;
+
+    const agility = `strength: ${Math.floor(player.agility + bufs.agility)}`;
+    content += `${colorChar(agility, "green")}\n`;
+
+    const weapon = `weapon: ${player.weapon?.subType ?? "no weapon"} ${player.weapon?.strengthBonus ?? ""}`;
+    content += `${colorChar(weapon, "yellow")}\n`;
+
+    this.playerBox.setContent(content);
   }
 }

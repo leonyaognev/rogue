@@ -79,6 +79,8 @@ export class Game {
         },
         () => {
           this.gameInput.bind();
+          this.#update();
+          this.#refresh();
         }
       );
     };

@@ -36,7 +36,7 @@ export class Character {
 
   attack(target) {
     this.#potionsTick();
-    const bufs = this.#potionsBufs();
+    const bufs = this.potionsBufs();
     if (!this.#checkHit(target, bufs.agility)) {
       logger.log(`${this.name} missed ${target.name}`, TypesLogs.MESSAGE);
       return false;
@@ -65,6 +65,7 @@ export class Character {
       this.isSleep = time;
     }
   }
+
   isDead() {
     if (this.hp <= 0) {
       logger.log(`${this.name} has dead`, TypesLogs.MESSAGE);
@@ -73,7 +74,7 @@ export class Character {
     return false;
   }
 
-  #potionsBufs() {
+  potionsBufs() {
     let strength = 0;
     let agility = 0;
 
