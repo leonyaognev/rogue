@@ -3,7 +3,7 @@ import { ItemType } from "../../constants.js";
 class Item {
   constructor(
     type,
-    subtype,
+    subType,
     baseHpBonus = 0,
     baseMaxHpBonus = 0,
     baseAgilityBonus = 0,
@@ -13,7 +13,7 @@ class Item {
     multiplier = 1
   ) {
     this.type = type;
-    this.subtype = subtype;
+    this.subType = subType;
     this.hpBonus = Math.floor(baseHpBonus * multiplier);
     this.maxHpBonus = Math.floor(baseMaxHpBonus * multiplier);
     this.agilityBonus = Math.floor(baseAgilityBonus * multiplier);
@@ -56,7 +56,7 @@ export const BaseItems = [
 export function createItemWithMultiplier(itemTemplate, multiplier = 1) {
   return new Item(
     itemTemplate.type,
-    itemTemplate.subtype,
+    itemTemplate.subType,
     itemTemplate.hpBonus,
     itemTemplate.maxHpBonus,
     itemTemplate.agilityBonus,

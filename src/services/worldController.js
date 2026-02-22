@@ -23,6 +23,7 @@ export class WorldController {
 
     const targetTile = this.level.map[newY][newX];
     const enemyAtTarget = this.level.getEnemyAt(newX, newY);
+    const itemAtTarget = this.level.getItemAt(newX, newY);
 
     if (targetTile === TileType.FLOOR || targetTile === TileType.CORRIDOR) {
       if (enemyAtTarget) {
@@ -32,6 +33,10 @@ export class WorldController {
         }
       } else {
         this.player.move({ x: newX, y: newY });
+        if (itemAtTarget) {
+          this.player.pickItem(itemAtTarget.item);
+          this.level.removeItem(itemAtTarget);
+        }
       }
     }
   }

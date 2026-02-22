@@ -14,6 +14,7 @@ export class LevelManager {
   nextLevel() {
     this.currentLevel++;
     this.level = new Level(this.cols, this.rows, this.currentLevel);
+    return this.level;
   }
 
   isLevelMax(max = GameConfig.MAX_LEVEL) {

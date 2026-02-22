@@ -16,7 +16,7 @@ export class Inventory {
 
   remove(item) {
     const index = this.items[item.type].indexOf(item);
-    return this.items[item.type].splace(index, 1);
+    return this.items[item.type].splice(index, 1)[0];
   }
 
   list(type) {

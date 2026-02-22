@@ -1,4 +1,4 @@
-import { GameConfig, PlayerConfig } from "./constants.js";
+import { GameConfig, ItemType, PlayerConfig } from "./constants.js";
 import { Player } from "./services/domain/characters/player.js";
 import { GameLoop } from "./services/gameLoop.js";
 import { LevelManager } from "./services/levelManager.js";
@@ -46,7 +46,7 @@ export class Game {
 
   #update() {
     if (this.worldController.isEndLevel()) {
-      this.levelManager.nextLevel();
+      this.worldController.level = this.levelManager.nextLevel();
       if (this.levelManager.isLevelMax()) {
         this.gameLoop.stop();
         this.app.renderer.screen.destroy();
@@ -80,6 +80,30 @@ export class Game {
       case "right":
         this.worldController.movePlayer(1, 0);
         this.worldController.moveEnemies();
+        break;
+      case "food":
+        this.gameInput.unbind();
+        this.app.renderer.showItemsMenu(
+          this.player.inventory.list(ItemType.FOOD),
+          (item) => {
+            this.player.useItem(item);
+          },
+          () => {
+            this.gameInput.bind();
+          }
+        );
+        break;
+      case "scroll":
+        this.gameInput.unbind();
+        this.app.renderer.showItemsMenu(
+          this.player.inventory.list(ItemType.SCROLL),
+          (item) => {
+            this.player.useItem(item);
+          },
+          () => {
+            this.gameInput.bind();
+          }
+        );
         break;
     }
   }

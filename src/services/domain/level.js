@@ -114,6 +114,17 @@ export class Level {
     }
   }
 
+  getItemAt(x, y) {
+    return this.items.find((item) => item.cords.x === x && item.cords.y === y);
+  }
+
+  removeItem(item) {
+    const index = this.items.indexOf(item);
+    if (index !== -1) {
+      this.items.splice(index, 1);
+    }
+  }
+
   getEnemyAt(x, y) {
     return this.enemies.find(
       (enemy) => enemy.cords.x === x && enemy.cords.y === y

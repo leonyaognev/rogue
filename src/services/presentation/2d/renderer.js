@@ -1,5 +1,5 @@
 import blessed from "blessed";
-import { TileChar, TileType } from "../../../constants.js";
+import { ItemType, TileChar, TileType } from "../../../constants.js";
 
 export class Renderer2D {
   constructor(screen) {
@@ -21,7 +21,7 @@ export class Renderer2D {
     this.screen.append(this.box);
   }
 
-  refresh(level, entities, player, enemies) {
+  refresh(level, items, player, enemies) {
     let content = "";
     for (let y = 0; y < level.map.length; y++) {
       let line = "";
@@ -46,11 +46,19 @@ export class Renderer2D {
         if (level.endRoom.center.x === x && level.endRoom.center.y === y) {
           char = TileChar.END_ROOM;
         }
+
+        for (const item of items) {
+          if (item.cords.x === x && item.cords.y === y) {
+            char = item.item.type[0];
+          }
+        }
+
         for (const enemy of enemies) {
           if (enemy.cords.x === x && enemy.cords.y === y && enemy.visible) {
             char = enemy.name[0];
           }
         }
+
         if (player.cords.x === x && player.cords.y === y) {
           char = TileChar.PLAYER;
         }
@@ -60,10 +68,75 @@ export class Renderer2D {
       content += `${line}\n`;
     }
 
-    const health = `${String(player.hp)}/${String(player.maxHP)}`;
+    const health = `${String(Math.floor(player.hp))}/${String(player.maxHP)}`;
     content = health + content.slice(health.length);
 
     this.box.setContent(content);
+    this.screen.render();
+  }
+
+  showItemsMenu(items, onSelect, bind) {
+    const isNotEmpty = items.length !== 0;
+    const overlay = blessed.box({
+      parent: this.screen,
+      top: "center",
+      left: "center",
+      width: "50%",
+      height: "60%",
+      border: "line",
+      label: " Inventory ",
+      style: {
+        border: { fg: "white" },
+        bg: "black",
+      },
+    });
+
+    const list = blessed.list({
+      parent: overlay,
+      top: 1,
+      left: 1,
+      width: "95%",
+      height: "90%",
+      keys: true,
+      mouse: true,
+      vi: true,
+      style: {
+        selected: {
+          bg: "blue",
+        },
+      },
+      items: isNotEmpty
+        ? items.map((item, i) => `${i + 1}. ${item.subType}`)
+        : ["empty"],
+    });
+
+    list.focus();
+
+    const cleanup = () => {
+      overlay.destroy();
+      this.screen.render();
+      this.screen.unkey(["escape", "q"], exitHandler);
+      list.off("select", selectHandler);
+    };
+
+    const exitHandler = () => {
+      cleanup();
+      bind();
+    };
+
+    const selectHandler = (_, index) => {
+      if (isNotEmpty) {
+        const selectedItem = items[index];
+        onSelect(selectedItem);
+      }
+      cleanup();
+      bind();
+    };
+
+    list.on("select", selectHandler);
+
+    this.screen.key(["escape", "q"], exitHandler);
+
     this.screen.render();
   }
 }
