@@ -38,12 +38,18 @@ export class WorldController {
       } else {
         this.player.move({ x: newX, y: newY });
         if (itemAtTarget) {
-          this.player.pickItem(itemAtTarget.item);
-          logger.log(
-            `Player picked up: ${itemAtTarget.item.subType}`,
-            TypesLogs.INFO
-          );
-          this.level.removeItem(itemAtTarget);
+          if (this.player.pickItem(itemAtTarget.item)) {
+            logger.log(
+              `Player picked up: ${itemAtTarget.item.subType}`,
+              TypesLogs.INFO
+            );
+            this.level.removeItem(itemAtTarget);
+          } else {
+            logger.log(
+              `Player don\`t picked up: ${itemAtTarget.item.subType}, inventory full!`,
+              TypesLogs.MESSAGE
+            );
+          }
         }
       }
     }

@@ -54,6 +54,12 @@ export class Player extends Character {
   }
 
   pickItem(item) {
+    if (item.type === ItemType.TREASURE) {
+      this.treasures += item.cost;
+      logger.log(`item cost: ${item.cost}`, TypesLogs.MESSAGE);
+      return true;
+    }
+
     const result = this.inventory.add(item);
     if (result) {
       logger.log(`Item picked up: ${item.subType}`, TypesLogs.MESSAGE);

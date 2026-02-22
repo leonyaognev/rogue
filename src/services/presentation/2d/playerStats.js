@@ -20,6 +20,7 @@ export class PlayerStats {
     let content = "";
 
     content += colorChar(`current level: ${level.number} `, "white") + "\n";
+    content += colorChar(`treasures: ${player.treasures} `, "yellow") + "\n";
     content +=
       colorChar(`health: ${Math.floor(player.hp)}/${player.maxHP} `, "red") +
       "\n";
@@ -37,7 +38,7 @@ export class PlayerStats {
     const weaponStats = player.weapon
       ? `${player.weapon.subType} ${player.weapon.strengthBonus}`
       : "no weapon";
-    content += colorChar(`weapon: ${weaponStats}`, "yellow") + "\n";
+    content += colorChar(`weapon: ${weaponStats}`, "yellow") + "\n\n";
 
     this.playerBox.setContent(content);
   }

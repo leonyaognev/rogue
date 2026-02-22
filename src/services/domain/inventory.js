@@ -3,7 +3,7 @@ import { logger } from "../logger.js";
 
 export class Inventory {
   constructor(maxItems = PlayerConfig.MAX_ITEMS) {
-    this.items = { food: [], potion: [], scroll: [], weapon: [], treasure: [] };
+    this.items = { food: [], potion: [], scroll: [], weapon: [] };
     this.maxItems = maxItems;
     logger.log(`Inventory created. Max items: ${maxItems}`, TypesLogs.INFO);
   }

@@ -18,19 +18,21 @@ class Item {
     this.maxHpBonus = Math.floor(baseMaxHpBonus * multiplier);
     this.agilityBonus = Math.floor(baseAgilityBonus * multiplier);
     this.strengthBonus = Math.floor(baseStrengthBonus * multiplier);
-    this.value = Math.floor(baseValue * multiplier);
+    this.cost = Math.floor(baseValue * multiplier);
     this.duration = duration;
     this.multiplier = multiplier;
   }
 }
 
-export const BaseItems = [
+export const treasure = [
   new Item(ItemType.TREASURE, "gold_pouch", 0, 0, 0, 0, 50),
   new Item(ItemType.TREASURE, "jeweled_goblet", 0, 0, 0, 0, 120),
   new Item(ItemType.TREASURE, "ancient_crown", 0, 0, 0, 0, 300),
   new Item(ItemType.TREASURE, "silver_chest", 0, 0, 0, 0, 200),
   new Item(ItemType.TREASURE, "gemstone_bundle", 0, 0, 0, 0, 80),
+];
 
+export const BaseItems = [
   new Item(ItemType.FOOD, "stale_bread", 10),
   new Item(ItemType.FOOD, "roasted_meat", 25),
   new Item(ItemType.FOOD, "red_apple", 15),
@@ -61,7 +63,7 @@ export function createItemWithMultiplier(itemTemplate, multiplier = 1) {
     itemTemplate.maxHpBonus,
     itemTemplate.agilityBonus,
     itemTemplate.strengthBonus,
-    itemTemplate.value,
+    itemTemplate.cost,
     itemTemplate.duration,
     multiplier
   );

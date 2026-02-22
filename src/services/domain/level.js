@@ -1,4 +1,4 @@
-import { ItemType, LevelConfig, TileType, TypesLogs } from "../../constants.js";
+import { LevelConfig, TileType, TypesLogs } from "../../constants.js";
 import { logger } from "../logger.js";
 import { createRandomEnemy, enemyClasses } from "./characters/enemyFactory.js";
 import { Corridor } from "./corridor.js";
@@ -84,13 +84,12 @@ export class Level {
     );
 
     for (let i = 0; i < enemiesCount; i++) {
-      const levelFactor = 1 + this.number * 0.5;
       const enemy = createRandomEnemy(enemies, {
-        maxHp: Math.floor(randomBetween(30, 60) * levelFactor),
-        agility: Math.floor(randomBetween(1, 6) * levelFactor),
-        strength: Math.floor(randomBetween(1, 6) * levelFactor),
+        maxHp: Math.floor(randomBetween(30, 60)),
+        agility: Math.floor(randomBetween(1, 6)),
+        strength: Math.floor(randomBetween(1, 6)),
         cords: cords.splice(Math.floor(Math.random() * cords.length), 1)[0],
-        hostility: Math.floor(randomBetween(3, 7) * levelFactor),
+        hostility: Math.floor(randomBetween(3, 7)),
         level: this,
       });
 
@@ -107,12 +106,11 @@ export class Level {
       }
     }
 
-    const itemsCount = 10 + Math.floor(this.number * 0.2);
+    const itemsCount = 10 - Math.floor(this.number * 0.2);
 
     for (let i = 0; i < itemsCount; i++) {
-      const levelFactor = 1 + this.number * 0.5;
       const baseItem = BaseItems[Math.floor(Math.random() * BaseItems.length)];
-      const item = createItemWithMultiplier(baseItem, levelFactor);
+      const item = createItemWithMultiplier(baseItem, this.number);
 
       this.items.push({
         item: item,

@@ -1,5 +1,6 @@
 import { TileType, TypesLogs } from "../../../constants.js";
 import { logger } from "../../logger.js";
+import { createItemWithMultiplier, treasure } from "../item.js";
 import { enemyPathFinder } from "../utils/aStar/finders/enemyPathFinder.js";
 import { Character } from "./character.js";
 
@@ -13,8 +14,15 @@ export const EnemyprotectedMethods = Object.freeze({
 
 export class Enemy extends Character {
   constructor(name, maxHp, agility, strength, cords, hostility, level) {
-    super(name, maxHp, agility, strength, cords);
-    this.hostility = hostility;
+    const levelFactor = level.number;
+    super(
+      name,
+      maxHp * levelFactor,
+      agility * levelFactor,
+      strength * levelFactor,
+      cords
+    );
+    this.hostility = hostility * levelFactor;
     this.level = level;
     this.path = [];
     this.angry = false;
@@ -36,6 +44,26 @@ export class Enemy extends Character {
         this.cords.y >= room.y &&
         this.cords.y < room.y + room.height
     );
+  }
+
+  isDead() {
+    if (super.isDead()) {
+      const tmpItem = createItemWithMultiplier(
+        treasure[Math.floor(Math.random() * (treasure.length - 1))],
+        this.level.number
+      );
+      logger.log(
+        `Item from ${this.name} cost: ${tmpItem.cost} `,
+        TypesLogs.INFO
+      );
+      this.level.items.push({
+        item: tmpItem,
+        cords: { x: this.cords.x, y: this.cords.y },
+      });
+      return true;
+    }
+
+    return false;
   }
 
   [EnemyprotectedMethods.getNewTarget]() {
