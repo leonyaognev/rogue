@@ -84,7 +84,7 @@ export class Level {
     );
 
     for (let i = 0; i < enemiesCount; i++) {
-      const levelFactor = 1 + this.number * 0.2;
+      const levelFactor = 1 + this.number * 0.5;
       const enemy = createRandomEnemy(enemies, {
         maxHp: Math.floor(randomBetween(30, 60) * levelFactor),
         agility: Math.floor(randomBetween(1, 6) * levelFactor),
@@ -107,10 +107,10 @@ export class Level {
       }
     }
 
-    const itemsCount = 10 - Math.floor(this.number * 0.2);
+    const itemsCount = 10 + Math.floor(this.number * 0.2);
 
     for (let i = 0; i < itemsCount; i++) {
-      const levelFactor = 1 + this.number * 0.19;
+      const levelFactor = 1 + this.number * 0.5;
       const baseItem = BaseItems[Math.floor(Math.random() * BaseItems.length)];
       const item = createItemWithMultiplier(baseItem, levelFactor);
 

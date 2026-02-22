@@ -23,13 +23,21 @@ export class Player extends Character {
         );
         logger.log(
           `Player ate ${item.subType}. HP restored to ${Math.floor(this.hp)}/${this.maxHP}`,
-          TypesLogs.INFO
+          TypesLogs.MESSAGE
         );
+        break;
+      }
+      case ItemType.POTION: {
+        this.potions.push(this.inventory.remove(item));
+        logger.log(`Player drunk potion: ${item.subType}`, TypesLogs.MESSAGE);
         break;
       }
       case ItemType.WEAPON: {
         this.weapon = this.inventory.remove(item);
-        logger.log(`Player equipped weapon: ${item.subType}`, TypesLogs.INFO);
+        logger.log(
+          `Player equipped weapon: ${item.subType}`,
+          TypesLogs.MESSAGE
+        );
         break;
       }
       case ItemType.SCROLL: {
@@ -38,7 +46,7 @@ export class Player extends Character {
         this.strength += curItem.strengthBonus;
         logger.log(
           `Player read scroll: ${item.subType}. Agility: ${this.agility}, Strength: ${this.strength}`,
-          TypesLogs.INFO
+          TypesLogs.MESSAGE
         );
         break;
       }

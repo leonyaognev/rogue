@@ -13,13 +13,14 @@ export class Character {
     this.weapon = null;
     this.cords = cords;
 
-    this.potion = [];
+    this.potions = [];
 
     this.#isSleep = 0;
     this.visible = 1;
   }
 
   move(cords) {
+    this.#potionsTick();
     const old_cords = { ...this.cords };
 
     if (!this.#isSleep) {
@@ -34,12 +35,14 @@ export class Character {
   }
 
   attack(target) {
-    if (!this.#checkHit(target)) {
+    this.#potionsTick();
+    const bufs = this.#potionsBufs();
+    if (!this.#checkHit(target, bufs.agility)) {
       logger.log(`${this.name} missed ${target.name}`, TypesLogs.MESSAGE);
       return false;
     }
 
-    const damage = this.#calculateDamage();
+    const damage = this.#calculateDamage(bufs.strength);
 
     target.takeDamage(damage);
     logger.log(
@@ -62,7 +65,6 @@ export class Character {
       this.isSleep = time;
     }
   }
-
   isDead() {
     if (this.hp <= 0) {
       logger.log(`${this.name} has dead`, TypesLogs.MESSAGE);
@@ -71,10 +73,36 @@ export class Character {
     return false;
   }
 
-  #checkHit(target) {
+  #potionsBufs() {
+    let strength = 0;
+    let agility = 0;
+
+    for (potion of this.potions) {
+      strength += potion.strengthBuf;
+      agility += agility.strengthBuf;
+    }
+
+    return { strength, agility };
+  }
+
+  #potionsTick() {
+    for (let i = 0; i < this.potions.length; i++) {
+      const potion = this.potions[0];
+      potion.duration--;
+      if (potion.duration <= 0) {
+        logger.log(
+          `the potion ${this.potions.splice(i, 1).subType} is finished`,
+          TypesLogs.MESSAGE
+        );
+      }
+    }
+  }
+
+  #checkHit(target, agilityBuf) {
     const chance =
       CombatConfig.hit.baseChance +
-      (this.agility - target.agility) * CombatConfig.hit.agilityFactor;
+      (this.agility + agilityBuf - target.agility) *
+        CombatConfig.hit.agilityFactor;
 
     const clamped = Math.max(
       CombatConfig.hit.minChance,
@@ -84,10 +112,10 @@ export class Character {
     return Math.random() < clamped;
   }
 
-  #calculateDamage() {
+  #calculateDamage(strengthBuf) {
     const weaponBonus = this.weapon?.strengthBonus ?? 0;
 
-    const base = this.strength + weaponBonus;
+    const base = this.strength + weaponBonus + strengthBuf;
     const variance = Math.floor(Math.random() * CombatConfig.damage.variance);
 
     return base + variance;

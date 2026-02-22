@@ -3,7 +3,7 @@ import { ItemType, TileChar, TileType, TypesLogs } from "../../../constants.js";
 import { logger } from "../../logger.js";
 
 export class Renderer2D {
-  constructor(screen) {
+  constructor() {
     this.screen = blessed.screen({
       smartCSR: true,
       title: "rogue demo",
@@ -15,15 +15,25 @@ export class Renderer2D {
       width: "70%",
       height: "100%",
       border: "line",
+      tags: true,
     });
 
     this.logger = new Logger(this.screen, "30%", "100%");
 
     this.screen.append(this.gameBox);
 
-    /// отнял 2 из-за line при генерации box
+    // размеры игрового окна (отнимаем 2 из-за border)
     this.width = this.gameBox.width - 2;
     this.height = this.gameBox.height - 2;
+  }
+
+  colorChar(char, fg = "white", bg = null) {
+    let result = `{${fg}-fg}`;
+    if (bg) result += `{${bg}-bg}`;
+    result += char;
+    if (bg) result += `{/${bg}-bg}`;
+    result += `{/${fg}-fg}`;
+    return result;
   }
 
   refresh(level, items, player, enemies) {
@@ -31,41 +41,42 @@ export class Renderer2D {
     for (let y = 0; y < level.map.length; y++) {
       let line = "";
       for (let x = 0; x < level.map[0].length; x++) {
-        let char = TileChar.EMPTY;
         const ch = level.map[y][x];
+        let char = TileChar.EMPTY;
+
         switch (ch) {
           case TileType.EMPTY:
-            char = TileChar.EMPTY;
+            char = this.colorChar(TileChar.EMPTY, "black");
             break;
           case TileType.FLOOR:
-            char = TileChar.FLOOR;
+            char = this.colorChar(TileChar.FLOOR, "cyan");
             break;
           case TileType.WALL:
-            char = TileChar.WALL;
+            char = this.colorChar(TileChar.WALL, "grey");
             break;
           case TileType.CORRIDOR:
-            char = TileChar.CORRIDOR;
+            char = this.colorChar(TileChar.CORRIDOR, "cyan");
             break;
         }
 
         if (level.endRoom.center.x === x && level.endRoom.center.y === y) {
-          char = TileChar.END_ROOM;
+          char = this.colorChar(TileChar.END_ROOM, "magenta");
         }
 
         for (const item of items) {
           if (item.cords.x === x && item.cords.y === y) {
-            char = item.item.type[0];
+            char = this.colorChar(item.item.type[0], "green");
           }
         }
 
         for (const enemy of enemies) {
           if (enemy.cords.x === x && enemy.cords.y === y && enemy.visible) {
-            char = enemy.name[0];
+            char = this.colorChar(enemy.name[0], "red");
           }
         }
 
         if (player.cords.x === x && player.cords.y === y) {
-          char = TileChar.PLAYER;
+          char = this.colorChar(TileChar.PLAYER, "white", "blue");
         }
 
         line += char;
@@ -73,8 +84,8 @@ export class Renderer2D {
       content += `${line}\n`;
     }
 
-    const health = `${String(Math.floor(player.hp))}/${String(player.maxHP)}`;
-    content = health + content.slice(health.length);
+    const health = `${Math.floor(player.hp)}/${player.maxHP} `;
+    content = this.colorChar(health, "yellow") + content.slice(health.length);
 
     this.gameBox.setContent(content);
     this.logger.displayMessages();
@@ -95,6 +106,7 @@ export class Renderer2D {
         border: { fg: "white" },
         bg: "black",
       },
+      tags: true,
     });
 
     const list = blessed.list({
@@ -107,13 +119,12 @@ export class Renderer2D {
       mouse: true,
       vi: true,
       style: {
-        selected: {
-          bg: "blue",
-        },
+        selected: { bg: "blue" },
       },
       items: isNotEmpty
         ? items.map((item, i) => `${i + 1}. ${item.subType}`)
         : ["empty"],
+      tags: true,
     });
 
     list.focus();
@@ -140,9 +151,7 @@ export class Renderer2D {
     };
 
     list.on("select", selectHandler);
-
     this.screen.key(["escape", "q"], exitHandler);
-
     this.screen.render();
   }
 }
@@ -160,10 +169,7 @@ class Logger {
       scrollable: true,
       keys: true,
       alwaysScroll: true,
-      scrollbar: {
-        ch: " ",
-        inverse: true,
-      },
+      scrollbar: { ch: " ", inverse: true },
     });
 
     this.screen = screen;
@@ -175,7 +181,7 @@ class Logger {
     while (mes) {
       switch (mes.type) {
         case TypesLogs.MESSAGE:
-          this.logBox.log(mes.message);
+          this.logBox.log(`{cyan-fg}${mes.message}`);
           break;
         case TypesLogs.INFO:
           this.logBox.log(`{green-fg}[INFO] ${mes.message}`);

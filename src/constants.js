@@ -43,7 +43,6 @@ export const PlayerConfig = Object.freeze({
 });
 
 export const GameConfig = Object.freeze({
-  TICK_RATE: 17,
   MAX_LEVEL: 21,
   EXIT_CODE: 0,
 });
@@ -72,8 +71,8 @@ export const DefaultEnemy = Object.freeze({
 });
 
 export const TypesLogs = Object.freeze({
-  MESSAGE: "message",
-  INFO: "info",
-  WARN: "warn",
-  ERROR: "error",
+  INFO: 3,
+  WARN: 2,
+  ERROR: 1,
+  MESSAGE: 0,
 });

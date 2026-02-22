@@ -1,6 +1,5 @@
 import { GameConfig, ItemType, PlayerConfig, TypesLogs } from "./constants.js";
 import { Player } from "./services/domain/characters/player.js";
-import { GameLoop } from "./services/gameLoop.js";
 import { LevelManager } from "./services/levelManager.js";
 import { logger } from "./services/logger.js";
 import { GameInput } from "./services/presentation/input.js";
@@ -33,11 +32,6 @@ export class Game {
       this.#actionOnInput.bind(this)
     );
 
-    this.gameLoop = new GameLoop(() => {
-      this.#update();
-      this.#refresh();
-    }, GameConfig.TICK_RATE);
-
     this.gameInput.bind();
     logger.log(
       `Game initialized. Level: ${this.levelManager.currentLevel}`,
@@ -47,7 +41,8 @@ export class Game {
 
   run() {
     logger.log("Game started", TypesLogs.INFO);
-    this.gameLoop.start();
+    this.#update();
+    this.#refresh();
   }
 
   #update() {
@@ -74,6 +69,20 @@ export class Game {
   }
 
   #actionOnInput(action) {
+    const showList = (itemType) => {
+      this.gameInput.unbind();
+      this.app.renderer.showItemsMenu(
+        this.player.inventory.list(itemType),
+        (item) => {
+          this.player.useItem(item);
+          logger.log(`Player used food: ${item.subType}`, TypesLogs.INFO);
+        },
+        () => {
+          this.gameInput.bind();
+        }
+      );
+    };
+
     switch (action) {
       case "up":
         this.worldController.movePlayer(0, -1);
@@ -92,32 +101,20 @@ export class Game {
         this.worldController.moveEnemies();
         break;
       case "food":
-        this.gameInput.unbind();
-        this.app.renderer.showItemsMenu(
-          this.player.inventory.list(ItemType.FOOD),
-          (item) => {
-            this.player.useItem(item);
-            logger.log(`Player used food: ${item.subType}`, TypesLogs.INFO);
-          },
-          () => {
-            this.gameInput.bind();
-          }
-        );
+        showList(ItemType.FOOD);
         break;
       case "scroll":
-        this.gameInput.unbind();
-        this.app.renderer.showItemsMenu(
-          this.player.inventory.list(ItemType.SCROLL),
-          (item) => {
-            this.player.useItem(item);
-            logger.log(`Player used scroll: ${item.subType}`, TypesLogs.INFO);
-          },
-          () => {
-            this.gameInput.bind();
-          }
-        );
+        showList(ItemType.SCROLL);
+        break;
+      case "weapon":
+        showList(ItemType.WEAPON);
+        break;
+      case "potion":
+        showList(ItemType.POTION);
         break;
     }
+    this.#update();
+    this.#refresh();
   }
 
   #refresh() {

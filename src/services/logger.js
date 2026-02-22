@@ -1,3 +1,7 @@
+import { TypesLogs } from "../constants.js";
+
+const currentLevel = TypesLogs.MESSAGE;
+
 class LogBuf {
   #queue;
 
@@ -6,7 +10,9 @@ class LogBuf {
   }
 
   log(message, type) {
-    this.#queue.push({ message, type });
+    if (type <= currentLevel) {
+      this.#queue.push({ message, type });
+    }
   }
 
   getMessage() {
