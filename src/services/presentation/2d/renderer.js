@@ -10,6 +10,7 @@ export class Renderer2D {
     this.screen = blessed.screen({
       smartCSR: true,
       title: "Rogue Demo",
+      fullUnicode: true,
     });
 
     this.gameBox = blessed.box({
@@ -28,42 +29,57 @@ export class Renderer2D {
       height: "50%",
     });
 
+    // Определяем размер видимой области за вычетом рамок
     this.width = this.gameBox.width - 2;
     this.height = this.gameBox.height - 2;
   }
 
   refresh(level, items, player, enemies) {
-    let content = "";
-
-    for (let y = 0; y < level.map.length; y++) {
-      let line = "";
-      for (let x = 0; x < level.map[0].length; x++) {
-        line += this.#getTileChar(x, y, level, items, player, enemies);
-      }
-      content += `${line}\n`;
+    const enemyMap = new Map();
+    for (const e of enemies) {
+      if (e.visible) enemyMap.set(`${e.cords.x},${e.cords.y}`, e);
     }
 
-    this.gameBox.setContent(content);
+    const itemMap = new Map();
+    for (const i of items) {
+      itemMap.set(`${i.cords.x},${i.cords.y}`, i);
+    }
+
+    let startX = Math.max(0, player.cords.x - Math.floor(this.width / 2));
+    let startY = Math.max(0, player.cords.y - Math.floor(this.height / 2));
+
+    const endX = Math.min(level.map[0].length, startX + this.width);
+    const endY = Math.min(level.map.length, startY + this.height);
+
+    startX = Math.max(0, endX - this.width);
+    startY = Math.max(0, endY - this.height);
+
+    const buffer = [];
+    for (let y = startY; y < endY; y++) {
+      let line = "";
+      for (let x = startX; x < endX; x++) {
+        line += this.#getTileChar(x, y, level, itemMap, player, enemyMap);
+      }
+      buffer.push(line);
+    }
+
+    this.gameBox.setContent(buffer.join("\n"));
     this.logger.displayMessages();
     this.playerDisplay.displayPlayerInformation(player, level);
     this.screen.render();
   }
 
-  showItemsMenu(items, onSelect, bind) {
-    showInventoryMenu(this.screen, items, onSelect, bind);
-  }
-
-  #getTileChar(x, y, level, items, player, enemies) {
+  #getTileChar(x, y, level, itemMap, player, enemyMap) {
     if (player.cords.x === x && player.cords.y === y) {
       return colorChar(TileChar.PLAYER, "blue");
     }
 
-    const enemy = enemies.find(
-      (e) => e.cords.x === x && e.cords.y === y && e.visible
-    );
+    const key = `${x},${y}`;
+
+    const enemy = enemyMap.get(key);
     if (enemy) return colorChar(enemy.name[0], "red");
 
-    const item = items.find((i) => i.cords.x === x && i.cords.y === y);
+    const item = itemMap.get(key);
     if (item) return colorChar(item.type[0], "green");
 
     if (level.endRoom.center.x === x && level.endRoom.center.y === y) {
@@ -78,9 +94,12 @@ export class Renderer2D {
         return colorChar(TileChar.WALL, "grey");
       case TileType.CORRIDOR:
         return colorChar(TileChar.CORRIDOR, "cyan");
-      case TileType.EMPTY:
       default:
         return colorChar(TileChar.EMPTY, "black");
     }
+  }
+
+  showItemsMenu(items, onSelect, bind) {
+    showInventoryMenu(this.screen, items, onSelect, bind);
   }
 }

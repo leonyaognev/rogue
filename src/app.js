@@ -12,8 +12,8 @@ export class App {
     this.saveManager = new SaveManager(".save.json");
 
     this.levelManager = new LevelManager(
-      this.renderer.width,
-      this.renderer.height,
+      this.renderer.width * 2,
+      this.renderer.height * 2,
       1
     );
 

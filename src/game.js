@@ -1,4 +1,4 @@
-import { GameConfig, ItemType, PlayerConfig, TypesLogs } from "./constants.js";
+import { GameConfig, ItemType, TypesLogs } from "./constants.js";
 import { logger } from "./services/logger.js";
 import { GameInput } from "./services/presentation/input.js";
 
