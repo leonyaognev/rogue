@@ -48,16 +48,6 @@ export class Enemy extends Character {
     };
   }
 
-  getCurrentRoom() {
-    return this.level.rooms.find(
-      (room) =>
-        this.cords.x >= room.x &&
-        this.cords.x < room.x + room.width &&
-        this.cords.y >= room.y &&
-        this.cords.y < room.y + room.height
-    );
-  }
-
   isDead() {
     if (super.isDead()) {
       const tmpItem = createItemWithMultiplier(
@@ -79,7 +69,7 @@ export class Enemy extends Character {
   [EnemyprotectedMethods.getNewTarget]() {
     const targets = [];
 
-    let room = this.getCurrentRoom();
+    let room = this.getCurrentRoom(this.level);
     if (!room) {
       room = { x: this.cords.x, y: this.cords.y, width: 10, height: 10 };
     }

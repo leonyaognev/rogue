@@ -86,6 +86,16 @@ export class Character {
     return { strength, agility };
   }
 
+  getCurrentRoom(level) {
+    return level.rooms.find(
+      (room) =>
+        this.cords.x >= room.x &&
+        this.cords.x < room.x + room.width &&
+        this.cords.y >= room.y &&
+        this.cords.y < room.y + room.height
+    );
+  }
+
   #potionsTick() {
     for (let i = 0; i < this.potions.length; i++) {
       const potion = this.potions[0];

@@ -37,6 +37,7 @@ export class Game {
         process.exit(GameConfig.EXIT_CODE);
       }
       this.app.save();
+      this.app.renderer.clear();
       this.app.player.move(this.app.levelManager.level.startRoom.center);
     }
 
