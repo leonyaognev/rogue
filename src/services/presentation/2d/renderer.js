@@ -51,6 +51,14 @@ export class Renderer2D {
     this.itemColorCache = new Map();
   }
 
+  serialize() {
+    return {
+      width: this.width,
+      height: this.height,
+      visetedRooms: structuredClone([...this.playerVisetedRooms]),
+    };
+  }
+
   clear() {
     this.playerVisetedRooms.clear();
   }

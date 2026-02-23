@@ -35,6 +35,6 @@ export class App {
   }
 
   save() {
-    this.saveManager.saveSession(this.worldController);
+    this.saveManager.saveSession(this.worldController, this.renderer);
   }
 }

@@ -9,10 +9,14 @@ export class SaveManager {
     logger.log("SaveManager initialized", TypesLogs.INFO);
   }
 
-  async saveSession(worldController) {
+  async saveSession(worldController, renderer) {
     logger.log("Saving session...", TypesLogs.INFO);
 
-    const json = JSON.stringify(worldController.serialize());
+    const json = JSON.stringify({
+      worldController: worldController.serialize(),
+      renderer: renderer.serialize(),
+    });
+
     await fs.writeFile(this.filePath, json);
 
     logger.log("Session saved!", TypesLogs.INFO);
