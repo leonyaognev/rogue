@@ -1,5 +1,6 @@
-import { ItemType, PlayerConfig, TypesLogs } from "../../constants.js";
+import { PlayerConfig, TypesLogs } from "../../constants.js";
 import { logger } from "../logger.js";
+import { Item } from "./item.js";
 
 export class Inventory {
   constructor(maxItems = PlayerConfig.MAX_ITEMS) {
@@ -17,6 +18,25 @@ export class Inventory {
         weapon: this.items.weapon.map((item) => item.serialize()),
       },
     };
+  }
+
+  static deserialize(data) {
+    const inv = new Inventory();
+
+    inv.items.food = (data.items.food || []).map((itemData) =>
+      Item.deserialize(itemData)
+    );
+    inv.items.potion = (data.items.potion || []).map((itemData) =>
+      Item.deserialize(itemData)
+    );
+    inv.items.scroll = (data.items.scroll || []).map((itemData) =>
+      Item.deserialize(itemData)
+    );
+    inv.items.weapon = (data.items.weapon || []).map((itemData) =>
+      Item.deserialize(itemData)
+    );
+
+    return inv;
   }
 
   add(item) {

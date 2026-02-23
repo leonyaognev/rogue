@@ -38,14 +38,23 @@ export class Enemy extends Character {
 
   serialize() {
     return {
+      _type: this.constructor.name,
       name: this.name,
-      maxHp: this.maxHp,
+      maxhp: this.maxhp,
       agility: this.agility,
       strength: this.strength,
       cords: this.cords,
       hostility: this.hostility,
       angry: this.angry,
     };
+  }
+
+  static deserialize(data, level) {
+    const Cls = enemyClasses[data.__type] || Enemy;
+    const enemy = new Cls();
+    Object.assign(enemy, data);
+    enemy.level = level;
+    return enemy;
   }
 
   isDead() {

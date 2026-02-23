@@ -1,6 +1,6 @@
 import { ItemType } from "../../constants.js";
 
-class Item {
+export class Item {
   constructor(
     type,
     subType,
@@ -36,6 +36,21 @@ class Item {
       multiplier: this.multiplier,
       cords: structuredClone(this.cords),
     };
+  }
+
+  static deserialize(data) {
+    const item = new Item(
+      data.type,
+      data.subType,
+      data.hpBonus,
+      data.maxHpBonus,
+      data.agilityBonus,
+      data.cost,
+      data.duration,
+      data.multiplier
+    );
+    item.cords = data.cords;
+    return item;
   }
 }
 

@@ -8,4 +8,8 @@ export class Corridor {
       path: structuredClone(this.path),
     };
   }
+
+  static deserialize(data) {
+    return new Corridor(data.path);
+  }
 }

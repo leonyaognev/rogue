@@ -1,4 +1,6 @@
 import { TileType, TypesLogs } from "../constants.js";
+import { Player } from "./domain/characters/player.js";
+import { Level } from "./domain/level.js";
 import { logger } from "./logger.js";
 
 export class WorldController {
@@ -13,6 +15,12 @@ export class WorldController {
       level: this.level.serialize(),
       player: this.player.serialize(),
     };
+  }
+
+  static deserialize(data) {
+    const level = Level.deserialize(data.level);
+    const player = Player.deserialize(data.player);
+    return new WorldController(level, player);
   }
 
   isPlayerDead() {

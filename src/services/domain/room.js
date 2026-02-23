@@ -19,6 +19,10 @@ export class Room {
     };
   }
 
+  static deserialize(data) {
+    return new Room(data.x, data.y, data.width, data.height);
+  }
+
   distance(other) {
     const dx = this.center.x - other.center.x;
     const dy = this.center.y - other.center.y;

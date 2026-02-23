@@ -27,6 +27,15 @@ export class Player extends Character {
     };
   }
 
+  static deserialize(data) {
+    const player = new Player();
+    Object.assign(player, data);
+    if (data.inventory) {
+      player.inventory = Inventory.deserialize();
+    }
+    return player;
+  }
+
   useItem(item) {
     switch (item.type) {
       case ItemType.FOOD: {

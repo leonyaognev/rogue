@@ -1,5 +1,6 @@
 import { LevelConfig, TileType, TypesLogs } from "../../constants.js";
 import { logger } from "../logger.js";
+import { Enemy } from "./characters/enemy.js";
 import { createRandomEnemy, enemyClasses } from "./characters/enemyFactory.js";
 import { Corridor } from "./corridor.js";
 import { BaseItems, createItemWithMultiplier } from "./item.js";
@@ -76,6 +77,27 @@ export class Level {
       startRoomIndex: this.rooms.indexOf(this.startRoom),
       endRoomIndex: this.rooms.indexOf(this.endRoom),
     };
+  }
+
+  static deserialize(data) {
+    const level = new Level(data.width, data.height, data.number);
+
+    level.rooms = (data.rooms || []).map((dataRoom) =>
+      Room.deserialize(dataRoom)
+    );
+    level.corridors = (data.corridors || []).map((dataCorridor) =>
+      Corridor.deserialize(dataCorridor)
+    );
+    level.enemies = (data.enemies || []).map((dataEnemy) =>
+      Enemy.deserialize(dataEnemy, level)
+    );
+    level.items = (data.items || []).map((dataItems) =>
+      Item.deserialize(dataItems)
+    );
+
+    level.startRoom = level.rooms[data.startRoomIndex];
+    level.endRoom = level.rooms[data.endRoomIndex];
+    return level;
   }
 
   generate() {

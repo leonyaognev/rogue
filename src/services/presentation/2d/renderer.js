@@ -59,6 +59,12 @@ export class Renderer2D {
     };
   }
 
+  static deserialize(data) {
+    const rend = new Renderer2D();
+    Object.assign(rend, data);
+    return rend;
+  }
+
   clear() {
     this.playerVisetedRooms.clear();
   }
