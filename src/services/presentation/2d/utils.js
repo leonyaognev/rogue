@@ -6,3 +6,5 @@ export function colorChar(char, fg = "white", bg = null) {
   result += `{/${fg}-fg}`;
   return result;
 }
+
+export const getKey = (x, y) => (y << 16) | x;

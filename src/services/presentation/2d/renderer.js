@@ -1,90 +1,20 @@
 import blessed from "blessed";
-import { TileChar, TileType, TypesLogs } from "../../../constants.js";
-import { logger } from "../../logger.js";
+import { TileChar, TileType } from "../../../constants.js";
+import { FogOfWar } from "./fogOfWar.js";
 import { showInventoryMenu } from "./inventoryMeny.js";
 import { Logger } from "./logger.js";
 import { PlayerStats } from "./playerStats.js";
-import { colorChar } from "./utils.js";
+import { colorChar, getKey } from "./utils.js";
 
-class FogOfWar {
-  constructor() {
-    this.cellsMap = new Map();
-  }
-
-  rayCasting(player, map) {
-    for (let angle = 0; angle < 360; angle++) {
-      const dx = Math.cos((angle * Math.PI) / 180);
-      const dy = Math.sin((angle * Math.PI) / 180);
-
-      let x = player.cords.x;
-      let y = player.cords.y;
-
-      while (true) {
-        const tileX = Math.round(x);
-        const tileY = Math.round(y);
-
-        if (
-          tileY < 0 ||
-          tileY >= map.length ||
-          tileX < 0 ||
-          tileX >= map[0].length
-        ) {
-          break;
-        }
-
-        this.cellsMap.set(`${tileX},${tileY}`, true);
-
-        if (
-          map[tileY][tileX] === TileType.WALL ||
-          map[tileY][tileX] === TileType.EMPTY
-        )
-          break;
-
-        x += dx * 0.2;
-        y += dy * 0.2;
-
-        if (this.#distance(player.cords.x, player.cords.y, x, y) > 300) break;
-      }
-    }
-  }
-
-  #distance(x1, y1, x2, y2) {
-    const dx = x1 - x2;
-    const dy = y1 - y2;
-    return Math.sqrt(dx * dx + dy * dy);
-  }
-
-  setWallsAsVisible(room) {
-    for (let j = room.y - 1; j <= room.y + room.height; j++) {
-      for (let i = room.x - 1; i <= room.x + room.width; i++) {
-        if (
-          i === room.x - 1 ||
-          i === room.x + room.width ||
-          j === room.y - 1 ||
-          j === room.y + room.height
-        ) {
-          this.cellsMap.set(`${i},${j}`, true);
-        }
-      }
-    }
-  }
-
-  setRoomAsVisible(room) {
-    for (let j = room.y; j <= room.y + room.height - 1; j++) {
-      for (let i = room.x; i <= room.x + room.width - 1; i++) {
-        this.cellsMap.set(`${i},${j}`, true);
-      }
-    }
-  }
-
-  setRoomAsInvisible(room) {
-    for (let j = room.y; j <= room.y + room.height - 1; j++) {
-      for (let i = room.x; i <= room.x + room.width - 1; i++) {
-        this.cellsMap.set(`${i},${j}`, false);
-      }
-    }
-  }
-}
+const TILE_CACHE = Object.freeze({
+  PLAYER: colorChar(TileChar.PLAYER, "blue"),
+  END_ROOM: colorChar(TileChar.END_ROOM, "magenta"),
+  FLOOR: colorChar(TileChar.FLOOR, "cyan"),
+  WALL: colorChar(TileChar.WALL, "grey"),
+  CORRIDOR: colorChar(TileChar.CORRIDOR, "cyan"),
+  EMPTY: colorChar(TileChar.EMPTY, "black"),
+  UNKNOWN: " ",
+});
 
 export class Renderer2D {
   constructor() {
@@ -112,11 +42,13 @@ export class Renderer2D {
       height: "50%",
     });
 
-    // Определяем размер видимой области за вычетом рамок
     this.width = this.gameBox.width - 2;
     this.height = this.gameBox.height - 2;
 
     this.playerVisetedRooms = new Set();
+
+    this.enemyColorCache = new Map();
+    this.itemColorCache = new Map();
   }
 
   clear() {
@@ -125,13 +57,14 @@ export class Renderer2D {
 
   refresh(level, items, player, enemies) {
     const enemyMap = new Map();
-    for (const e of enemies) {
-      if (e.visible) enemyMap.set(`${e.cords.x},${e.cords.y}`, e);
+    for (const enemy of enemies) {
+      if (enemy.visible)
+        enemyMap.set(getKey(enemy.cords.x, enemy.cords.y), enemy);
     }
 
     const itemMap = new Map();
-    for (const i of items) {
-      itemMap.set(`${i.cords.x},${i.cords.y}`, i);
+    for (const item of items) {
+      itemMap.set(getKey(item.cords.x, item.cords.y), item);
     }
 
     let startX = Math.max(0, player.cords.x - Math.floor(this.width / 2));
@@ -172,33 +105,47 @@ export class Renderer2D {
 
   #getTileChar(x, y, level, itemMap, player, enemyMap) {
     if (player.cords.x === x && player.cords.y === y) {
-      return colorChar(TileChar.PLAYER, "blue");
+      return TILE_CACHE.PLAYER;
     }
 
-    const key = `${x},${y}`;
+    const key = getKey(x, y);
 
-    if (!this.fog.cellsMap.get(key)) return " ";
+    if (!this.fog.cellsMap.get(key)) return TILE_CACHE.UNKNOWN;
 
     const enemy = enemyMap.get(key);
-    if (enemy) return colorChar(enemy.name[0], "red");
+    if (enemy) {
+      let coloredEnemy = this.enemyColorCache.get(enemy.name[0]);
+      if (!coloredEnemy) {
+        coloredEnemy = colorChar(enemy.name[0], "red");
+        this.enemyColorCache.set(enemy.name[0], coloredEnemy);
+      }
+      return coloredEnemy;
+    }
 
     const item = itemMap.get(key);
-    if (item) return colorChar(item.type[0], "green");
+    if (item) {
+      let coloredItem = this.itemColorCache.get(item.type[0]);
+      if (!coloredItem) {
+        coloredItem = colorChar(item.type[0], "green");
+        this.itemColorCache.set(item.type[0], coloredItem);
+      }
+      return coloredItem;
+    }
 
     if (level.endRoom.center.x === x && level.endRoom.center.y === y) {
-      return colorChar(TileChar.END_ROOM, "magenta");
+      return TILE_CACHE.END_ROOM;
     }
 
     const ch = level.map[y][x];
     switch (ch) {
       case TileType.FLOOR:
-        return colorChar(TileChar.FLOOR, "cyan");
+        return TILE_CACHE.FLOOR;
       case TileType.WALL:
-        return colorChar(TileChar.WALL, "grey");
+        return TILE_CACHE.WALL;
       case TileType.CORRIDOR:
-        return colorChar(TileChar.CORRIDOR, "cyan");
+        return TILE_CACHE.CORRIDOR;
       default:
-        return colorChar(TileChar.EMPTY, "black");
+        return TILE_CACHE.EMPTY;
     }
   }
 
