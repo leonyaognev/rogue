@@ -36,6 +36,18 @@ export class Enemy extends Character {
 
   movePattern(player) {}
 
+  serialize() {
+    return {
+      name: this.name,
+      maxHp: this.maxHp,
+      agility: this.agility,
+      strength: this.strength,
+      cords: this.cords,
+      hostility: this.hostility,
+      angry: this.angry,
+    };
+  }
+
   getCurrentRoom() {
     return this.level.rooms.find(
       (room) =>
@@ -56,10 +68,8 @@ export class Enemy extends Character {
         `Item from ${this.name} cost: ${tmpItem.cost} `,
         TypesLogs.INFO
       );
-      this.level.items.push({
-        item: tmpItem,
-        cords: { x: this.cords.x, y: this.cords.y },
-      });
+      tmpItem.cords = this.cords;
+      this.level.items.push(tmpItem);
       return true;
     }
 

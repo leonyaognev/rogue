@@ -1,31 +1,10 @@
 import { GameConfig, ItemType, PlayerConfig, TypesLogs } from "./constants.js";
-import { Player } from "./services/domain/characters/player.js";
-import { LevelManager } from "./services/levelManager.js";
 import { logger } from "./services/logger.js";
 import { GameInput } from "./services/presentation/input.js";
-import { WorldController } from "./services/worldController.js";
 
 export class Game {
   constructor(app) {
     this.app = app;
-
-    this.levelManager = new LevelManager(
-      this.app.renderer.width,
-      this.app.renderer.height
-    );
-    this.player = new Player(
-      "player",
-      PlayerConfig.DEFAULT_HP,
-      PlayerConfig.DEFAULT_AGILITY,
-      PlayerConfig.DEFAULT_STRENGTH,
-      this.levelManager.level.startRoom.center,
-      this.levelManager.level
-    );
-
-    this.worldController = new WorldController(
-      this.levelManager.level,
-      this.player
-    );
 
     this.gameInput = new GameInput(
       this.app.renderer.screen,
@@ -34,7 +13,7 @@ export class Game {
 
     this.gameInput.bind();
     logger.log(
-      `Game initialized. Level: ${this.levelManager.currentLevel}`,
+      `Game initialized. Level: ${this.app.levelManager.currentLevel}`,
       TypesLogs.INFO
     );
   }
@@ -46,22 +25,22 @@ export class Game {
   }
 
   #update() {
-    if (this.worldController.isEndLevel()) {
-      this.worldController.level = this.levelManager.nextLevel();
+    if (this.app.worldController.isEndLevel()) {
+      this.app.worldController.level = this.app.levelManager.nextLevel();
       logger.log(
-        `Level completed! Advancing to level ${this.levelManager.currentLevel}`,
+        `Level completed! Advancing to level ${this.app.levelManager.currentLevel}`,
         TypesLogs.INFO
       );
-      if (this.levelManager.isLevelMax()) {
-        this.gameLoop.stop();
+      if (this.app.levelManager.isLevelMax()) {
         this.app.renderer.screen.destroy();
         logger.log("You have won the game!", TypesLogs.INFO);
         process.exit(GameConfig.EXIT_CODE);
       }
-      this.player.move(this.levelManager.level.startRoom.center);
+      this.app.save();
+      this.app.player.move(this.app.levelManager.level.startRoom.center);
     }
 
-    if (this.player.isDead()) {
+    if (this.app.player.isDead()) {
       this.app.renderer.screen.destroy();
       logger.log("Game over - Player died", TypesLogs.ERROR);
       process.exit(GameConfig.EXIT_CODE);
@@ -72,9 +51,9 @@ export class Game {
     const showList = (itemType) => {
       this.gameInput.unbind();
       this.app.renderer.showItemsMenu(
-        this.player.inventory.list(itemType),
+        this.app.player.inventory.list(itemType),
         (item) => {
-          this.player.useItem(item);
+          this.app.player.useItem(item);
           logger.log(`Player used food: ${item.subType}`, TypesLogs.INFO);
         },
         () => {
@@ -87,20 +66,20 @@ export class Game {
 
     switch (action) {
       case "up":
-        this.worldController.movePlayer(0, -1);
-        this.worldController.moveEnemies();
+        this.app.worldController.movePlayer(0, -1);
+        this.app.worldController.moveEnemies();
         break;
       case "down":
-        this.worldController.movePlayer(0, 1);
-        this.worldController.moveEnemies();
+        this.app.worldController.movePlayer(0, 1);
+        this.app.worldController.moveEnemies();
         break;
       case "left":
-        this.worldController.movePlayer(-1, 0);
-        this.worldController.moveEnemies();
+        this.app.worldController.movePlayer(-1, 0);
+        this.app.worldController.moveEnemies();
         break;
       case "right":
-        this.worldController.movePlayer(1, 0);
-        this.worldController.moveEnemies();
+        this.app.worldController.movePlayer(1, 0);
+        this.app.worldController.moveEnemies();
         break;
       case "food":
         showList(ItemType.FOOD);
@@ -121,10 +100,10 @@ export class Game {
 
   #refresh() {
     this.app.renderer.refresh(
-      this.levelManager.level,
-      this.levelManager.level.items,
-      this.player,
-      this.levelManager.level.enemies
+      this.app.levelManager.level,
+      this.app.levelManager.level.items,
+      this.app.player,
+      this.app.levelManager.level.enemies
     );
   }
 }

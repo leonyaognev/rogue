@@ -21,6 +21,21 @@ class Item {
     this.cost = Math.floor(baseValue * multiplier);
     this.duration = duration;
     this.multiplier = multiplier;
+    this.cords = { x: 0, y: 0 };
+  }
+
+  serialize() {
+    return {
+      type: this.type,
+      subType: this.subType,
+      hpBonus: this.hpBonus,
+      maxHpBonus: this.maxHpBonus,
+      agilityBonus: this.agilityBonus,
+      cost: this.cost,
+      duration: this.duration,
+      multiplier: this.multiplier,
+      cords: structuredClone(this.cords),
+    };
   }
 }
 

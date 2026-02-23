@@ -14,6 +14,19 @@ export class Player extends Character {
     );
   }
 
+  serialize() {
+    return {
+      name: this.name,
+      maxHp: this.maxHp,
+      agility: this.agility,
+      strength: this.strength,
+      cords: this.cords,
+      weapon: this.weapon,
+      inventory: this.inventory.serialize(),
+      treasures: this.treasures,
+    };
+  }
+
   useItem(item) {
     switch (item.type) {
       case ItemType.FOOD: {

@@ -1,8 +1,8 @@
 import blessed from "blessed";
+import { TileChar, TileType } from "../../../constants.js";
+import { showInventoryMenu } from "./inventoryMeny.js";
 import { Logger } from "./logger.js";
 import { PlayerStats } from "./playerStats.js";
-import { showInventoryMenu } from "./inventoryMeny.js";
-import { TileChar, TileType } from "../../../constants.js";
 import { colorChar } from "./utils.js";
 
 export class Renderer2D {
@@ -64,7 +64,7 @@ export class Renderer2D {
     if (enemy) return colorChar(enemy.name[0], "red");
 
     const item = items.find((i) => i.cords.x === x && i.cords.y === y);
-    if (item) return colorChar(item.item.type[0], "green");
+    if (item) return colorChar(item.type[0], "green");
 
     if (level.endRoom.center.x === x && level.endRoom.center.y === y) {
       return colorChar(TileChar.END_ROOM, "magenta");

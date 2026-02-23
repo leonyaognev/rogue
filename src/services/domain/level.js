@@ -64,6 +64,20 @@ export class Level {
     );
   }
 
+  serialize() {
+    return {
+      rooms: this.rooms.map((room) => room.serialize()),
+      corridors: this.corridors.map((corridor) => corridor.serialize()),
+      enemies: this.enemies.map((enemy) => enemy.serialize()),
+      items: this.items.map((item) => item.serialize()),
+      width: this.width,
+      height: this.height,
+      number: this.number,
+      startRoomIndex: this.rooms.indexOf(this.startRoom),
+      endRoomIndex: this.rooms.indexOf(this.endRoom),
+    };
+  }
+
   generate() {
     this.#generateRooms(this.width, this.height);
     this.#connectRooms();
@@ -112,10 +126,9 @@ export class Level {
       const baseItem = BaseItems[Math.floor(Math.random() * BaseItems.length)];
       const item = createItemWithMultiplier(baseItem, this.number);
 
-      this.items.push({
-        item: item,
-        cords: cords.splice(Math.floor(Math.random() * cords.length), 1)[0],
-      });
+      item.cords = cords.splice(Math.floor(Math.random() * cords.length), 1)[0];
+
+      this.items.push(item);
     }
     logger.log(`Placed ${this.items.length} items`, TypesLogs.INFO);
   }
@@ -185,14 +198,12 @@ export class Level {
       const rh = randomBetween(minRoomSize, Math.max(minRoomSize, maxHeight));
 
       const room = new Room(x, y, rw, rh);
-      for (let i = x - 1; i < x + rw + 1; i++) {
-        for (let j = y - 1; j < y + rh + 1; j++) {
-          this.map[j][i] = TileType.WALL;
-        }
-      }
-      for (let i = x; i < x + rw; i++) {
-        for (let j = y; j < y + rh; j++) {
-          this.map[j][i] = TileType.FLOOR;
+      for (let j = y - 1; j <= y + rh; j++) {
+        for (let i = x - 1; i <= x + rw; i++) {
+          this.map[j][i] =
+            i === x - 1 || i === x + rw || j === y - 1 || j === y + rh
+              ? TileType.WALL
+              : TileType.FLOOR;
         }
       }
 
@@ -238,7 +249,7 @@ export class Level {
       const [start, end] = bestPair;
       const path = this.#buildPath(start, end);
 
-      this.corridors.push(new Corridor(start, end, path));
+      this.corridors.push(new Corridor(path));
       connected.add(end);
       remaining.delete(end);
     }

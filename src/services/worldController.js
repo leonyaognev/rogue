@@ -8,6 +8,13 @@ export class WorldController {
     logger.log("WorldController initialized", TypesLogs.INFO);
   }
 
+  serialize() {
+    return {
+      level: this.level.serialize(),
+      player: this.player.serialize(),
+    };
+  }
+
   isPlayerDead() {
     return this.player.isDead();
   }
@@ -38,15 +45,15 @@ export class WorldController {
       } else {
         this.player.move({ x: newX, y: newY });
         if (itemAtTarget) {
-          if (this.player.pickItem(itemAtTarget.item)) {
+          if (this.player.pickItem(itemAtTarget)) {
             logger.log(
-              `Player picked up: ${itemAtTarget.item.subType}`,
+              `Player picked up: ${itemAtTarget.subType}`,
               TypesLogs.INFO
             );
             this.level.removeItem(itemAtTarget);
           } else {
             logger.log(
-              `Player don\`t picked up: ${itemAtTarget.item.subType}, inventory full!`,
+              `Player don\`t picked up: ${itemAtTarget.subType}, inventory full!`,
               TypesLogs.MESSAGE
             );
           }

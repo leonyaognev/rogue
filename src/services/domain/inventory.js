@@ -8,6 +8,17 @@ export class Inventory {
     logger.log(`Inventory created. Max items: ${maxItems}`, TypesLogs.INFO);
   }
 
+  serialize() {
+    return {
+      items: {
+        food: this.items.food.map((item) => item.serialize()),
+        potion: this.items.potion.map((item) => item.serialize()),
+        scroll: this.items.scroll.map((item) => item.serialize()),
+        weapon: this.items.weapon.map((item) => item.serialize()),
+      },
+    };
+  }
+
   add(item) {
     if (this.items[item.type].length >= this.maxItems) {
       logger.log(`Inventory full! Cannot add: ${item.subType}`, TypesLogs.WARN);

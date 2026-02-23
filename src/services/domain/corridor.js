@@ -1,7 +1,11 @@
 export class Corridor {
-  constructor(startRoom, endRoom, path) {
-    this.startRoom = startRoom;
-    this.endRoom = endRoom;
+  constructor(path) {
     this.path = path;
+  }
+
+  serialize() {
+    return {
+      path: structuredClone(this.path),
+    };
   }
 }

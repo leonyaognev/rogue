@@ -3,11 +3,11 @@ import { Level } from "./domain/level.js";
 import { logger } from "./logger.js";
 
 export class LevelManager {
-  constructor(width, height) {
+  constructor(width, height, startLevel = 1) {
     this.width = width;
     this.height = height;
 
-    this.currentLevel = 1;
+    this.currentLevel = startLevel;
 
     this.level = new Level(this.width, this.height, this.currentLevel);
     logger.log(
