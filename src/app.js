@@ -16,7 +16,7 @@ export class App {
     );
 
     this.saveManager.loadLeaderBoard().then((data) => {
-      this.leaderBoard = new LeaderBoard(data.leaderBoard.board);
+      this.leaderBoard = new LeaderBoard(data?.leaderBoard?.board ?? []);
       logger.log(
         `leaderBoard: ${JSON.stringify(this.leaderBoard)}`,
         TypesLogs.INFO

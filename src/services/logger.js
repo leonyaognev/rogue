@@ -1,6 +1,6 @@
 import { TypesLogs } from "../constants.js";
 
-const currentLevel = TypesLogs.INFO;
+const currentLevel = TypesLogs.MESSAGE;
 
 class LogBuf {
   #queue;

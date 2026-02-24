@@ -26,7 +26,7 @@ export function showLeaderBoard(screen, board, bind) {
   if (board.length > 0)
     content = board
       .map((player) => {
-        return `name: ${player.name} | level: ${player.levelNumber} | score: ${player.score}`;
+        return `name: ${player.playerName} | level: ${player.levelNumber} | score: ${player.score}`;
       })
       .join("\n");
   else content = "There are no leaders yet, you can be the first!";
