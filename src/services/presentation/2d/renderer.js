@@ -146,8 +146,8 @@ export class Renderer2D {
     }
   }
 
-  showItemsMenu(items, onSelect, bind) {
-    showInventoryMenu(this.screen, items, onSelect, bind);
+  showItemsMenu(pouch, items, onSelect, bind) {
+    showInventoryMenu(pouch, this.screen, items, onSelect, bind);
   }
 
   showLeaderBoard(board, bind) {

@@ -1,6 +1,6 @@
 import blessed from "blessed";
 
-export function showInventoryMenu(screen, items, onSelect, bind) {
+export function showInventoryMenu(pouch, screen, items, onSelect, bind) {
   const isNotEmpty = items.length !== 0;
   const list = blessed.list({
     parent: screen,
@@ -8,7 +8,7 @@ export function showInventoryMenu(screen, items, onSelect, bind) {
     left: "center",
     width: "50%",
     height: "60%",
-    label: " Inventory ",
+    label: ` ${pouch} `,
     border: "line",
     keys: true,
     mouse: true,

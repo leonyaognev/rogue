@@ -37,7 +37,6 @@ export class FogOfWar {
 
       this.playerVisetedRooms.add(room);
       this.setRoomAsVisible(room);
-      logger.log("penis", TypesLogs.INFO);
     } else if (!room) {
       this.cellsMap.clear();
 

@@ -56,6 +56,7 @@ export class Game {
     const showList = (itemType) => {
       this.gameInput.unbind();
       this.app.renderer.showItemsMenu(
+        itemType,
         this.app.player.inventory.list(itemType),
         (item) => {
           this.app.player.useItem(item);
