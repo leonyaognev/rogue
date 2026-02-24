@@ -19,7 +19,7 @@ export class Item {
     this.agilityBonus = Math.floor(baseAgilityBonus * multiplier);
     this.strengthBonus = Math.floor(baseStrengthBonus * multiplier);
     this.cost = Math.floor(baseValue * multiplier);
-    this.duration = duration;
+    this.duration = Math.max(1, duration);
     this.multiplier = multiplier;
     this.cords = { x: 0, y: 0 };
   }

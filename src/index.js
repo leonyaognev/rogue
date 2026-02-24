@@ -3,7 +3,7 @@ import { Game } from "./game.js";
 
 async function main() {
   const app = new App();
-  // await app.load();
+  await app.load();
 
   const game = new Game(app);
   game.run();

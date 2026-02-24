@@ -45,8 +45,6 @@ export class Renderer2D {
     this.width = this.gameBox.width - 2;
     this.height = this.gameBox.height - 2;
 
-    this.playerVisetedRooms = new Set();
-
     this.enemyColorCache = new Map();
     this.itemColorCache = new Map();
   }
@@ -55,7 +53,6 @@ export class Renderer2D {
     return {
       width: this.width,
       height: this.height,
-      visetedRooms: structuredClone([...this.playerVisetedRooms]),
     };
   }
 
@@ -66,7 +63,7 @@ export class Renderer2D {
   }
 
   clear() {
-    this.playerVisetedRooms.clear();
+    this.fog.clear();
   }
 
   refresh(level, items, player, enemies) {
@@ -90,16 +87,7 @@ export class Renderer2D {
     startX = Math.max(0, endX - this.width);
     startY = Math.max(0, endY - this.height);
 
-    this.fog.cellsMap.clear();
-
-    const room = player.getCurrentRoom(level);
-    if (room) {
-      this.playerVisetedRooms.add(room);
-      this.fog.setRoomAsVisible(room);
-    } else this.fog.rayCasting(player, level.map);
-    this.playerVisetedRooms.forEach((room) => {
-      this.fog.setWallsAsVisible(room);
-    });
+    this.fog.update(player, level);
 
     const buffer = [];
     for (let y = startY; y < endY; y++) {

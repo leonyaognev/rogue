@@ -37,6 +37,10 @@ export class Character {
   attack(target) {
     this.#potionsTick();
     const bufs = this.potionsBufs();
+    logger.log(
+      `bufs: ${JSON.stringify(bufs)}, agility: ${bufs.agility}, strength: ${bufs.strength}`,
+      TypesLogs.INFO
+    );
     if (!this.#checkHit(target, bufs.agility)) {
       logger.log(`${this.name} missed ${target.name}`, TypesLogs.MESSAGE);
       return false;
@@ -79,8 +83,8 @@ export class Character {
     let agility = 0;
 
     for (const potion of this.potions) {
-      strength += potion.strengthBuf;
-      agility += agility.strengthBuf;
+      strength += potion.strengthBonus;
+      agility += potion.agilityBonus;
     }
 
     return { strength, agility };

@@ -1,12 +1,56 @@
-import { TileType } from "../../../constants.js";
+import { TileType, TypesLogs } from "../../../constants.js";
+import { logger } from "../../logger.js";
 import { getKey } from "./utils.js";
 
 export class FogOfWar {
   constructor() {
     this.cellsMap = new Map();
+    this.playerVisetedRooms = new Set();
+
+    this.width = 0;
+    this.height = 0;
+
+    this.visibleNow = null;
+    this.discovered = null;
+
+    this.lastPlayerX = -1;
+    this.lastPlayerY = -1;
+    this.lastRoom = null;
   }
 
-  rayCasting(player, map) {
+  clear() {
+    this.playerVisetedRooms.clear();
+    this.cellsMap.clear();
+  }
+
+  update(player, level) {
+    if (
+      player.cords.x === this.lastPlayerX &&
+      player.cords.y === this.lastPlayerY
+    )
+      return;
+
+    const room = player.getCurrentRoom(level);
+
+    if (room && room !== this.lastRoom) {
+      this.cellsMap.clear();
+
+      this.playerVisetedRooms.add(room);
+      this.setRoomAsVisible(room);
+      logger.log("penis", TypesLogs.INFO);
+    } else if (!room) {
+      this.cellsMap.clear();
+
+      this.#rayCasting(player, level.map);
+    }
+    this.lastRoom = room;
+
+    this.playerVisetedRooms.forEach((room) => {
+      this.setWallsAsVisible(room);
+    });
+  }
+
+  #rayCasting(player, map) {
     const px = player.cords.x;
     const py = player.cords.y;
     const mapHeight = map.length;
