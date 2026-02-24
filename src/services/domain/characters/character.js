@@ -106,7 +106,7 @@ export class Character {
       potion.duration--;
       if (potion.duration <= 0) {
         logger.log(
-          `the potion ${this.potions.splice(i, 1).subType} is finished`,
+          `the potion ${this.potions.splice(i, 1)[0].subType} is finished`,
           TypesLogs.MESSAGE
         );
       }

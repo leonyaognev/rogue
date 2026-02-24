@@ -45,7 +45,7 @@ export class Item {
       data.subType,
       data.hpBonus,
       data.maxHpBonus,
-      data.strengthBonusBonus,
+      data.strengthBonus,
       data.agilityBonus,
       data.cost,
       data.duration,

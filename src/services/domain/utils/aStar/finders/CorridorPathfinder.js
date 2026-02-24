@@ -31,7 +31,7 @@ export class CorridorPathfinder extends baseFinder {
         break;
     }
 
-    cost += this.#isNearCorridor(x, y, this.grid);
+    cost += this.#isNearCorridor(x, y);
 
     if (current.parent) {
       const dx1 = current.x - current.parent.x;

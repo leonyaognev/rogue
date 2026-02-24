@@ -38,8 +38,8 @@ export class Vampire extends Enemy {
   }
 
   takeDamage(amount) {
-    this.#alreadyHit = true;
     if (this.#alreadyHit) return super.takeDamage(amount);
+    this.#alreadyHit = true;
   }
 
   attack(target) {

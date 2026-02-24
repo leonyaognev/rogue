@@ -40,7 +40,7 @@ export class FogOfWar {
     } else if (!room) {
       this.cellsMap.clear();
 
-      this.#rayCasting(player, level.map);
+      this.#rayCasting(player, level.map, 2);
     }
     this.lastRoom = room;
 
@@ -49,17 +49,17 @@ export class FogOfWar {
     });
   }
 
-  #rayCasting(player, map) {
+  #rayCasting(player, map, ang = 1) {
     const px = player.cords.x;
     const py = player.cords.y;
     const mapHeight = map.length;
     const mapWidth = map[0].length;
     const RAD_CONV = Math.PI / 180;
 
-    for (let angle = 0; angle < 360; angle++) {
+    for (let angle = 0; angle < 360; angle += ang) {
       const rad = angle * RAD_CONV;
-      const dx = Math.cos(rad) * 0.2;
-      const dy = Math.sin(rad) * 0.2;
+      const dx = Math.cos(rad) * 0.3;
+      const dy = Math.sin(rad) * 0.3;
 
       let x = px;
       let y = py;

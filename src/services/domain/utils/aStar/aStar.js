@@ -7,7 +7,6 @@ class Node {
     this.g = g;
     this.h = h;
     this.f = f;
-    this.directionUp;
     this.parent = parent;
   }
 }
@@ -74,7 +73,7 @@ export class aStar {
       exists.g = gScore;
       exists.h = hScore;
       exists.f = fScore;
-      exists.parant = current;
+      exists.parent = current;
       this.openSet.update(exists);
     }
   }
