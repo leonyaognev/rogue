@@ -4,11 +4,21 @@ import { Player } from "./services/domain/characters/player.js";
 import { LevelManager } from "./services/levelManager.js";
 import { logger } from "./services/logger.js";
 import { Renderer2D } from "./services/presentation/2d/renderer.js";
+import { initScreen } from "./services/presentation/initScreen.js";
 import { WorldController } from "./services/worldController.js";
 
 export class App {
-  constructor() {
-    this.renderer = new Renderer2D();
+  constructor(screen) {
+    this.screen = initScreen();
+    logger.log("App initialized", TypesLogs.INFO);
+  }
+
+  save() {
+    this.saveManager.saveSession(this.worldController, this.renderer);
+  }
+
+  startNewGame() {
+    this.renderer = new Renderer2D(this.screen);
     this.saveManager = new SaveManager(".save.json");
 
     this.levelManager = new LevelManager(
@@ -30,15 +40,9 @@ export class App {
       this.levelManager.level,
       this.player
     );
-
-    logger.log("App initialized", TypesLogs.INFO);
   }
 
-  save() {
-    this.saveManager.saveSession(this.worldController, this.renderer);
-  }
-
-  async load() {
+  async loadFromLastSave() {
     const sessionData = await this.saveManager.loadSession();
     if (!sessionData) return;
 
@@ -47,7 +51,7 @@ export class App {
     );
 
     this.player = this.worldController.player;
-    this.renderer = Renderer2D.deserialize(sessionData.renderer);
+    this.renderer = Renderer2D.deserialize(sessionData.renderer, this.screen);
     this.levelManager = new LevelManager(
       this.renderer.width * 2,
       this.renderer.height * 2,

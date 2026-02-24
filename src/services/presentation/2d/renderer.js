@@ -17,13 +17,8 @@ const TILE_CACHE = Object.freeze({
 });
 
 export class Renderer2D {
-  constructor() {
-    this.screen = blessed.screen({
-      smartCSR: true,
-      title: "Rogue Demo",
-      fullUnicode: true,
-    });
-
+  constructor(screen) {
+    this.screen = screen;
     this.gameBox = blessed.box({
       parent: this.screen,
       top: 0,
@@ -56,8 +51,8 @@ export class Renderer2D {
     };
   }
 
-  static deserialize(data) {
-    const rend = new Renderer2D();
+  static deserialize(data, screen) {
+    const rend = new Renderer2D(screen);
     Object.assign(rend, data);
     return rend;
   }
