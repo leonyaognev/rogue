@@ -17,7 +17,8 @@ export class Player extends Character {
   serialize() {
     return {
       name: this.name,
-      maxHp: this.maxHp,
+      hp: this.hp,
+      maxHP: this.maxHP,
       agility: this.agility,
       strength: this.strength,
       cords: this.cords,
@@ -30,8 +31,13 @@ export class Player extends Character {
   static deserialize(data) {
     const player = new Player();
     Object.assign(player, data);
+    logger.log(`player loaded data: ${JSON.stringify(data)} `, TypesLogs.WARN);
+    logger.log(
+      `player hp after load: ${player.hp}/${player.maxHP}`,
+      TypesLogs.WARN
+    );
     if (data.inventory) {
-      player.inventory = Inventory.deserialize();
+      player.inventory = Inventory.deserialize(data.inventory);
     }
     return player;
   }

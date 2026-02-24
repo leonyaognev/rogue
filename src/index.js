@@ -1,7 +1,12 @@
 import { App } from "./app.js";
 import { Game } from "./game.js";
 
-const app = new App();
-const game = new Game(app);
+async function main() {
+  const app = new App();
+  // await app.load();
 
-game.run();
+  const game = new Game(app);
+  game.run();
+}
+
+main();

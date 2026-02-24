@@ -1,9 +1,12 @@
 import { LevelConfig, TileType, TypesLogs } from "../../constants.js";
 import { logger } from "../logger.js";
-import { Enemy } from "./characters/enemy.js";
-import { createRandomEnemy, enemyClasses } from "./characters/enemyFactory.js";
+import {
+  createRandomEnemy,
+  enemyClasses,
+  enemyDeserialize,
+} from "./characters/enemyFactory.js";
 import { Corridor } from "./corridor.js";
-import { BaseItems, createItemWithMultiplier } from "./item.js";
+import { BaseItems, createItemWithMultiplier, Item } from "./item.js";
 import { Room } from "./room.js";
 import { CorridorPathfinder } from "./utils/aStar/finders/CorridorPathfinder.js";
 import { endPathFinder } from "./utils/aStar/finders/endPathFinder.js";
@@ -81,15 +84,36 @@ export class Level {
 
   static deserialize(data) {
     const level = new Level(data.width, data.height, data.number);
+    level.map = new Array(level.height)
+      .fill(TileType.EMPTY)
+      .map(() => new Array(level.width).fill(TileType.EMPTY));
 
-    level.rooms = (data.rooms || []).map((dataRoom) =>
-      Room.deserialize(dataRoom)
-    );
-    level.corridors = (data.corridors || []).map((dataCorridor) =>
-      Corridor.deserialize(dataCorridor)
-    );
+    level.rooms = (data.rooms || []).map((dataRoom) => {
+      for (let j = dataRoom.y - 1; j <= dataRoom.y + dataRoom.height; j++) {
+        for (let i = dataRoom.x - 1; i <= dataRoom.x + dataRoom.width; i++) {
+          level.map[j][i] =
+            i === dataRoom.x - 1 ||
+            i === dataRoom.x + dataRoom.width ||
+            j === dataRoom.y - 1 ||
+            j === dataRoom.y + dataRoom.height
+              ? TileType.WALL
+              : TileType.FLOOR;
+        }
+      }
+
+      return Room.deserialize(dataRoom);
+    });
+    level.corridors = (data.corridors || []).map((dataCorridor) => {
+      for (const cord of dataCorridor.path) {
+        if (level.map[cord.y][cord.x] !== TileType.FLOOR) {
+          level.map[cord.y][cord.x] = TileType.CORRIDOR;
+        }
+      }
+
+      return Corridor.deserialize(dataCorridor);
+    });
     level.enemies = (data.enemies || []).map((dataEnemy) =>
-      Enemy.deserialize(dataEnemy, level)
+      enemyDeserialize(dataEnemy, level)
     );
     level.items = (data.items || []).map((dataItems) =>
       Item.deserialize(dataItems)

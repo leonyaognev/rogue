@@ -78,7 +78,7 @@ export class Character {
     let strength = 0;
     let agility = 0;
 
-    for (potion of this.potions) {
+    for (const potion of this.potions) {
       strength += potion.strengthBuf;
       agility += agility.strengthBuf;
     }

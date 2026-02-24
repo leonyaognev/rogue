@@ -37,4 +37,24 @@ export class App {
   save() {
     this.saveManager.saveSession(this.worldController, this.renderer);
   }
+
+  async load() {
+    const sessionData = await this.saveManager.loadSession();
+    if (!sessionData) return;
+
+    this.worldController = WorldController.deserialize(
+      sessionData.worldController
+    );
+
+    this.player = this.worldController.player;
+    this.renderer = Renderer2D.deserialize(sessionData.renderer);
+    this.levelManager = new LevelManager(
+      this.renderer.width * 2,
+      this.renderer.height * 2,
+      this.worldController.level.current,
+      this.worldController.level
+    );
+
+    console.log("Session loaded!", this.worldController, this.renderer);
+  }
 }

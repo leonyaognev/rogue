@@ -91,13 +91,12 @@ export class Renderer2D {
     startY = Math.max(0, endY - this.height);
 
     this.fog.cellsMap.clear();
-    this.fog.rayCasting(player, level.map);
 
     const room = player.getCurrentRoom(level);
     if (room) {
       this.playerVisetedRooms.add(room);
       this.fog.setRoomAsVisible(room);
-    }
+    } else this.fog.rayCasting(player, level.map);
     this.playerVisetedRooms.forEach((room) => {
       this.fog.setWallsAsVisible(room);
     });

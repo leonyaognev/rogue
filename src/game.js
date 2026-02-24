@@ -36,9 +36,9 @@ export class Game {
         logger.log("You have won the game!", TypesLogs.INFO);
         process.exit(GameConfig.EXIT_CODE);
       }
-      this.app.save();
       this.app.renderer.clear();
       this.app.player.move(this.app.levelManager.level.startRoom.center);
+      this.app.save();
     }
 
     if (this.app.player.isDead()) {

@@ -22,8 +22,18 @@ export class SaveManager {
     logger.log("Session saved!", TypesLogs.INFO);
   }
 
-  loadSession() {
+  async loadSession() {
     logger.log("Loading session...", TypesLogs.INFO);
+
+    try {
+      const content = await fs.readFile(this.filePath, "utf-8");
+      const data = JSON.parse(content);
+
+      return data;
+    } catch (err) {
+      logger.log(`Failed to load session: ${err.message}`, TypesLogs.ERROR);
+      return null;
+    }
   }
 
   saveLeaderBoard(stats) {
