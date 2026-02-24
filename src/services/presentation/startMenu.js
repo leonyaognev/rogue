@@ -26,9 +26,13 @@ export function showStartMenu(screen) {
       screen.unkey(["escape", "q"], cleanup);
     };
 
-    const selectHandler = (item) => {
+    const selectHandler = (item, index) => {
       cleanup();
-      resolve(item);
+      if (index === 0) {
+        resolve("new");
+      } else {
+        resolve("load");
+      }
     };
 
     list.on("select", selectHandler);

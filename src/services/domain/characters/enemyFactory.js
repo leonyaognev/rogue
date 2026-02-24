@@ -34,6 +34,5 @@ export function enemyDeserialize(data, level) {
     level
   );
   enemy.hp = data.hp;
-  console.log(enemy);
   return enemy;
 }

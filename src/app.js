@@ -80,7 +80,5 @@ export class App {
       this.worldController.level.current,
       this.worldController.level
     );
-
-    console.log("Session loaded!", this.worldController, this.renderer);
   }
 }
