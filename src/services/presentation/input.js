@@ -1,4 +1,4 @@
-import { GameConfig, TypesLogs } from "../../constants.js";
+import { DefaultKeys, GameConfig, TypesLogs } from "../../constants.js";
 import { logger } from "../logger.js";
 
 export class GameInput {
@@ -50,15 +50,5 @@ export class GameInput {
 }
 
 function defaultKeys() {
-  return {
-    up: ["k"],
-    down: ["j"],
-    left: ["h"],
-    right: ["l"],
-    weapon: ["w"],
-    potion: ["r"],
-    food: ["f"],
-    scroll: ["s"],
-    exit: ["q"],
-  };
+  return DefaultKeys;
 }

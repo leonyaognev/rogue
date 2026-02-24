@@ -1,12 +1,7 @@
 import blessed from "blessed";
 
-export function showStartMenu() {
+export function showStartMenu(screen) {
   return new Promise((resolve) => {
-    const screen = blessed.screen({
-      smartCSR: true,
-      title: "Rogue main menu",
-    });
-
     const list = blessed.list({
       parent: screen,
       top: "center",
@@ -37,7 +32,9 @@ export function showStartMenu() {
     };
 
     list.on("select", selectHandler);
-    screen.key(["escape", "q"], cleanup);
+    screen.key(["escape", "q"], () => {
+      screen.destroy();
+    });
     screen.render();
   });
 }

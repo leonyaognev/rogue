@@ -4,6 +4,7 @@ import { FogOfWar } from "./fogOfWar.js";
 import { showInventoryMenu } from "./inventoryMeny.js";
 import { Logger } from "./logger.js";
 import { PlayerStats } from "./playerStats.js";
+import { showLeaderBoard } from "./showLeaderBoard.js";
 import { colorChar, getKey } from "./utils.js";
 
 const TILE_CACHE = Object.freeze({
@@ -147,5 +148,9 @@ export class Renderer2D {
 
   showItemsMenu(items, onSelect, bind) {
     showInventoryMenu(this.screen, items, onSelect, bind);
+  }
+
+  showLeaderBoard(board, bind) {
+    showLeaderBoard(this.screen, board, bind);
   }
 }

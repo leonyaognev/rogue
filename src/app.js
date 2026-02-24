@@ -1,6 +1,7 @@
-import { PlayerConfig, TypesLogs } from "./constants.js";
+import { PlayerConfig, SaveFiles, TypesLogs } from "./constants.js";
 import { SaveManager } from "./services/datalayer/saveManager.js";
 import { Player } from "./services/domain/characters/player.js";
+import { LeaderBoard } from "./services/leaderBoard.js";
 import { LevelManager } from "./services/levelManager.js";
 import { logger } from "./services/logger.js";
 import { Renderer2D } from "./services/presentation/2d/renderer.js";
@@ -9,6 +10,19 @@ import { WorldController } from "./services/worldController.js";
 
 export class App {
   constructor(screen) {
+    this.saveManager = new SaveManager(
+      SaveFiles.SESSION_SAVE,
+      SaveFiles.LEADER_BOAR_SAVE
+    );
+
+    this.saveManager.loadLeaderBoard().then((data) => {
+      this.leaderBoard = new LeaderBoard(data.leaderBoard.board);
+      logger.log(
+        `leaderBoard: ${JSON.stringify(this.leaderBoard)}`,
+        TypesLogs.INFO
+      );
+    });
+
     this.screen = initScreen();
     logger.log("App initialized", TypesLogs.INFO);
   }
@@ -17,9 +31,17 @@ export class App {
     this.saveManager.saveSession(this.worldController, this.renderer);
   }
 
+  async saveLeaderBoard() {
+    this.leaderBoard.addScore(
+      this.player.name,
+      this.player.treasures,
+      this.levelManager.currentLevel
+    );
+    await this.saveManager.saveLeaderBoard(this.leaderBoard);
+  }
+
   startNewGame() {
     this.renderer = new Renderer2D(this.screen);
-    this.saveManager = new SaveManager(".save.json");
 
     this.levelManager = new LevelManager(
       this.renderer.width * 2,

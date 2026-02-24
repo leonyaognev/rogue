@@ -33,8 +33,10 @@ export class Game {
       );
       if (this.app.levelManager.isLevelMax()) {
         this.app.renderer.screen.destroy();
-        logger.log("You have won the game!", TypesLogs.INFO);
-        process.exit(GameConfig.EXIT_CODE);
+        this.app.saveLeaderBoard().then(() => {
+          logger.log("You have won the game!", TypesLogs.INFO);
+          process.exit(GameConfig.EXIT_CODE);
+        });
       }
       this.app.renderer.clear();
       this.app.player.move(this.app.levelManager.level.startRoom.center);
@@ -43,8 +45,10 @@ export class Game {
 
     if (this.app.player.isDead()) {
       this.app.renderer.screen.destroy();
-      logger.log("Game over - Player died", TypesLogs.ERROR);
-      process.exit(GameConfig.EXIT_CODE);
+      this.app.saveLeaderBoard().then(() => {
+        logger.log("Game over - Player died", TypesLogs.ERROR);
+        process.exit(GameConfig.EXIT_CODE);
+      });
     }
   }
 
@@ -94,6 +98,13 @@ export class Game {
       case "potion":
         showList(ItemType.POTION);
         break;
+      case "leaderBoard":
+        this.gameInput.unbind();
+        this.app.renderer.showLeaderBoard(this.app.leaderBoard.board, () => {
+          this.gameInput.bind();
+          this.#update();
+          this.#refresh();
+        });
     }
     this.#update();
     this.#refresh();

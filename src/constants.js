@@ -76,3 +76,21 @@ export const TypesLogs = Object.freeze({
   ERROR: 1,
   MESSAGE: 0,
 });
+
+export const SaveFiles = Object.freeze({
+  SESSION_SAVE: ".sessionSave.json",
+  LEADER_BOAR_SAVE: ".leaderBoardSave.json",
+});
+
+export const DefaultKeys = Object.freeze({
+  up: ["k"],
+  down: ["j"],
+  left: ["h"],
+  right: ["l"],
+  weapon: ["w"],
+  potion: ["r"],
+  food: ["f"],
+  scroll: ["s"],
+  exit: ["q"],
+  leaderBoard: ["b"],
+});
