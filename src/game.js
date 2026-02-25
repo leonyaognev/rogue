@@ -69,79 +69,77 @@ export default class Game {
     });
   }
 
+  #bind() {
+    this.gameInput.bind();
+    this.#update();
+    this.#refresh();
+  }
+
+  #showWeaponMenu() {
+    this.gameInput.unbind();
+
+    this.app.renderer.showWeaponMenu(
+      this.app.player.inventory.list(ItemType.WEAPON),
+      (item) => {
+        const thrownItem = this.app.player.useItem(item);
+        if (thrownItem) {
+          thrownItem.coords = { ...this.app.player.coords };
+          this.app.levelManager.level.items.push(thrownItem);
+        }
+        logger.log(`Player used item: ${item.subType}`, TypesLogs.INFO);
+      },
+      this.#bind.bind(this),
+      this.app.player.weapon,
+    );
+  }
+
+  #showInventoryMenu(itemType) {
+    this.gameInput.unbind();
+    this.app.renderer.showItemsMenu(
+      itemType,
+      this.app.player.inventory.list(itemType),
+      (item) => {
+        this.app.player.useItem(item);
+        logger.log(`Player used item: ${item.subType}`, TypesLogs.INFO);
+      },
+      this.#bind.bind(this),
+      this.app.player,
+    );
+  }
+
   #actionOnInput(action) {
-    const showList = (itemType) => {
-      this.gameInput.unbind();
-      this.app.renderer.showItemsMenu(
-        itemType,
-        this.app.player.inventory.list(itemType),
-        (item) => {
-          this.app.player.useItem(item);
-          logger.log(`Player used item: ${item.subType}`, TypesLogs.INFO);
-        },
-        () => {
-          this.gameInput.bind();
-          this.#update();
-          this.#refresh();
-        },
-        this.app.player,
-      );
+    const moves = {
+      up: [0, -1],
+      down: [0, 1],
+      left: [-1, 0],
+      right: [1, 0],
     };
 
-    switch (action) {
-      case 'up':
-        this.app.worldController.movePlayer(0, -1);
-        this.app.worldController.moveEnemies();
-        break;
-      case 'down':
-        this.app.worldController.movePlayer(0, 1);
-        this.app.worldController.moveEnemies();
-        break;
-      case 'left':
-        this.app.worldController.movePlayer(-1, 0);
-        this.app.worldController.moveEnemies();
-        break;
-      case 'right':
-        this.app.worldController.movePlayer(1, 0);
-        this.app.worldController.moveEnemies();
-        break;
-      case 'food':
-        showList(ItemType.FOOD);
-        break;
-      case 'scroll':
-        showList(ItemType.SCROLL);
-        break;
-      case 'weapon':
-        this.gameInput.unbind();
+    const menu = {
+      food: ItemType.FOOD,
+      scroll: ItemType.SCROLL,
+      potion: ItemType.POTION,
+    };
 
-        this.app.renderer.showWeaponMenu(
-          this.app.player.inventory.list(ItemType.WEAPON),
-          (item) => {
-            const thrownItem = this.app.player.useItem(item);
-            if (thrownItem) {
-              thrownItem.coords = { ...this.app.player.coords };
-              this.app.levelManager.level.items.push(thrownItem);
-            }
-            logger.log(`Player used weapon: ${item.subType}`, TypesLogs.INFO);
-          },
-          () => {
-            this.gameInput.bind();
-            this.#update();
-            this.#refresh();
-          },
-          this.app.player.weapon,
-        );
-
-        break;
-      case 'potion':
-        showList(ItemType.POTION);
-        break;
-      case 'leaderBoard':
-        this.#showLeaderBoard();
-        break;
-      default:
-        logger.log('unknown action', TypesLogs.WARN);
+    if (moves[action]) {
+      const [dx, dy] = moves[action];
+      this.app.worldController.movePlayer(dx, dy);
+      this.app.worldController.moveEnemies();
+    } else if (menu[action]) {
+      this.#showInventoryMenu(menu[action]);
+    } else {
+      switch (action) {
+        case 'weapon':
+          this.#showWeaponMenu();
+          break;
+        case 'leaderBoard':
+          this.#showLeaderBoard();
+          break;
+        default:
+          logger.log('unknown action', TypesLogs.WARN);
+      }
     }
+
     this.#update();
     this.#refresh();
   }
