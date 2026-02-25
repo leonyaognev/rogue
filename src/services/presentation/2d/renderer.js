@@ -1,20 +1,20 @@
-import blessed from "blessed";
-import { TileChar, TileType } from "../../../constants.js";
-import { FogOfWar } from "./fogOfWar.js";
-import { showInventoryMenu } from "./inventoryMeny.js";
-import { Logger } from "./logger.js";
-import { PlayerStats } from "./playerStats.js";
-import { showLeaderBoard } from "./showLeaderBoard.js";
-import { colorChar, getKey } from "./utils.js";
+import blessed from 'blessed';
+import { TileChar, TileType } from '../../../constants.js';
+import { FogOfWar } from './fogOfWar.js';
+import { showInventoryMenu } from './inventoryMeny.js';
+import { Logger } from './logger.js';
+import { PlayerStats } from './playerStats.js';
+import { showLeaderBoard } from './showLeaderBoard.js';
+import { colorChar, getKey } from './utils.js';
 
 const TILE_CACHE = Object.freeze({
-  PLAYER: colorChar(TileChar.PLAYER, "blue"),
-  END_ROOM: colorChar(TileChar.END_ROOM, "magenta"),
-  FLOOR: colorChar(TileChar.FLOOR, "cyan"),
-  WALL: colorChar(TileChar.WALL, "grey"),
-  CORRIDOR: colorChar(TileChar.CORRIDOR, "cyan"),
-  EMPTY: colorChar(TileChar.EMPTY, "black"),
-  UNKNOWN: " ",
+  PLAYER: colorChar(TileChar.PLAYER, 'blue'),
+  END_ROOM: colorChar(TileChar.END_ROOM, 'magenta'),
+  FLOOR: colorChar(TileChar.FLOOR, 'cyan'),
+  WALL: colorChar(TileChar.WALL, 'grey'),
+  CORRIDOR: colorChar(TileChar.CORRIDOR, 'cyan'),
+  EMPTY: colorChar(TileChar.EMPTY, 'black'),
+  UNKNOWN: ' ',
 });
 
 export class Renderer2D {
@@ -24,18 +24,18 @@ export class Renderer2D {
       parent: this.screen,
       top: 0,
       left: 0,
-      width: "70%",
-      height: "100%",
-      border: "line",
+      width: '70%',
+      height: '100%',
+      border: 'line',
       tags: true,
     });
 
     this.fog = new FogOfWar();
 
-    this.logger = new Logger(this.screen, { width: "30%", height: "50%" });
+    this.logger = new Logger(this.screen, { width: '30%', height: '50%' });
     this.playerDisplay = new PlayerStats(this.screen, {
-      width: "30%",
-      height: "50%",
+      width: '30%',
+      height: '50%',
     });
 
     this.width = this.gameBox.width - 2;
@@ -65,8 +65,7 @@ export class Renderer2D {
   refresh(level, items, player, enemies) {
     const enemyMap = new Map();
     for (const enemy of enemies) {
-      if (enemy.visible)
-        enemyMap.set(getKey(enemy.cords.x, enemy.cords.y), enemy);
+      if (enemy.visible) enemyMap.set(getKey(enemy.cords.x, enemy.cords.y), enemy);
     }
 
     const itemMap = new Map();
@@ -87,14 +86,14 @@ export class Renderer2D {
 
     const buffer = [];
     for (let y = startY; y < endY; y++) {
-      let line = "";
+      let line = '';
       for (let x = startX; x < endX; x++) {
         line += this.#getTileChar(x, y, level, itemMap, player, enemyMap);
       }
       buffer.push(line);
     }
 
-    this.gameBox.setContent(buffer.join("\n"));
+    this.gameBox.setContent(buffer.join('\n'));
     this.logger.displayMessages();
     this.playerDisplay.displayPlayerInformation(player, level);
     this.screen.render();
@@ -113,7 +112,7 @@ export class Renderer2D {
     if (enemy) {
       let coloredEnemy = this.enemyColorCache.get(enemy.name[0]);
       if (!coloredEnemy) {
-        coloredEnemy = colorChar(enemy.name[0], "red");
+        coloredEnemy = colorChar(enemy.name[0], 'red');
         this.enemyColorCache.set(enemy.name[0], coloredEnemy);
       }
       return coloredEnemy;
@@ -123,7 +122,7 @@ export class Renderer2D {
     if (item) {
       let coloredItem = this.itemColorCache.get(item.type[0]);
       if (!coloredItem) {
-        coloredItem = colorChar(item.type[0], "green");
+        coloredItem = colorChar(item.type[0], 'green');
         this.itemColorCache.set(item.type[0], coloredItem);
       }
       return coloredItem;

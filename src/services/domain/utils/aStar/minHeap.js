@@ -1,5 +1,6 @@
 export class MinHeap {
   #items;
+
   #itemsMap;
 
   constructor() {
@@ -74,8 +75,8 @@ export class MinHeap {
         swapIdx = leftIdx;
       }
       if (
-        rightIdx < this.#items.length &&
-        this.#compare(rightIdx, swapIdx === null ? idx : swapIdx)
+        rightIdx < this.#items.length
+        && this.#compare(rightIdx, swapIdx === null ? idx : swapIdx)
       ) {
         swapIdx = rightIdx;
       }

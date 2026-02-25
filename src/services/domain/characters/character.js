@@ -1,5 +1,5 @@
-import { CombatConfig, TypesLogs } from "../../../constants.js";
-import { logger } from "../../logger.js";
+import { CombatConfig, TypesLogs } from '../../../constants.js';
+import { logger } from '../../logger.js';
 
 export class Character {
   #isSleep;
@@ -39,7 +39,7 @@ export class Character {
     const bufs = this.potionsBufs();
     logger.log(
       `bufs: ${JSON.stringify(bufs)}, agility: ${bufs.agility}, strength: ${bufs.strength}`,
-      TypesLogs.INFO
+      TypesLogs.INFO,
     );
     if (!this.#checkHit(target, bufs.agility)) {
       logger.log(`${this.name} missed ${target.name}`, TypesLogs.MESSAGE);
@@ -51,7 +51,7 @@ export class Character {
     target.takeDamage(damage);
     logger.log(
       `${this.name} hits ${target.name} for ${damage} damage`,
-      TypesLogs.INFO
+      TypesLogs.INFO,
     );
     return true;
   }
@@ -60,7 +60,7 @@ export class Character {
     this.hp -= amount;
     logger.log(
       `${this.name} takes ${Math.floor(amount)} damage. HP: ${Math.floor(this.hp)}/${Math.floor(this.maxHP)}`,
-      TypesLogs.MESSAGE
+      TypesLogs.MESSAGE,
     );
   }
 
@@ -92,11 +92,10 @@ export class Character {
 
   getCurrentRoom(level) {
     return level.rooms.find(
-      (room) =>
-        this.cords.x >= room.x &&
-        this.cords.x < room.x + room.width &&
-        this.cords.y >= room.y &&
-        this.cords.y < room.y + room.height
+      (room) => this.cords.x >= room.x
+        && this.cords.x < room.x + room.width
+        && this.cords.y >= room.y
+        && this.cords.y < room.y + room.height,
     );
   }
 
@@ -107,21 +106,20 @@ export class Character {
       if (potion.duration <= 0) {
         logger.log(
           `the potion ${this.potions.splice(i, 1)[0].subType} is finished`,
-          TypesLogs.MESSAGE
+          TypesLogs.MESSAGE,
         );
       }
     }
   }
 
   #checkHit(target, agilityBuf) {
-    const chance =
-      CombatConfig.hit.baseChance +
-      (this.agility + agilityBuf - target.agility) *
-        CombatConfig.hit.agilityFactor;
+    const chance = CombatConfig.hit.baseChance
+      + (this.agility + agilityBuf - target.agility)
+        * CombatConfig.hit.agilityFactor;
 
     const clamped = Math.max(
       CombatConfig.hit.minChance,
-      Math.min(CombatConfig.hit.maxChance, chance)
+      Math.min(CombatConfig.hit.maxChance, chance),
     );
 
     return Math.random() < clamped;

@@ -1,9 +1,9 @@
-import blessed from "blessed";
+import blessed from 'blessed';
 
 export function initScreen() {
   return blessed.screen({
     smartCSR: true,
-    title: "Rogue",
+    title: 'Rogue',
     fullUnicode: true,
   });
 }

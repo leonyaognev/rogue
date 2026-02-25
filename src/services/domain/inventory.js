@@ -1,10 +1,12 @@
-import { PlayerConfig, TypesLogs } from "../../constants.js";
-import { logger } from "../logger.js";
-import { Item } from "./item.js";
+import { PlayerConfig, TypesLogs } from '../../constants.js';
+import { logger } from '../logger.js';
+import { Item } from './item.js';
 
 export class Inventory {
   constructor(maxItems = PlayerConfig.MAX_ITEMS) {
-    this.items = { food: [], potion: [], scroll: [], weapon: [] };
+    this.items = {
+      food: [], potion: [], scroll: [], weapon: [],
+    };
     this.maxItems = maxItems;
     logger.log(`Inventory created. Max items: ${maxItems}`, TypesLogs.INFO);
   }
@@ -23,18 +25,10 @@ export class Inventory {
   static deserialize(data) {
     const inv = new Inventory();
 
-    inv.items.food = (data.items.food || []).map((itemData) =>
-      Item.deserialize(itemData)
-    );
-    inv.items.potion = (data.items.potion || []).map((itemData) =>
-      Item.deserialize(itemData)
-    );
-    inv.items.scroll = (data.items.scroll || []).map((itemData) =>
-      Item.deserialize(itemData)
-    );
-    inv.items.weapon = (data.items.weapon || []).map((itemData) =>
-      Item.deserialize(itemData)
-    );
+    inv.items.food = (data.items.food || []).map((itemData) => Item.deserialize(itemData));
+    inv.items.potion = (data.items.potion || []).map((itemData) => Item.deserialize(itemData));
+    inv.items.scroll = (data.items.scroll || []).map((itemData) => Item.deserialize(itemData));
+    inv.items.weapon = (data.items.weapon || []).map((itemData) => Item.deserialize(itemData));
 
     return inv;
   }

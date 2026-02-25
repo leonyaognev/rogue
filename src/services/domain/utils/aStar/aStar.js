@@ -1,4 +1,4 @@
-import { MinHeap } from "./minHeap.js";
+import { MinHeap } from './minHeap.js';
 
 class Node {
   constructor(x, y, g, h, f, parent) {
@@ -31,7 +31,7 @@ export class aStar {
   findPath() {
     const startCost = this.#manhattan(this.start, this.end);
     this.openSet.push(
-      new Node(this.start.x, this.start.y, 0, startCost, startCost, null)
+      new Node(this.start.x, this.start.y, 0, startCost, startCost, null),
     );
 
     while (this.openSet.length > 0) {
@@ -60,7 +60,7 @@ export class aStar {
     if (this.closedSet.has(key)) return;
 
     const gScore = current.g + this.costFn(current, x, y);
-    const hScore = this.#manhattan({ x: x, y: y }, this.end);
+    const hScore = this.#manhattan({ x, y }, this.end);
     const fScore = gScore + hScore;
 
     const exists = this.openMap.get(key);

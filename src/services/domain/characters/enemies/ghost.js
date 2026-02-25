@@ -1,4 +1,4 @@
-import { Enemy, EnemyprotectedMethods } from "../enemy.js";
+import { Enemy, EnemyprotectedMethods } from '../enemy.js';
 
 export class Ghost extends Enemy {
   constructor(name, maxHp, agility, strength, cords, hostility, level) {
@@ -9,7 +9,7 @@ export class Ghost extends Enemy {
       strength * 0.3,
       cords,
       hostility * 0.3,
-      level
+      level,
     );
   }
 

@@ -1,15 +1,15 @@
-import { TileType, TypesLogs } from "../../../constants.js";
-import { logger } from "../../logger.js";
-import { createItemWithMultiplier, treasure } from "../item.js";
-import { enemyPathFinder } from "../utils/aStar/finders/enemyPathFinder.js";
-import { Character } from "./character.js";
+import { TileType, TypesLogs } from '../../../constants.js';
+import { logger } from '../../logger.js';
+import { createItemWithMultiplier, treasure } from '../item.js';
+import { enemyPathFinder } from '../utils/aStar/finders/enemyPathFinder.js';
+import { Character } from './character.js';
 
 export const EnemyprotectedMethods = Object.freeze({
-  playerTarget: Symbol("protected"),
-  playerIsNotNear: Symbol("protected"),
-  nextStep: Symbol("protected"),
-  isInstance: Symbol("protected"),
-  getNewTarget: Symbol("protected"),
+  playerTarget: Symbol('protected'),
+  playerIsNotNear: Symbol('protected'),
+  nextStep: Symbol('protected'),
+  isInstance: Symbol('protected'),
+  getNewTarget: Symbol('protected'),
 });
 
 export class Enemy extends Character {
@@ -20,7 +20,7 @@ export class Enemy extends Character {
       maxHp * levelFactor,
       agility * levelFactor,
       strength * levelFactor,
-      cords
+      cords,
     );
     this.hostility = hostility * levelFactor;
     this.level = level;
@@ -30,7 +30,7 @@ export class Enemy extends Character {
     this.finder = new enemyPathFinder(this.level.map);
     logger.log(
       `Enemy "${name}" spawned. HP: ${Math.floor(maxHp)}, Agility: ${Math.floor(agility)}, Strength: ${Math.floor(strength)}`,
-      TypesLogs.INFO
+      TypesLogs.INFO,
     );
   }
 
@@ -54,11 +54,11 @@ export class Enemy extends Character {
     if (super.isDead()) {
       const tmpItem = createItemWithMultiplier(
         treasure[Math.floor(Math.random() * (treasure.length - 1))],
-        this.level.number
+        this.level.number,
       );
       logger.log(
         `Item from ${this.name} cost: ${tmpItem.cost} `,
-        TypesLogs.INFO
+        TypesLogs.INFO,
       );
       tmpItem.cords = this.cords;
       this.level.items.push(tmpItem);
@@ -73,13 +73,14 @@ export class Enemy extends Character {
 
     let room = this.getCurrentRoom(this.level);
     if (!room) {
-      room = { x: this.cords.x, y: this.cords.y, width: 10, height: 10 };
+      room = {
+        x: this.cords.x, y: this.cords.y, width: 10, height: 10,
+      };
     }
 
-    for (let y = room.y; y < room.y + room.height; y++) {
-      for (let x = room.x; x < room.x + room.width; x++) {
-        if (this[EnemyprotectedMethods.isInstance](x, y))
-          targets.push({ x, y });
+    for (let { y } = room; y < room.y + room.height; y++) {
+      for (let { x } = room; x < room.x + room.width; x++) {
+        if (this[EnemyprotectedMethods.isInstance](x, y)) targets.push({ x, y });
       }
     }
 
@@ -88,11 +89,11 @@ export class Enemy extends Character {
 
   [EnemyprotectedMethods.isInstance](x, y) {
     return (
-      x >= 0 &&
-      y >= 0 &&
-      y < this.level.map.length &&
-      x < this.level.map[0].length &&
-      this.level.map[y][x] === TileType.FLOOR
+      x >= 0
+      && y >= 0
+      && y < this.level.map.length
+      && x < this.level.map[0].length
+      && this.level.map[y][x] === TileType.FLOOR
     );
   }
 
@@ -117,8 +118,7 @@ export class Enemy extends Character {
           return;
         }
       }
-      if (nextStep.x === player.cords.x && nextStep.y === player.cords.y)
-        this.attack(player);
+      if (nextStep.x === player.cords.x && nextStep.y === player.cords.y) this.attack(player);
       else this.move(nextStep);
     }
   }

@@ -1,20 +1,20 @@
-import blessed from "blessed";
+import blessed from 'blessed';
 
 export function showStartMenu(screen) {
   return new Promise((resolve) => {
     const list = blessed.list({
       parent: screen,
-      top: "center",
-      left: "center",
-      width: "50%",
-      height: "60%",
-      label: " Main menu ",
-      border: "line",
+      top: 'center',
+      left: 'center',
+      width: '50%',
+      height: '60%',
+      label: ' Main menu ',
+      border: 'line',
       keys: true,
       mouse: true,
       vi: true,
-      style: { selected: { bg: "blue" } },
-      items: ["start new game", "start from last save"],
+      style: { selected: { bg: 'blue' } },
+      items: ['start new game', 'start from last save'],
       tags: true,
     });
 
@@ -23,20 +23,20 @@ export function showStartMenu(screen) {
     const cleanup = () => {
       list.destroy();
       screen.render();
-      screen.unkey(["escape", "q"], cleanup);
+      screen.unkey(['escape', 'q'], cleanup);
     };
 
     const selectHandler = (item, index) => {
       cleanup();
       if (index === 0) {
-        resolve("new");
+        resolve('new');
       } else {
-        resolve("load");
+        resolve('load');
       }
     };
 
-    list.on("select", selectHandler);
-    screen.key(["escape", "q"], () => {
+    list.on('select', selectHandler);
+    screen.key(['escape', 'q'], () => {
       screen.destroy();
     });
     screen.render();

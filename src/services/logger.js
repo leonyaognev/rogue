@@ -1,4 +1,4 @@
-import { TypesLogs } from "../constants.js";
+import { TypesLogs } from '../constants.js';
 
 const currentLevel = TypesLogs.MESSAGE;
 

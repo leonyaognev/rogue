@@ -1,16 +1,16 @@
-import { LevelConfig, TileType, TypesLogs } from "../../constants.js";
-import { logger } from "../logger.js";
+import { LevelConfig, TileType, TypesLogs } from '../../constants.js';
+import { logger } from '../logger.js';
 import {
   createRandomEnemy,
   enemyClasses,
   enemyDeserialize,
-} from "./characters/enemyFactory.js";
-import { Corridor } from "./corridor.js";
-import { BaseItems, createItemWithMultiplier, Item } from "./item.js";
-import { Room } from "./room.js";
-import { CorridorPathfinder } from "./utils/aStar/finders/CorridorPathfinder.js";
-import { endPathFinder } from "./utils/aStar/finders/endPathFinder.js";
-import { randomBetween } from "./utils/randomBetween.js";
+} from './characters/enemyFactory.js';
+import { Corridor } from './corridor.js';
+import { BaseItems, createItemWithMultiplier, Item } from './item.js';
+import { Room } from './room.js';
+import { CorridorPathfinder } from './utils/aStar/finders/CorridorPathfinder.js';
+import { endPathFinder } from './utils/aStar/finders/endPathFinder.js';
+import { randomBetween } from './utils/randomBetween.js';
 
 class Node {
   constructor(x, y, width, height) {
@@ -40,7 +40,7 @@ export class Level {
   constructor(
     width = LevelConfig.DEFAULT_WIDTH,
     height = LevelConfig.DEFAULT_HEIGHT,
-    number = 1
+    number = 1,
   ) {
     this.rooms = [];
     this.corridors = [];
@@ -64,7 +64,7 @@ export class Level {
 
     logger.log(
       `Level ${number} generated: ${this.rooms.length} rooms, ${this.enemies.length} enemies, ${this.items.length} items`,
-      TypesLogs.INFO
+      TypesLogs.INFO,
     );
   }
 
@@ -91,13 +91,12 @@ export class Level {
     level.rooms = (data.rooms || []).map((dataRoom) => {
       for (let j = dataRoom.y - 1; j <= dataRoom.y + dataRoom.height; j++) {
         for (let i = dataRoom.x - 1; i <= dataRoom.x + dataRoom.width; i++) {
-          level.map[j][i] =
-            i === dataRoom.x - 1 ||
-            i === dataRoom.x + dataRoom.width ||
-            j === dataRoom.y - 1 ||
-            j === dataRoom.y + dataRoom.height
-              ? TileType.WALL
-              : TileType.FLOOR;
+          level.map[j][i] = i === dataRoom.x - 1
+            || i === dataRoom.x + dataRoom.width
+            || j === dataRoom.y - 1
+            || j === dataRoom.y + dataRoom.height
+            ? TileType.WALL
+            : TileType.FLOOR;
         }
       }
 
@@ -112,12 +111,8 @@ export class Level {
 
       return Corridor.deserialize(dataCorridor);
     });
-    level.enemies = (data.enemies || []).map((dataEnemy) =>
-      enemyDeserialize(dataEnemy, level)
-    );
-    level.items = (data.items || []).map((dataItems) =>
-      Item.deserialize(dataItems)
-    );
+    level.enemies = (data.enemies || []).map((dataEnemy) => enemyDeserialize(dataEnemy, level));
+    level.items = (data.items || []).map((dataItems) => Item.deserialize(dataItems));
 
     level.startRoom = level.rooms[data.startRoomIndex];
     level.endRoom = level.rooms[data.endRoomIndex];
@@ -140,7 +135,7 @@ export class Level {
     const enemiesCount = 7 + Math.floor(this.number * 0.2);
     const enemies = enemyClasses.slice(
       0,
-      Math.min(Math.floor(this.number / 4) + 1, enemyClasses.length)
+      Math.min(Math.floor(this.number / 4) + 1, enemyClasses.length),
     );
 
     for (let i = 0; i < enemiesCount; i++) {
@@ -192,7 +187,7 @@ export class Level {
 
   getEnemyAt(x, y) {
     return this.enemies.find(
-      (enemy) => enemy.cords.x === x && enemy.cords.y === y
+      (enemy) => enemy.cords.x === x && enemy.cords.y === y,
     );
   }
 
@@ -212,7 +207,7 @@ export class Level {
       const finder = new endPathFinder(this.map);
 
       const path = finder.find(this.startRoom.center, room.center).length;
-      ways.push({ path: path, room: room });
+      ways.push({ path, room });
     }
 
     return ways.reduce((acc, cur) => {
@@ -230,11 +225,11 @@ export class Level {
     for (const leave of leaves) {
       const x = randomBetween(
         leave.x + roomOffset,
-        leave.x + leave.width - minRoomSize - roomOffset
+        leave.x + leave.width - minRoomSize - roomOffset,
       );
       const y = randomBetween(
         leave.y + roomOffset,
-        leave.y + leave.height - minRoomSize - roomOffset
+        leave.y + leave.height - minRoomSize - roomOffset,
       );
 
       const maxWidth = leave.x + leave.width - x - roomOffset;
@@ -246,10 +241,9 @@ export class Level {
       const room = new Room(x, y, rw, rh);
       for (let j = y - 1; j <= y + rh; j++) {
         for (let i = x - 1; i <= x + rw; i++) {
-          this.map[j][i] =
-            i === x - 1 || i === x + rw || j === y - 1 || j === y + rh
-              ? TileType.WALL
-              : TileType.FLOOR;
+          this.map[j][i] = i === x - 1 || i === x + rw || j === y - 1 || j === y + rh
+            ? TileType.WALL
+            : TileType.FLOOR;
         }
       }
 

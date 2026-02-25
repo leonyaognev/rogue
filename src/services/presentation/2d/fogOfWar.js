@@ -1,6 +1,6 @@
-import { TileType, TypesLogs } from "../../../constants.js";
-import { logger } from "../../logger.js";
-import { getKey } from "./utils.js";
+import { TileType, TypesLogs } from '../../../constants.js';
+import { logger } from '../../logger.js';
+import { getKey } from './utils.js';
 
 export class FogOfWar {
   constructor() {
@@ -25,10 +25,9 @@ export class FogOfWar {
 
   update(player, level) {
     if (
-      player.cords.x === this.lastPlayerX &&
-      player.cords.y === this.lastPlayerY
-    )
-      return;
+      player.cords.x === this.lastPlayerX
+      && player.cords.y === this.lastPlayerY
+    ) return;
 
     const room = player.getCurrentRoom(level);
 

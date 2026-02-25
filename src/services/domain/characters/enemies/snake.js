@@ -1,8 +1,10 @@
-import { Enemy, EnemyprotectedMethods } from "../enemy.js";
+import { Enemy, EnemyprotectedMethods } from '../enemy.js';
 
 export class Snake extends Enemy {
   #sleepChance;
+
   #diagonalDirectionVertical;
+
   #diagonalDirectionHorizantal;
 
   constructor(name, maxHp, agility, strength, cords, hostility, level) {
@@ -13,7 +15,7 @@ export class Snake extends Enemy {
       strength * 0.7,
       cords,
       hostility * 0.85,
-      level
+      level,
     );
 
     this.#sleepChance = 0.3;
@@ -39,8 +41,8 @@ export class Snake extends Enemy {
     const maxX = this.mapWidth - 1;
     const maxY = this.mapHeight - 1;
 
-    const x = this.cords.x;
-    const y = this.cords.y;
+    const { x } = this.cords;
+    const { y } = this.cords;
     let dx = this.#diagonalDirectionHorizantal;
     let dy = this.#diagonalDirectionVertical;
 
@@ -50,17 +52,17 @@ export class Snake extends Enemy {
     let nextY = y + dy;
 
     if (
-      nextX < 0 ||
-      nextX > maxX ||
-      !this[EnemyprotectedMethods.isInstance](nextX, y)
+      nextX < 0
+      || nextX > maxX
+      || !this[EnemyprotectedMethods.isInstance](nextX, y)
     ) {
       dx *= -1;
       nextX = x + dx;
     }
     if (
-      nextY < 0 ||
-      nextY > maxY ||
-      !this[EnemyprotectedMethods.isInstance](x, nextY)
+      nextY < 0
+      || nextY > maxY
+      || !this[EnemyprotectedMethods.isInstance](x, nextY)
     ) {
       dy *= -1;
       nextY = y + dy;

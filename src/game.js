@@ -1,6 +1,6 @@
-import { GameConfig, ItemType, TypesLogs } from "./constants.js";
-import { logger } from "./services/logger.js";
-import { GameInput } from "./services/presentation/input.js";
+import { GameConfig, ItemType, TypesLogs } from './constants.js';
+import { logger } from './services/logger.js';
+import { GameInput } from './services/presentation/input.js';
 
 export class Game {
   constructor(app) {
@@ -8,18 +8,18 @@ export class Game {
 
     this.gameInput = new GameInput(
       this.app.renderer.screen,
-      this.#actionOnInput.bind(this)
+      this.#actionOnInput.bind(this),
     );
 
     this.gameInput.bind();
     logger.log(
       `Game initialized. Level: ${this.app.levelManager.currentLevel}`,
-      TypesLogs.INFO
+      TypesLogs.INFO,
     );
   }
 
   run() {
-    logger.log("Game started", TypesLogs.INFO);
+    logger.log('Game started', TypesLogs.INFO);
     this.#update();
     this.#refresh();
   }
@@ -29,12 +29,12 @@ export class Game {
       this.app.worldController.level = this.app.levelManager.nextLevel();
       logger.log(
         `Level completed! Advancing to level ${this.app.levelManager.currentLevel}`,
-        TypesLogs.INFO
+        TypesLogs.INFO,
       );
       if (this.app.levelManager.isLevelMax()) {
         this.app.renderer.screen.destroy();
         this.app.saveLeaderBoard().then(() => {
-          logger.log("You have won the game!", TypesLogs.INFO);
+          logger.log('You have won the game!', TypesLogs.INFO);
           process.exit(GameConfig.EXIT_CODE);
         });
       }
@@ -46,7 +46,7 @@ export class Game {
     if (this.app.player.isDead()) {
       this.app.renderer.screen.destroy();
       this.app.saveLeaderBoard().then(() => {
-        logger.log("Game over - Player died", TypesLogs.ERROR);
+        logger.log('Game over - Player died', TypesLogs.ERROR);
         process.exit(GameConfig.EXIT_CODE);
       });
     }
@@ -66,40 +66,40 @@ export class Game {
           this.gameInput.bind();
           this.#update();
           this.#refresh();
-        }
+        },
       );
     };
 
     switch (action) {
-      case "up":
+      case 'up':
         this.app.worldController.movePlayer(0, -1);
         this.app.worldController.moveEnemies();
         break;
-      case "down":
+      case 'down':
         this.app.worldController.movePlayer(0, 1);
         this.app.worldController.moveEnemies();
         break;
-      case "left":
+      case 'left':
         this.app.worldController.movePlayer(-1, 0);
         this.app.worldController.moveEnemies();
         break;
-      case "right":
+      case 'right':
         this.app.worldController.movePlayer(1, 0);
         this.app.worldController.moveEnemies();
         break;
-      case "food":
+      case 'food':
         showList(ItemType.FOOD);
         break;
-      case "scroll":
+      case 'scroll':
         showList(ItemType.SCROLL);
         break;
-      case "weapon":
+      case 'weapon':
         showList(ItemType.WEAPON);
         break;
-      case "potion":
+      case 'potion':
         showList(ItemType.POTION);
         break;
-      case "leaderBoard":
+      case 'leaderBoard':
         this.gameInput.unbind();
         this.app.renderer.showLeaderBoard(this.app.leaderBoard.board, () => {
           this.gameInput.bind();
@@ -116,7 +116,7 @@ export class Game {
       this.app.levelManager.level,
       this.app.levelManager.level.items,
       this.app.player,
-      this.app.levelManager.level.enemies
+      this.app.levelManager.level.enemies,
     );
   }
 }

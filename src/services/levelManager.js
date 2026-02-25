@@ -1,6 +1,6 @@
-import { GameConfig, TypesLogs } from "../constants.js";
-import { Level } from "./domain/level.js";
-import { logger } from "./logger.js";
+import { GameConfig, TypesLogs } from '../constants.js';
+import { Level } from './domain/level.js';
+import { logger } from './logger.js';
 
 export class LevelManager {
   constructor(width, height, startLevel = 1, level = null) {
@@ -12,7 +12,7 @@ export class LevelManager {
     this.level = level || new Level(this.width, this.height, this.currentLevel);
     logger.log(
       `LevelManager created. Level size: ${width}x${height}`,
-      TypesLogs.INFO
+      TypesLogs.INFO,
     );
   }
 

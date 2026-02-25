@@ -1,24 +1,24 @@
-import blessed from "blessed";
-import { TypesLogs } from "../../../constants.js";
-import { logger as globalLogger } from "../../logger.js";
+import blessed from 'blessed';
+import { TypesLogs } from '../../../constants.js';
+import { logger as globalLogger } from '../../logger.js';
 
 export class Logger {
-  static #colors = ["red", "yellow", "green", "cyan", "blue", "magenta"];
+  static #colors = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta'];
 
   constructor(screen, options = {}) {
     this.logBox = blessed.log({
       parent: screen,
       right: 0,
       bottom: 0, // Прижимаем вниз
-      width: options.width || "30%",
-      height: options.height || "50%",
-      border: "line",
-      label: " Console ",
+      width: options.width || '30%',
+      height: options.height || '50%',
+      border: 'line',
+      label: ' Console ',
       tags: true,
       scrollable: true,
       keys: true,
       alwaysScroll: true,
-      scrollbar: { ch: " ", inverse: true },
+      scrollbar: { ch: ' ', inverse: true },
     });
     this.color = 0;
   }

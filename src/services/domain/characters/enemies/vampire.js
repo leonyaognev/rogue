@@ -1,4 +1,4 @@
-import { Enemy, EnemyprotectedMethods } from "../enemy.js";
+import { Enemy, EnemyprotectedMethods } from '../enemy.js';
 
 export class Vampire extends Enemy {
   #alreadyHit;
@@ -11,7 +11,7 @@ export class Vampire extends Enemy {
       strength * 0.5,
       cords,
       hostility * 0.8,
-      level
+      level,
     );
 
     this.#alreadyHit = 0;

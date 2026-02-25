@@ -1,4 +1,4 @@
-export function colorChar(char, fg = "white", bg = null) {
+export function colorChar(char, fg = 'white', bg = null) {
   let result = `{${fg}-fg}`;
   if (bg) result += `{${bg}-bg}`;
   result += char;

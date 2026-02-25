@@ -1,13 +1,13 @@
-import { TileType, TypesLogs } from "../constants.js";
-import { Player } from "./domain/characters/player.js";
-import { Level } from "./domain/level.js";
-import { logger } from "./logger.js";
+import { TileType, TypesLogs } from '../constants.js';
+import { Player } from './domain/characters/player.js';
+import { Level } from './domain/level.js';
+import { logger } from './logger.js';
 
 export class WorldController {
   constructor(level, player) {
     this.level = level;
     this.player = player;
-    logger.log("WorldController initialized", TypesLogs.INFO);
+    logger.log('WorldController initialized', TypesLogs.INFO);
   }
 
   serialize() {
@@ -29,8 +29,8 @@ export class WorldController {
 
   isEndLevel() {
     return (
-      this.player.cords.x === this.level.endRoom.center.x &&
-      this.player.cords.y === this.level.endRoom.center.y
+      this.player.cords.x === this.level.endRoom.center.x
+      && this.player.cords.y === this.level.endRoom.center.y
     );
   }
 
@@ -56,13 +56,13 @@ export class WorldController {
           if (this.player.pickItem(itemAtTarget)) {
             logger.log(
               `Player picked up: ${itemAtTarget.subType}`,
-              TypesLogs.INFO
+              TypesLogs.INFO,
             );
             this.level.removeItem(itemAtTarget);
           } else {
             logger.log(
               `Player don\`t picked up: ${itemAtTarget.subType}, inventory full!`,
-              TypesLogs.MESSAGE
+              TypesLogs.MESSAGE,
             );
           }
         }

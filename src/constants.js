@@ -6,12 +6,12 @@ export const TileType = Object.freeze({
 });
 
 export const TileChar = Object.freeze({
-  EMPTY: " ",
-  FLOOR: ".",
-  WALL: "#",
-  CORRIDOR: ".",
-  PLAYER: "@",
-  END_ROOM: "0",
+  EMPTY: ' ',
+  FLOOR: '.',
+  WALL: '#',
+  CORRIDOR: '.',
+  PLAYER: '@',
+  END_ROOM: '0',
 });
 
 export const PathCost = Object.freeze({
@@ -48,11 +48,11 @@ export const GameConfig = Object.freeze({
 });
 
 export const ItemType = Object.freeze({
-  FOOD: "food",
-  POTION: "potion",
-  SCROLL: "scroll",
-  WEAPON: "weapon",
-  TREASURE: "treasure",
+  FOOD: 'food',
+  POTION: 'potion',
+  SCROLL: 'scroll',
+  WEAPON: 'weapon',
+  TREASURE: 'treasure',
 });
 
 export const LevelConfig = Object.freeze({
@@ -78,19 +78,19 @@ export const TypesLogs = Object.freeze({
 });
 
 export const SaveFiles = Object.freeze({
-  SESSION_SAVE: ".sessionSave.json",
-  LEADER_BOAR_SAVE: ".leaderBoardSave.json",
+  SESSION_SAVE: '.sessionSave.json',
+  LEADER_BOAR_SAVE: '.leaderBoardSave.json',
 });
 
 export const DefaultKeys = Object.freeze({
-  up: ["k"],
-  down: ["j"],
-  left: ["h"],
-  right: ["l"],
-  weapon: ["w"],
-  potion: ["r"],
-  food: ["f"],
-  scroll: ["s"],
-  exit: ["q"],
-  leaderBoard: ["b"],
+  up: ['k'],
+  down: ['j'],
+  left: ['h'],
+  right: ['l'],
+  weapon: ['w'],
+  potion: ['r'],
+  food: ['f'],
+  scroll: ['s'],
+  exit: ['q'],
+  leaderBoard: ['b'],
 });

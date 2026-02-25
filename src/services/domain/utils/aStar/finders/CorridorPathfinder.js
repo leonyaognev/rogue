@@ -1,5 +1,5 @@
-import { PathCost, TileType } from "../../../../../constants.js";
-import { baseFinder } from "./baseFinder.js";
+import { PathCost, TileType } from '../../../../../constants.js';
+import { baseFinder } from './baseFinder.js';
 
 export class CorridorPathfinder extends baseFinder {
   find(start, end) {
@@ -8,7 +8,7 @@ export class CorridorPathfinder extends baseFinder {
       start,
       end,
       this.#cost.bind(this),
-      () => false
+      () => false,
     );
 
     return pathFinder.findPath();

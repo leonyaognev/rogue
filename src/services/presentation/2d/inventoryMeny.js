@@ -1,22 +1,22 @@
-import blessed from "blessed";
+import blessed from 'blessed';
 
 export function showInventoryMenu(pouch, screen, items, onSelect, bind) {
   const isNotEmpty = items.length !== 0;
   const list = blessed.list({
     parent: screen,
-    top: "center",
-    left: "center",
-    width: "50%",
-    height: "60%",
+    top: 'center',
+    left: 'center',
+    width: '50%',
+    height: '60%',
     label: ` ${pouch} `,
-    border: "line",
+    border: 'line',
     keys: true,
     mouse: true,
     vi: true,
-    style: { selected: { bg: "blue" } },
+    style: { selected: { bg: 'blue' } },
     items: isNotEmpty
       ? items.map((item, i) => `${i + 1}. ${item.subType}`)
-      : ["empty"],
+      : ['empty'],
     tags: true,
   });
 
@@ -25,7 +25,7 @@ export function showInventoryMenu(pouch, screen, items, onSelect, bind) {
   const cleanup = () => {
     list.destroy();
     screen.render();
-    screen.unkey(["escape", "q"], exitHandler);
+    screen.unkey(['escape', 'q'], exitHandler);
   };
 
   const exitHandler = () => {
@@ -39,7 +39,7 @@ export function showInventoryMenu(pouch, screen, items, onSelect, bind) {
     bind();
   };
 
-  list.on("select", selectHandler);
-  screen.key(["escape", "q"], exitHandler);
+  list.on('select', selectHandler);
+  screen.key(['escape', 'q'], exitHandler);
   screen.render();
 }

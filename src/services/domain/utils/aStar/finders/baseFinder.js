@@ -1,4 +1,4 @@
-import { aStar } from "../aStar.js";
+import { aStar } from '../aStar.js';
 
 export class baseFinder {
   constructor(grid) {

@@ -1,5 +1,5 @@
-import { TileType } from "../../../../../constants.js";
-import { baseFinder } from "./baseFinder.js";
+import { TileType } from '../../../../../constants.js';
+import { baseFinder } from './baseFinder.js';
 
 export class endPathFinder extends baseFinder {
   find(start, end) {
@@ -8,8 +8,7 @@ export class endPathFinder extends baseFinder {
       start,
       end,
       () => 1,
-      (x, y) =>
-        this.grid[y][x] === TileType.WALL || this.grid[y][x] === TileType.EMPTY
+      (x, y) => this.grid[y][x] === TileType.WALL || this.grid[y][x] === TileType.EMPTY,
     );
 
     return pathFinder.findPath();
