@@ -12,15 +12,6 @@ import CorridorPathfinder from './utils/aStar/finders/CorridorPathfinder.js';
 import EndPathFinder from './utils/aStar/finders/endPathFinder.js';
 import randomBetween from './utils/randomBetween.js';
 
-class Node { // TODO to object inline
-  constructor(x, y, width, height) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-  }
-}
-
 function makeLeaves(width, height) {
   const pw = width / LevelConfig.GRID_DIVISIONS;
   const ph = height / LevelConfig.GRID_DIVISIONS;
@@ -29,7 +20,9 @@ function makeLeaves(width, height) {
 
   for (let i = 0; i < LevelConfig.GRID_DIVISIONS; i += 1) {
     for (let j = 0; j < LevelConfig.GRID_DIVISIONS; j += 1) {
-      leaves.push(new Node(pw * i, ph * j, pw, ph));
+      leaves.push({
+        x: pw * i, y: ph * j, width: pw, height: ph,
+      });
     }
   }
 
@@ -91,12 +84,14 @@ export default class Level {
     level.rooms = (data.rooms || []).map((dataRoom) => {
       for (let j = dataRoom.y - 1; j <= dataRoom.y + dataRoom.height; j += 1) {
         for (let i = dataRoom.x - 1; i <= dataRoom.x + dataRoom.width; i += 1) {
-          level.map[j][i] = i === dataRoom.x - 1 // TODO too much difficult condition
-            || i === dataRoom.x + dataRoom.width
-            || j === dataRoom.y - 1
-            || j === dataRoom.y + dataRoom.height
-            ? TileType.WALL
-            : TileType.FLOOR;
+          const isLeftWall = i === dataRoom.x - 1;
+          const isRightWall = i === dataRoom.x + dataRoom.width;
+          const isTopWall = j === dataRoom.y - 1;
+          const isBottomWall = j === dataRoom.y + dataRoom.height;
+
+          const isWall = isLeftWall || isRightWall || isTopWall || isBottomWall;
+
+          level.map[j][i] = isWall ? TileType.WALL : TileType.FLOOR;
         }
       }
 

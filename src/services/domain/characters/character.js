@@ -59,7 +59,15 @@ export default class Character {
   takeDamage(amount) {
     this.hp -= amount;
     logger.log(
-      `${this.name} takes ${Math.floor(amount)} damage. HP: ${Math.floor(this.hp)}/${Math.floor(this.maxHP)}`,
+      `${this.name} takes HP ${Math.floor(amount)} damage. HP: ${Math.floor(this.hp)}/${Math.floor(this.maxHP)}`,
+      TypesLogs.MESSAGE,
+    );
+  }
+
+  takeDamageAtMaxHP(amount) {
+    this.maxHP -= amount;
+    logger.log(
+      `${this.name} takes maxHP ${Math.floor(amount)} damage. HP: ${Math.floor(this.hp)}/${Math.floor(this.maxHP)}`,
       TypesLogs.MESSAGE,
     );
   }

@@ -1,4 +1,6 @@
-import { PlayerConfig, SaveFiles, TypesLogs } from './constants.js';
+import {
+  GameConfig, PlayerConfig, SaveFiles, TypesLogs,
+} from './constants.js';
 import SaveManager from './services/datalayer/saveManager.js';
 import Player from './services/domain/characters/player.js';
 import LeaderBoard from './services/leaderBoard.js';
@@ -46,7 +48,7 @@ export default class App {
     this.levelManager = new LevelManager(
       this.renderer.width * 2,
       this.renderer.height * 2,
-      1,
+      GameConfig.START_LEVEL,
     );
 
     this.player = new Player(

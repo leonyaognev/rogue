@@ -4,7 +4,8 @@ import { createItemWithMultiplier, treasure } from '../item.js';
 import EnemyPathFinder from '../utils/aStar/finders/enemyPathFinder.js';
 import Character from './character.js';
 
-export const EnemyprotectedMethods = Object.freeze({ // TODO странноe вычисление имен методов
+// попопытка повторить protected из нормальных языков, для более комфортной реализации наследников
+export const EnemyprotectedMethods = Object.freeze({
   playerTarget: Symbol('protected'),
   playerIsNotNear: Symbol('protected'),
   nextStep: Symbol('protected'),
@@ -34,7 +35,7 @@ export class Enemy extends Character {
     );
   }
 
-  movePattern(player) {} // TODO empty method, not used param
+  movePattern(player) {} // TODO empty method, not used param // это метод обозночающий архитекутуру для потомков, "виртуальный метод" он не должен нести в себе логики
 
   serialize() {
     return {
@@ -52,7 +53,7 @@ export class Enemy extends Character {
 
   isDead() {
     if (super.isDead()) {
-      const tmpItem = createItemWithMultiplier( // FIXME не экономь букву e
+      const tmpItem = createItemWithMultiplier(
         treasure[Math.floor(Math.random() * (treasure.length - 1))],
         this.level.number,
       );

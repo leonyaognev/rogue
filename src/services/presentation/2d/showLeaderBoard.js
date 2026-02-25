@@ -11,17 +11,15 @@ export default function showLeaderBoard(screen, board, bind) {
     border: 'line',
   });
 
-  const exitHandler = () => {
-    // TODO fix eslint error
-    // eslint-disable-next-line no-use-before-define
-    cleanup();
-    bind();
-  };
-
-  const cleanup = () => {
+  const cleanup = (exit) => {
     leaderBoardDisplayBox.destroy();
     screen.render();
-    screen.unkey(['escape', 'q'], exitHandler);
+    screen.unkey(['escape', 'q'], exit);
+  };
+
+  const exitHandler = () => {
+    cleanup(exitHandler);
+    bind();
   };
 
   let content;

@@ -38,13 +38,13 @@ export default class Vampire extends Enemy {
   }
 
   takeDamage(amount) {
-    if (this.#alreadyHit) return super.takeDamage(amount);
+    if (this.#alreadyHit) super.takeDamage(amount);
     this.#alreadyHit = true;
   }
 
   attack(target) {
-    if (super.attack(target)) { // TODO maybe add attack method in super class Character
-      target.maxHP -= 1;
+    if (super.attack(target)) {
+      target.takeDamageAtMaxHP(1);
     }
   }
 }
