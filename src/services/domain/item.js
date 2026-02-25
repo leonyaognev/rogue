@@ -21,7 +21,7 @@ export class Item {
     this.cost = Math.floor(baseValue * multiplier);
     this.duration = Math.max(1, duration);
     this.multiplier = multiplier;
-    this.cords = { x: 0, y: 0 };
+    this.coords = { x: 0, y: 0 };
   }
 
   serialize() {
@@ -35,7 +35,7 @@ export class Item {
       cost: this.cost,
       duration: this.duration,
       multiplier: this.multiplier,
-      cords: structuredClone(this.cords),
+      coords: structuredClone(this.coords),
     };
   }
 
@@ -45,13 +45,13 @@ export class Item {
       data.subType,
       data.hpBonus,
       data.maxHpBonus,
-      data.strengthBonus,
       data.agilityBonus,
+      data.strengthBonus,
       data.cost,
       data.duration,
       data.multiplier,
     );
-    item.cords = data.cords;
+    item.coords = data.coords;
     return item;
   }
 }

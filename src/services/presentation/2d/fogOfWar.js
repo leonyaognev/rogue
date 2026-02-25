@@ -1,8 +1,5 @@
-import { TileType, TypesLogs } from '../../../constants.js';
-import logger from '../../logger.js';
+import { TileType } from '../../../constants.js';
 import { getKey } from './utils.js';
-
-// FIXME no used imports logger & TypesLogs
 
 export default class FogOfWar {
   constructor() {
@@ -27,8 +24,8 @@ export default class FogOfWar {
 
   update(player, level) {
     if (
-      player.cords.x === this.lastPlayerX
-      && player.cords.y === this.lastPlayerY
+      player.coords.x === this.lastPlayerX
+      && player.coords.y === this.lastPlayerY
     ) return;
 
     const room = player.getCurrentRoom(level);
@@ -45,14 +42,14 @@ export default class FogOfWar {
     }
     this.lastRoom = room;
 
-    this.playerVisetedRooms.forEach((room) => { // FIXME room is declared upper
-      this.setWallsAsVisible(room);
+    this.playerVisetedRooms.forEach((curRoom) => {
+      this.setWallsAsVisible(curRoom);
     });
   }
 
   #rayCasting(player, map, ang = 1) {
-    const px = player.cords.x;
-    const py = player.cords.y;
+    const px = player.coords.x;
+    const py = player.coords.y;
     const mapHeight = map.length;
     const mapWidth = map[0].length;
     const RAD_CONV = Math.PI / 180;

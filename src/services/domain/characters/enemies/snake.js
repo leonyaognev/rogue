@@ -7,13 +7,13 @@ export default class Snake extends Enemy {
 
   #diagonalDirectionHorizantal;
 
-  constructor(name, maxHp, agility, strength, cords, hostility, level) {
+  constructor(name, maxHp, agility, strength, coords, hostility, level) {
     super(
       name,
       maxHp * 0.65,
       agility * 1,
       strength * 0.7,
-      cords,
+      coords,
       hostility * 0.85,
       level,
     );
@@ -41,8 +41,8 @@ export default class Snake extends Enemy {
     const maxX = this.mapWidth - 1;
     const maxY = this.mapHeight - 1;
 
-    const { x } = this.cords;
-    const { y } = this.cords;
+    const { x } = this.coords;
+    const { y } = this.coords;
     let dx = this.#diagonalDirectionHorizantal;
     let dy = this.#diagonalDirectionVertical;
 

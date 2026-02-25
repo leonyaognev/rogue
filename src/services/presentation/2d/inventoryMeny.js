@@ -22,14 +22,14 @@ export default function showInventoryMenu(pouch, screen, items, onSelect, bind) 
 
   list.focus();
 
-  const cleanup = () => {
+  const cleanup = (exit) => {
     list.destroy();
     screen.render();
-    screen.unkey(['escape', 'q'], exitHandler); // FIXME  exitHandler used before defined, cycle
+    screen.unkey(['escape', 'q'], exit);
   };
 
   const exitHandler = () => {
-    cleanup();
+    cleanup(exitHandler);
     bind();
   };
 

@@ -1,13 +1,13 @@
 import { Enemy, EnemyprotectedMethods } from '../enemy.js';
 
 export default class Zombie extends Enemy {
-  constructor(name, maxHp, agility, strength, cords, hostility, level) {
+  constructor(name, maxHp, agility, strength, coords, hostility, level) {
     super(
       name,
       maxHp * 0.85,
       agility * 0.3,
       strength * 0.6,
-      cords,
+      coords,
       hostility * 0.6,
       level,
     );
@@ -27,7 +27,7 @@ export default class Zombie extends Enemy {
     if (this.path.length < 1) {
       const target = this[EnemyprotectedMethods.getNewTarget]();
 
-      this.path = this.finder.find(this.cords, target);
+      this.path = this.finder.find(this.coords, target);
     }
 
     this.angry = false;

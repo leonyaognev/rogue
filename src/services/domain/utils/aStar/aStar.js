@@ -1,15 +1,5 @@
 import MinHeap from './minHeap.js';
-
-class Node { // TODO split on two class files OR change to simple object
-  constructor(x, y, g, h, f, parent) {
-    this.x = x;
-    this.y = y;
-    this.g = g;
-    this.h = h;
-    this.f = f;
-    this.parent = parent;
-  }
-}
+import Node from './node.js';
 
 export default class aStar {
   constructor(grid, start, end, costFn = () => 1, isBlockedFn = () => false) {
@@ -89,9 +79,10 @@ export default class aStar {
 
   #reconstructPath(node) {
     const path = [];
-    while (node) {
-      path.push({ x: node.x, y: node.y });
-      node = node.parent;
+    let n = node;
+    while (n) {
+      path.push({ x: n.x, y: n.y });
+      n = n.parent;
     }
     return path.reverse();
   }

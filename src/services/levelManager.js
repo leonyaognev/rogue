@@ -17,7 +17,7 @@ export default class LevelManager {
   }
 
   nextLevel() {
-    this.currentLevel += 1;
+    this.currentLevel++;
     this.level = new Level(this.width, this.height, this.currentLevel);
     logger.log(`Generating level ${this.currentLevel}`, TypesLogs.INFO);
     return this.level;

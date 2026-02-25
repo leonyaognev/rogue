@@ -21,7 +21,7 @@ export default class Player extends Character {
       maxHP: this.maxHP,
       agility: this.agility,
       strength: this.strength,
-      cords: this.cords,
+      coords: this.coords,
       weapon: this.weapon,
       inventory: this.inventory.serialize(),
       treasures: this.treasures,
@@ -79,7 +79,7 @@ export default class Player extends Character {
         break;
       }
       default:
-        break; // TODO add default case handler
+        logger.log('unknown tile type', TypesLogs.ERROR);
     }
   }
 

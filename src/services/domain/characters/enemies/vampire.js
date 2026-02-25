@@ -3,13 +3,13 @@ import { Enemy, EnemyprotectedMethods } from '../enemy.js';
 export default class Vampire extends Enemy {
   #alreadyHit;
 
-  constructor(name, maxHp, agility, strength, cords, hostility, level) {
+  constructor(name, maxHp, agility, strength, coords, hostility, level) {
     super(
       name,
       maxHp * 0.8,
       agility * 0.8,
       strength * 0.5,
-      cords,
+      coords,
       hostility * 0.8,
       level,
     );
@@ -31,7 +31,7 @@ export default class Vampire extends Enemy {
     if (this.path.length < 1) {
       const target = this[EnemyprotectedMethods.getNewTarget]();
 
-      this.path = this.finder.find(this.cords, target);
+      this.path = this.finder.find(this.coords, target);
     }
 
     this.angry = false;

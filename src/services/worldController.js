@@ -29,14 +29,14 @@ export default class WorldController {
 
   isEndLevel() {
     return (
-      this.player.cords.x === this.level.endRoom.center.x
-      && this.player.cords.y === this.level.endRoom.center.y
+      this.player.coords.x === this.level.endRoom.center.x
+      && this.player.coords.y === this.level.endRoom.center.y
     );
   }
 
   movePlayer(moveX, moveY) {
-    const newX = this.player.cords.x + moveX;
-    const newY = this.player.cords.y + moveY;
+    const newX = this.player.coords.x + moveX;
+    const newY = this.player.coords.y + moveY;
 
     const targetTile = this.level.map[newY][newX];
     const enemyAtTarget = this.level.getEnemyAt(newX, newY);

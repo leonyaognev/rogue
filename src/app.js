@@ -11,7 +11,7 @@ import initScreen from './services/presentation/initScreen.js';
 import WorldController from './services/worldController.js';
 
 export default class App {
-  constructor(screen) { // FIXME no used screen prop in App
+  constructor() {
     this.saveManager = new SaveManager(
       SaveFiles.SESSION_SAVE,
       SaveFiles.LEADER_BOAR_SAVE,

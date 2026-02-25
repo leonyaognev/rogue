@@ -1,7 +1,6 @@
 import fs from 'node:fs/promises';
 
 import { TypesLogs } from '../../constants.js';
-import LeaderBoard from '../leaderBoard.js'; // FIXME no used import LeaderBoard
 import logger from '../logger.js';
 
 export default class SaveManager {

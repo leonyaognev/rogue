@@ -14,14 +14,14 @@ export const EnemyprotectedMethods = Object.freeze({
 });
 
 export class Enemy extends Character {
-  constructor(name, maxHp, agility, strength, cords, hostility, level) {
+  constructor(name, maxHp, agility, strength, coords, hostility, level) {
     const levelFactor = level.number;
     super(
       name,
       maxHp * levelFactor,
       agility * levelFactor,
       strength * levelFactor,
-      cords,
+      coords,
     );
     this.hostility = hostility * levelFactor;
     this.level = level;
@@ -35,17 +35,21 @@ export class Enemy extends Character {
     );
   }
 
-  movePattern(player) {} // TODO empty method, not used param // это метод обозночающий архитекутуру для потомков, "виртуальный метод" он не должен нести в себе логики
+  /**
+   * это метод обозночающий архитекутуру для потомков,
+   * "виртуальный метод" он не должен нести в себе логики
+   */
+  movePattern(player) {}
 
   serialize() {
     return {
-      _type: this.constructor.name,
+      type: this.constructor.name,
       name: this.name,
       hp: this.hp,
       maxHP: this.maxHP,
       agility: this.agility,
       strength: this.strength,
-      cords: this.cords,
+      coords: this.coords,
       hostility: this.hostility,
       angry: this.angry,
     };
@@ -61,7 +65,7 @@ export class Enemy extends Character {
         `Item from ${this.name} cost: ${tmpItem.cost} `,
         TypesLogs.INFO,
       );
-      tmpItem.cords = this.cords;
+      tmpItem.coords = this.coords;
       this.level.items.push(tmpItem);
       return true;
     }
@@ -75,7 +79,7 @@ export class Enemy extends Character {
     let room = this.getCurrentRoom(this.level);
     if (!room) {
       room = {
-        x: this.cords.x, y: this.cords.y, width: 10, height: 10,
+        x: this.coords.x, y: this.coords.y, width: 10, height: 10,
       };
     }
 
@@ -99,13 +103,13 @@ export class Enemy extends Character {
   }
 
   [EnemyprotectedMethods.playerTarget](player) {
-    this.path = this.finder.find(this.cords, player.cords).splice(1);
+    this.path = this.finder.find(this.coords, player.coords).splice(1);
     this.angry = true;
   }
 
   [EnemyprotectedMethods.playerIsNotNear](player) {
-    const dx = Math.abs(this.cords.x - player.cords.x);
-    const dy = Math.abs(this.cords.y - player.cords.y);
+    const dx = Math.abs(this.coords.x - player.coords.x);
+    const dy = Math.abs(this.coords.y - player.coords.y);
     const distance = Math.sqrt(dx * dx + dy * dy);
 
     return distance > this.hostility;
@@ -115,11 +119,11 @@ export class Enemy extends Character {
     if (this.path && this.path.length > 0) {
       const nextStep = this.path.shift();
       for (const enemy of this.level.enemies.filter((cur) => cur !== this)) {
-        if (enemy.cords.x === nextStep.x && enemy.cords.y === nextStep.y) {
+        if (enemy.coords.x === nextStep.x && enemy.coords.y === nextStep.y) {
           return;
         }
       }
-      if (nextStep.x === player.cords.x && nextStep.y === player.cords.y) this.attack(player);
+      if (nextStep.x === player.coords.x && nextStep.y === player.coords.y) this.attack(player);
       else this.move(nextStep);
     }
   }

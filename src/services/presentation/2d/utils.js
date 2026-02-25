@@ -7,4 +7,4 @@ export function colorChar(char, fg = 'white', bg = null) {
   return result;
 }
 
-export const getKey = (x, y) => (y << 16) | x; // TODO rewrite without bitwise
+export const getKey = (x, y) => (y << 16) | x;

@@ -1,13 +1,13 @@
 import { Enemy, EnemyprotectedMethods } from '../enemy.js';
 
 export default class Ogre extends Enemy {
-  constructor(name, maxHp, agility, strength, cords, hostility, level) {
+  constructor(name, maxHp, agility, strength, coords, hostility, level) {
     super(
       name,
       maxHp * 1,
       agility * 0.25,
       strength * 1,
-      cords,
+      coords,
       hostility * 0.6,
       level,
     );
@@ -28,7 +28,7 @@ export default class Ogre extends Enemy {
     if (this.path.length < 1) {
       const target = this[EnemyprotectedMethods.getNewTarget]();
 
-      this.path = this.finder.find(this.cords, target);
+      this.path = this.finder.find(this.coords, target);
     }
 
     this.angry = false;

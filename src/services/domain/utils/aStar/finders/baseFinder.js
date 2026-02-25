@@ -6,5 +6,9 @@ export default class baseFinder {
     this.FinderClass = aStar;
   }
 
-  find(start, end) {} // FIXME maybe clean empty method
+  /**
+   * это метод обозночающий архитекутуру для потомков,
+   * "виртуальный метод" он не должен нести в себе логики
+   */
+  find(start, end) {}
 }

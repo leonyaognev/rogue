@@ -4,14 +4,14 @@ import logger from '../../logger.js';
 export default class Character {
   #isSleep;
 
-  constructor(name, maxHP, agility, strength, cords) {
+  constructor(name, maxHP, agility, strength, coords) {
     this.name = name;
     this.maxHP = maxHP;
     this.hp = maxHP;
     this.agility = agility;
     this.strength = strength;
     this.weapon = null;
-    this.cords = cords;
+    this.coords = coords;
 
     this.potions = [];
 
@@ -19,19 +19,19 @@ export default class Character {
     this.visible = 1;
   }
 
-  move(cords) {
+  move(coords) {
     this.#potionsTick();
-    const oldCords = { ...this.cords }; // TODO maybe means coords
+    const oldCords = { ...this.coords };
 
     if (!this.#isSleep) {
-      this.cords.x = cords.x;
-      this.cords.y = cords.y;
+      this.coords.x = coords.x;
+      this.coords.y = coords.y;
     } else {
       this.#isSleep -= 1;
       return false;
     }
 
-    return !(oldCords.x === this.cords.x && oldCords.y === this.cords.y);
+    return !(oldCords.x === this.coords.x && oldCords.y === this.coords.y);
   }
 
   attack(target) {
@@ -100,10 +100,10 @@ export default class Character {
 
   getCurrentRoom(level) {
     return level.rooms.find(
-      (room) => this.cords.x >= room.x
-        && this.cords.x < room.x + room.width
-        && this.cords.y >= room.y
-        && this.cords.y < room.y + room.height,
+      (room) => this.coords.x >= room.x
+        && this.coords.x < room.x + room.width
+        && this.coords.y >= room.y
+        && this.coords.y < room.y + room.height,
     );
   }
 

@@ -1,13 +1,13 @@
 import { Enemy, EnemyprotectedMethods } from '../enemy.js';
 
 export default class Ghost extends Enemy {
-  constructor(name, maxHp, agility, strength, cords, hostility, level) {
+  constructor(name, maxHp, agility, strength, coords, hostility, level) {
     super(
       name,
       maxHp * 0.35,
       agility * 0.85,
       strength * 0.3,
-      cords,
+      coords,
       hostility * 0.3,
       level,
     );

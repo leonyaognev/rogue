@@ -18,20 +18,20 @@ export function createRandomEnemy(enemies, overrides = {}) {
     overrides.maxHp ?? DefaultEnemy.maxHp,
     overrides.agility ?? DefaultEnemy.agility,
     overrides.strength ?? DefaultEnemy.strength,
-    overrides.cords,
+    overrides.coords,
     overrides.hostility ?? DefaultEnemy.hostility,
     overrides.level,
   );
 }
 
 export function enemyDeserialize(data, level) {
-  const Cls = objEnemyClasses[data._type] || Enemy;
-  const enemy = new Cls( // FIXME const naming
+  const Cls = objEnemyClasses[data.type] || Enemy;
+  const enemy = new Cls(
     data.name,
     data.maxHP,
     data.agility,
     data.strength,
-    data.cords,
+    data.coords,
     data.hostility,
     level,
   );

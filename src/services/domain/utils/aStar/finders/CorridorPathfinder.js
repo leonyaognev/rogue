@@ -1,4 +1,5 @@
-import { PathCost, TileType } from '../../../../../constants.js';
+import { PathCost, TileType, TypesLogs } from '../../../../../constants.js';
+import logger from '../../../../logger.js';
 import baseFinder from './baseFinder.js';
 
 export default class CorridorPathfinder extends baseFinder {
@@ -29,7 +30,9 @@ export default class CorridorPathfinder extends baseFinder {
       case TileType.CORRIDOR:
         cost = PathCost.CORRIDOR;
         break;
-      default: // TODO add default case handler
+      default:
+        cost = 1;
+        logger.log('unknown tile type', TypesLogs.WARN);
         break;
     }
 
@@ -59,7 +62,7 @@ export default class CorridorPathfinder extends baseFinder {
         const nx = x + dx;
         const ny = y + dy;
 
-        if (!this.#isInside(nx, ny)) continue; // FIXME condition without continue
+        if (!this.#isInside(nx, ny)) continue;
         if (this.grid[ny][nx] === TileType.CORRIDOR) {
           return PathCost.NEAR_CORRIDOR;
         }

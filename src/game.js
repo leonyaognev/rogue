@@ -107,8 +107,8 @@ export default class Game {
           this.#refresh();
         });
         break;
-      default: // TODO добавить обработку
-        break;
+      default:
+        logger.log('unknown action', TypesLogs.WARN);
     }
     this.#update();
     this.#refresh();

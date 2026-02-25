@@ -1,4 +1,4 @@
-import { LevelConfig, TileType, TypesLogs } from '../../constants.js'; // FIXME two classes in one file
+import { LevelConfig, TileType, TypesLogs } from '../../constants.js';
 import logger from '../logger.js';
 import {
   createRandomEnemy,
@@ -120,10 +120,10 @@ export default class Level {
   }
 
   populateEnemies() {
-    const cords = [];
+    const coords = [];
     for (let y = 0; y < this.map.length; y += 1) {
       for (let x = 0; x < this.map[0].length; x += 1) {
-        if (this.#isInstanceForEnemy(x, y)) cords.push({ x, y });
+        if (this.#isInstanceForEnemy(x, y)) coords.push({ x, y });
       }
     }
 
@@ -138,7 +138,7 @@ export default class Level {
         maxHp: Math.floor(randomBetween(30, 60)),
         agility: Math.floor(randomBetween(1, 6)),
         strength: Math.floor(randomBetween(1, 6)),
-        cords: cords.splice(Math.floor(Math.random() * cords.length), 1)[0],
+        coords: coords.splice(Math.floor(Math.random() * coords.length), 1)[0],
         hostility: Math.floor(randomBetween(3, 7)),
         level: this,
       });
@@ -149,10 +149,10 @@ export default class Level {
   }
 
   populateItems() {
-    const cords = [];
+    const coords = [];
     for (let y = 0; y < this.map.length; y += 1) {
       for (let x = 0; x < this.map[0].length; x += 1) {
-        if (this.#isInstanceForItem(x, y)) cords.push({ x, y });
+        if (this.#isInstanceForItem(x, y)) coords.push({ x, y });
       }
     }
 
@@ -162,7 +162,7 @@ export default class Level {
       const baseItem = BaseItems[Math.floor(Math.random() * BaseItems.length)];
       const item = createItemWithMultiplier(baseItem, this.number);
 
-      item.cords = cords.splice(Math.floor(Math.random() * cords.length), 1)[0];
+      [item.coords] = coords.splice(Math.floor(Math.random() * coords.length), 1);
 
       this.items.push(item);
     }
@@ -170,7 +170,7 @@ export default class Level {
   }
 
   getItemAt(x, y) {
-    return this.items.find((item) => item.cords.x === x && item.cords.y === y);
+    return this.items.find((item) => item.coords.x === x && item.coords.y === y);
   }
 
   removeItem(item) {
@@ -182,7 +182,7 @@ export default class Level {
 
   getEnemyAt(x, y) {
     return this.enemies.find(
-      (enemy) => enemy.cords.x === x && enemy.cords.y === y,
+      (enemy) => enemy.coords.x === x && enemy.coords.y === y,
     );
   }
 
@@ -197,7 +197,7 @@ export default class Level {
     const ways = [];
 
     for (const room of this.rooms) {
-      if (room === this.startRoom) continue; // FIXME no continue
+      if (room === this.startRoom) continue;
 
       const finder = new EndPathFinder(this.map);
 
@@ -206,7 +206,7 @@ export default class Level {
     }
 
     return ways.reduce((acc, cur) => {
-      if (cur.path > acc.path) acc = cur;
+      if (cur.path > acc.path) return cur;
       return acc;
     }, ways[0]).room;
   }
@@ -293,7 +293,7 @@ export default class Level {
   #isInstanceForEnemy(x, y) {
     if (this.items.length !== 0) {
       for (const item of this.items) {
-        if (item.cords.x === x && item.cords.y === y) {
+        if (item.coords.x === x && item.coords.y === y) {
           return false;
         }
       }
@@ -304,7 +304,7 @@ export default class Level {
   #isInstanceForItem(x, y) {
     if (this.items.length !== 0) {
       for (const enemy of this.enemies) {
-        if (enemy.cords.x === x && enemy.cords.y === y) {
+        if (enemy.coords.x === x && enemy.coords.y === y) {
           return false;
         }
       }

@@ -2,7 +2,7 @@ import blessed from 'blessed';
 import { TileChar, TileType } from '../../../constants.js';
 import FogOfWar from './fogOfWar.js';
 import showInventoryMenu from './inventoryMeny.js';
-import Logger from './logger.js';
+import LoggerBoard from './logger.js';
 import PlayerStats from './playerStats.js';
 import showLeaderBoard from './showLeaderBoard.js';
 import { colorChar, getKey } from './utils.js';
@@ -32,7 +32,7 @@ export default class Renderer2D {
 
     this.fog = new FogOfWar();
 
-    this.logger = new Logger(this.screen, { width: '30%', height: '50%' });
+    this.logger = new LoggerBoard(this.screen, { width: '30%', height: '50%' });
     this.playerDisplay = new PlayerStats(this.screen, {
       width: '30%',
       height: '50%',
@@ -65,16 +65,16 @@ export default class Renderer2D {
   refresh(level, items, player, enemies) {
     const enemyMap = new Map();
     for (const enemy of enemies) {
-      if (enemy.visible) enemyMap.set(getKey(enemy.cords.x, enemy.cords.y), enemy);
+      if (enemy.visible) enemyMap.set(getKey(enemy.coords.x, enemy.coords.y), enemy);
     }
 
     const itemMap = new Map();
     for (const item of items) {
-      itemMap.set(getKey(item.cords.x, item.cords.y), item);
+      itemMap.set(getKey(item.coords.x, item.coords.y), item);
     }
 
-    let startX = Math.max(0, player.cords.x - Math.floor(this.width / 2));
-    let startY = Math.max(0, player.cords.y - Math.floor(this.height / 2));
+    let startX = Math.max(0, player.coords.x - Math.floor(this.width / 2));
+    let startY = Math.max(0, player.coords.y - Math.floor(this.height / 2));
 
     const endX = Math.min(level.map[0].length, startX + this.width);
     const endY = Math.min(level.map.length, startY + this.height);
@@ -100,7 +100,7 @@ export default class Renderer2D {
   }
 
   #getTileChar(x, y, level, itemMap, player, enemyMap) {
-    if (player.cords.x === x && player.cords.y === y) {
+    if (player.coords.x === x && player.coords.y === y) {
       return TILE_CACHE.PLAYER;
     }
 
