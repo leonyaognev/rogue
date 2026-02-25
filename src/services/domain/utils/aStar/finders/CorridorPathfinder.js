@@ -57,8 +57,8 @@ export default class CorridorPathfinder extends baseFinder {
   }
 
   #isNearCorridor(x, y) {
-    for (let dy = -1; dy <= 1; dy += 1) {
-      for (let dx = -1; dx <= 1; dx += 1) {
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
         const nx = x + dx;
         const ny = y + dy;
 

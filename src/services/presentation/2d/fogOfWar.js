@@ -90,8 +90,8 @@ export default class FogOfWar {
     const endY = room.y + room.height;
     const endX = room.x + room.width;
 
-    for (let j = room.y - 1; j <= endY; j += 1) {
-      for (let i = room.x - 1; i <= endX; i += 1) {
+    for (let j = room.y - 1; j <= endY; j++) {
+      for (let i = room.x - 1; i <= endX; i++) {
         if (i === room.x - 1 || i === endX || j === room.y - 1 || j === endY) {
           this.cellsMap.set(getKey(i, j), true);
         }
@@ -103,8 +103,8 @@ export default class FogOfWar {
     const endY = room.y + room.height - 1;
     const endX = room.x + room.width - 1;
 
-    for (let j = room.y; j <= endY; j += 1) {
-      for (let i = room.x; i <= endX; i += 1) {
+    for (let j = room.y; j <= endY; j++) {
+      for (let i = room.x; i <= endX; i++) {
         this.cellsMap.set(getKey(i, j), true);
       }
     }
@@ -114,8 +114,8 @@ export default class FogOfWar {
     const endY = room.y + room.height - 1;
     const endX = room.x + room.width - 1;
 
-    for (let j = room.y; j <= endY; j += 1) {
-      for (let i = room.x; i <= endX; i += 1) {
+    for (let j = room.y; j <= endY; j++) {
+      for (let i = room.x; i <= endX; i++) {
         this.cellsMap.set(getKey(i, j), false);
       }
     }

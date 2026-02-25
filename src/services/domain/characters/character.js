@@ -108,7 +108,7 @@ export default class Character {
   }
 
   #potionsTick() {
-    for (let i = 0; i < this.potions.length; i += 1) {
+    for (let i = 0; i < this.potions.length; i++) {
       const potion = this.potions[0];
       potion.duration -= 1;
       if (potion.duration <= 0) {

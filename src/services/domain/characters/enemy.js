@@ -83,8 +83,8 @@ export class Enemy extends Character {
       };
     }
 
-    for (let { y } = room; y < room.y + room.height; y += 1) {
-      for (let { x } = room; x < room.x + room.width; x += 1) {
+    for (let { y } = room; y < room.y + room.height; y++) {
+      for (let { x } = room; x < room.x + room.width; x++) {
         if (this[EnemyprotectedMethods.isInstance](x, y)) targets.push({ x, y });
       }
     }

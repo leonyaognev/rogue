@@ -18,8 +18,8 @@ function makeLeaves(width, height) {
 
   const leaves = [];
 
-  for (let i = 0; i < LevelConfig.GRID_DIVISIONS; i += 1) {
-    for (let j = 0; j < LevelConfig.GRID_DIVISIONS; j += 1) {
+  for (let i = 0; i < LevelConfig.GRID_DIVISIONS; i++) {
+    for (let j = 0; j < LevelConfig.GRID_DIVISIONS; j++) {
       leaves.push({
         x: pw * i, y: ph * j, width: pw, height: ph,
       });
@@ -82,8 +82,8 @@ export default class Level {
       .map(() => new Array(level.width).fill(TileType.EMPTY));
 
     level.rooms = (data.rooms || []).map((dataRoom) => {
-      for (let j = dataRoom.y - 1; j <= dataRoom.y + dataRoom.height; j += 1) {
-        for (let i = dataRoom.x - 1; i <= dataRoom.x + dataRoom.width; i += 1) {
+      for (let j = dataRoom.y - 1; j <= dataRoom.y + dataRoom.height; j++) {
+        for (let i = dataRoom.x - 1; i <= dataRoom.x + dataRoom.width; i++) {
           const isLeftWall = i === dataRoom.x - 1;
           const isRightWall = i === dataRoom.x + dataRoom.width;
           const isTopWall = j === dataRoom.y - 1;
@@ -121,8 +121,8 @@ export default class Level {
 
   populateEnemies() {
     const coords = [];
-    for (let y = 0; y < this.map.length; y += 1) {
-      for (let x = 0; x < this.map[0].length; x += 1) {
+    for (let y = 0; y < this.map.length; y++) {
+      for (let x = 0; x < this.map[0].length; x++) {
         if (this.#isInstanceForEnemy(x, y)) coords.push({ x, y });
       }
     }
@@ -133,7 +133,7 @@ export default class Level {
       Math.min(Math.floor(this.number / 4) + 1, enemyClasses.length),
     );
 
-    for (let i = 0; i < enemiesCount; i += 1) {
+    for (let i = 0; i < enemiesCount; i++) {
       const enemy = createRandomEnemy(enemies, {
         maxHp: Math.floor(randomBetween(30, 60)),
         agility: Math.floor(randomBetween(1, 6)),
@@ -150,15 +150,15 @@ export default class Level {
 
   populateItems() {
     const coords = [];
-    for (let y = 0; y < this.map.length; y += 1) {
-      for (let x = 0; x < this.map[0].length; x += 1) {
+    for (let y = 0; y < this.map.length; y++) {
+      for (let x = 0; x < this.map[0].length; x++) {
         if (this.#isInstanceForItem(x, y)) coords.push({ x, y });
       }
     }
 
     const itemsCount = 10 - Math.floor(this.number * 0.2);
 
-    for (let i = 0; i < itemsCount; i += 1) {
+    for (let i = 0; i < itemsCount; i++) {
       const baseItem = BaseItems[Math.floor(Math.random() * BaseItems.length)];
       const item = createItemWithMultiplier(baseItem, this.number);
 
@@ -234,8 +234,8 @@ export default class Level {
       const rh = randomBetween(minRoomSize, Math.max(minRoomSize, maxHeight));
 
       const room = new Room(x, y, rw, rh);
-      for (let j = y - 1; j <= y + rh; j += 1) {
-        for (let i = x - 1; i <= x + rw; i += 1) {
+      for (let j = y - 1; j <= y + rh; j++) {
+        for (let i = x - 1; i <= x + rw; i++) {
           this.map[j][i] = i === x - 1 || i === x + rw || j === y - 1 || j === y + rh
             ? TileType.WALL
             : TileType.FLOOR;

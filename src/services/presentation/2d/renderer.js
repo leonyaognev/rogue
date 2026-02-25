@@ -85,9 +85,9 @@ export default class Renderer2D {
     this.fog.update(player, level);
 
     const buffer = [];
-    for (let y = startY; y < endY; y += 1) {
+    for (let y = startY; y < endY; y++) {
       let line = '';
-      for (let x = startX; x < endX; x += 1) {
+      for (let x = startX; x < endX; x++) {
         line += this.#getTileChar(x, y, level, itemMap, player, enemyMap);
       }
       buffer.push(line);
