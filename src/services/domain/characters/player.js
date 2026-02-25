@@ -61,7 +61,12 @@ export default class Player extends Character {
         break;
       }
       case ItemType.WEAPON: {
-        this.weapon = this.inventory.remove(item);
+        if (item === this.weapon) {
+          this.inventory.remove(item);
+          this.weapon = null;
+        } else {
+          this.weapon = item;
+        }
         logger.log(
           `Player equipped weapon: ${item.subType}`,
           TypesLogs.MESSAGE,

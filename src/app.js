@@ -68,7 +68,11 @@ export default class App {
 
   async loadFromLastSave() {
     const sessionData = await this.saveManager.loadSession();
-    if (!sessionData) return;
+    if (!sessionData) {
+      this.startNewGame();
+      logger.log('No search save. started new game!', TypesLogs.MESSAGE);
+      return;
+    }
 
     this.worldController = WorldController.deserialize(
       sessionData.worldController,
@@ -79,7 +83,7 @@ export default class App {
     this.levelManager = new LevelManager(
       this.renderer.width * 2,
       this.renderer.height * 2,
-      this.worldController.level.current,
+      this.worldController.level.number,
       this.worldController.level,
     );
   }

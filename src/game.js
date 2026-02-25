@@ -1,5 +1,6 @@
 import { GameConfig, ItemType, TypesLogs } from './constants.js';
 import logger from './services/logger.js';
+import showLeaderBoard from './services/presentation/2d/showLeaderBoard.js';
 import GameInput from './services/presentation/input.js';
 
 export default class Game {
@@ -29,13 +30,15 @@ export default class Game {
       this.app.worldController.level = this.app.levelManager.nextLevel();
       logger.log(
         `Level completed! Advancing to level ${this.app.levelManager.currentLevel}`,
-        TypesLogs.INFO,
+        TypesLogs.MESSAGE,
       );
       if (this.app.levelManager.isLevelMax()) {
-        this.app.renderer.screen.destroy();
-        this.app.saveLeaderBoard().then(() => {
-          logger.log('You have won the game!', TypesLogs.INFO);
-          process.exit(GameConfig.EXIT_CODE);
+        logger.log('You have won the game!', TypesLogs.INFO);
+        this.#showLeaderBoard().then(() => {
+          this.app.renderer.screen.destroy();
+          this.app.saveLeaderBoard().then(() => {
+            process.exit(GameConfig.EXIT_CODE);
+          });
         });
       }
       this.app.renderer.clear();
@@ -44,12 +47,26 @@ export default class Game {
     }
 
     if (this.app.player.isDead()) {
-      this.app.renderer.screen.destroy();
-      this.app.saveLeaderBoard().then(() => {
-        logger.log('Game over - Player died', TypesLogs.ERROR);
-        process.exit(GameConfig.EXIT_CODE);
+      logger.log('Game over - Player died', TypesLogs.ERROR);
+      this.#showLeaderBoard().then(() => {
+        this.app.renderer.screen.destroy();
+        this.app.saveLeaderBoard().then(() => {
+          process.exit(GameConfig.EXIT_CODE);
+        });
       });
     }
+  }
+
+  #showLeaderBoard() {
+    return new Promise((resolve) => {
+      this.gameInput.unbind();
+      this.app.renderer.showLeaderBoard(this.app.leaderBoard.board, () => {
+        this.gameInput.bind();
+        this.#update();
+        this.#refresh();
+        resolve('ok');
+      });
+    });
   }
 
   #actionOnInput(action) {
@@ -67,6 +84,7 @@ export default class Game {
           this.#update();
           this.#refresh();
         },
+        this.app.player,
       );
     };
 
@@ -100,12 +118,7 @@ export default class Game {
         showList(ItemType.POTION);
         break;
       case 'leaderBoard':
-        this.gameInput.unbind();
-        this.app.renderer.showLeaderBoard(this.app.leaderBoard.board, () => {
-          this.gameInput.bind();
-          this.#update();
-          this.#refresh();
-        });
+        this.#showLeaderBoard();
         break;
       default:
         logger.log('unknown action', TypesLogs.WARN);

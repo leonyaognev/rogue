@@ -1,6 +1,6 @@
 import blessed from 'blessed';
 
-export default function showInventoryMenu(pouch, screen, items, onSelect, bind) {
+export default function showInventoryMenu(pouch, screen, items, onSelect, bind, player) {
   const isNotEmpty = items.length !== 0;
   const list = blessed.list({
     parent: screen,
@@ -15,7 +15,10 @@ export default function showInventoryMenu(pouch, screen, items, onSelect, bind) 
     vi: true,
     style: { selected: { bg: 'blue' } },
     items: isNotEmpty
-      ? items.map((item, i) => `${i + 1}. ${item.subType}`)
+      ? items.map((item, i) => {
+        if (player.weapon === item) return `${i + 1}. ${item.subType} (current)`;
+        return `${i + 1}. ${item.subType}`;
+      })
       : ['empty'],
     tags: true,
   });
