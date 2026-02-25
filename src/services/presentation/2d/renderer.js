@@ -1,7 +1,7 @@
 import blessed from 'blessed';
 import { TileChar, TileType } from '../../../constants.js';
 import FogOfWar from './fogOfWar.js';
-import showInventoryMenu from './inventoryMeny.js';
+import { showInventoryMenu, showWeaponMenu } from './inventoryMeny.js';
 import LoggerBoard from './logger.js';
 import PlayerStats from './playerStats.js';
 import showLeaderBoard from './showLeaderBoard.js';
@@ -145,8 +145,12 @@ export default class Renderer2D {
     }
   }
 
-  showItemsMenu(pouch, items, onSelect, bind, player) {
-    showInventoryMenu(pouch, this.screen, items, onSelect, bind, player);
+  showItemsMenu(pouch, items, onSelect, bind) {
+    showInventoryMenu(pouch, this.screen, items, onSelect, bind);
+  }
+
+  showWeaponMenu(items, onSelect, bind, weapon) {
+    showWeaponMenu(this.screen, items, onSelect, bind, weapon);
   }
 
   showLeaderBoard(board, bind) {

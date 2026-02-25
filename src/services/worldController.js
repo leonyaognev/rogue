@@ -48,6 +48,7 @@ export default class WorldController {
         logger.log(`Player attacks ${enemyAtTarget.name}`, TypesLogs.INFO);
         if (enemyAtTarget.isDead()) {
           this.level.removeEnemy(enemyAtTarget);
+          this.player.killedEnemy();
           logger.log(`${enemyAtTarget.name} defeated!`, TypesLogs.INFO);
         }
       } else {

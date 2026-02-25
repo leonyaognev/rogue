@@ -79,7 +79,7 @@ export const BaseItems = [
   new Item(ItemType.SCROLL, 'scroll_of_strength', 0, 0, 0, 2),
   new Item(ItemType.SCROLL, 'scroll_of_agility', 0, 0, 2, 0),
   new Item(ItemType.SCROLL, 'scroll_of_vitality', 0, 10, 0, 0),
-  new Item(ItemType.SCROLL, 'scroll_of_giant', 0, 0, 0, 4),
+  new Item(ItemType.SCROLL, 'scroll_of_giant', 0, 5, 5, 5),
 
   new Item(ItemType.WEAPON, 'rusty_sword', 0, 0, 0, 3),
   new Item(ItemType.WEAPON, 'battle_axe', 0, 0, 0, 6),

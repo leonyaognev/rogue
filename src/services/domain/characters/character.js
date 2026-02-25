@@ -41,7 +41,7 @@ export default class Character {
       `bufs: ${JSON.stringify(bufs)}, agility: ${bufs.agility}, strength: ${bufs.strength}`,
       TypesLogs.INFO,
     );
-    if (!this.#checkHit(target, bufs.agility)) {
+    if (!this.checkHit(target, bufs.agility)) {
       logger.log(`${this.name} missed ${target.name}`, TypesLogs.MESSAGE);
       return false;
     }
@@ -120,7 +120,7 @@ export default class Character {
     }
   }
 
-  #checkHit(target, agilityBuf) {
+  checkHit(target, agilityBuf) {
     const chance = CombatConfig.hit.baseChance
       + (this.agility + agilityBuf - target.agility)
         * CombatConfig.hit.agilityFactor;

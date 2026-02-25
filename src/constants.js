@@ -44,7 +44,7 @@ export const PlayerConfig = Object.freeze({
 
 export const GameConfig = Object.freeze({
   MAX_LEVEL: 21,
-  START_LEVEL: 3,
+  START_LEVEL: 1,
   EXIT_CODE: 0,
 });
 

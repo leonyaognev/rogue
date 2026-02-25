@@ -34,11 +34,7 @@ export default class App {
   }
 
   async saveLeaderBoard() {
-    this.leaderBoard.addScore(
-      this.player.name,
-      this.player.treasures,
-      this.levelManager.currentLevel,
-    );
+    this.leaderBoard.addScore(this.player.statistics);
     await this.saveManager.saveLeaderBoard(this.leaderBoard);
   }
 

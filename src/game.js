@@ -1,6 +1,5 @@
 import { GameConfig, ItemType, TypesLogs } from './constants.js';
 import logger from './services/logger.js';
-import showLeaderBoard from './services/presentation/2d/showLeaderBoard.js';
 import GameInput from './services/presentation/input.js';
 
 export default class Game {
@@ -28,6 +27,7 @@ export default class Game {
   #update() {
     if (this.app.worldController.isEndLevel()) {
       this.app.worldController.level = this.app.levelManager.nextLevel();
+      this.app.player.levelRaised(this.app.levelManager.currentLevel);
       logger.log(
         `Level completed! Advancing to level ${this.app.levelManager.currentLevel}`,
         TypesLogs.MESSAGE,
@@ -77,7 +77,7 @@ export default class Game {
         this.app.player.inventory.list(itemType),
         (item) => {
           this.app.player.useItem(item);
-          logger.log(`Player used food: ${item.subType}`, TypesLogs.INFO);
+          logger.log(`Player used item: ${item.subType}`, TypesLogs.INFO);
         },
         () => {
           this.gameInput.bind();
@@ -112,7 +112,26 @@ export default class Game {
         showList(ItemType.SCROLL);
         break;
       case 'weapon':
-        showList(ItemType.WEAPON);
+        this.gameInput.unbind();
+
+        this.app.renderer.showWeaponMenu(
+          this.app.player.inventory.list(ItemType.WEAPON),
+          (item) => {
+            const thrownItem = this.app.player.useItem(item);
+            if (thrownItem) {
+              thrownItem.coords = { ...this.app.player.coords };
+              this.app.levelManager.level.items.push(thrownItem);
+            }
+            logger.log(`Player used weapon: ${item.subType}`, TypesLogs.INFO);
+          },
+          () => {
+            this.gameInput.bind();
+            this.#update();
+            this.#refresh();
+          },
+          this.app.player.weapon,
+        );
+
         break;
       case 'potion':
         showList(ItemType.POTION);
