@@ -1,10 +1,10 @@
 import fs from 'node:fs/promises';
 
 import { TypesLogs } from '../../constants.js';
-import { LeaderBoard } from '../leaderBoard.js';
-import { logger } from '../logger.js';
+import LeaderBoard from '../leaderBoard.js'; // FIXME no used import LeaderBoard
+import logger from '../logger.js';
 
-export class SaveManager {
+export default class SaveManager {
   constructor(sassionSavePath, leaderBoardSavePath) {
     this.sassionSavePath = sassionSavePath;
     this.leaderBoardSavePath = leaderBoardSavePath;

@@ -1,4 +1,4 @@
-export class Room {
+export default class Room {
   constructor(x, y, width, height) {
     this.x = x;
     this.y = y;

@@ -1,9 +1,9 @@
 import { PathCost, TileType } from '../../../../../constants.js';
-import { baseFinder } from './baseFinder.js';
+import baseFinder from './baseFinder.js';
 
-export class CorridorPathfinder extends baseFinder {
+export default class CorridorPathfinder extends baseFinder {
   find(start, end) {
-    const pathFinder = new this.FinderClass(
+    const pathFinder = new this.FinderClass( // TODO why call class in property
       this.grid,
       start,
       end,
@@ -29,6 +29,8 @@ export class CorridorPathfinder extends baseFinder {
       case TileType.CORRIDOR:
         cost = PathCost.CORRIDOR;
         break;
+      default: // TODO add default case handler
+        break;
     }
 
     cost += this.#isNearCorridor(x, y);
@@ -52,12 +54,12 @@ export class CorridorPathfinder extends baseFinder {
   }
 
   #isNearCorridor(x, y) {
-    for (let dy = -1; dy <= 1; dy++) {
-      for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy += 1) {
+      for (let dx = -1; dx <= 1; dx += 1) {
         const nx = x + dx;
         const ny = y + dy;
 
-        if (!this.#isInside(nx, ny)) continue;
+        if (!this.#isInside(nx, ny)) continue; // FIXME condition without continue
         if (this.grid[ny][nx] === TileType.CORRIDOR) {
           return PathCost.NEAR_CORRIDOR;
         }

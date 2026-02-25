@@ -1,6 +1,6 @@
 import blessed from 'blessed';
 
-export function initScreen() {
+export default function initScreen() {
   return blessed.screen({
     smartCSR: true,
     title: 'Rogue',

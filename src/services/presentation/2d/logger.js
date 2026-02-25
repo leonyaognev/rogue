@@ -1,8 +1,8 @@
 import blessed from 'blessed';
 import { TypesLogs } from '../../../constants.js';
-import { logger as globalLogger } from '../../logger.js';
+import globalLogger from '../../logger.js';
 
-export class Logger {
+export default class Logger { // FIXME rename same classname
   static #colors = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta'];
 
   constructor(screen, options = {}) {
@@ -39,6 +39,8 @@ export class Logger {
           break;
         case TypesLogs.ERROR:
           this.logBox.log(`{red-fg}[ERROR] ${mes.message}`);
+          break;
+        default: // TODO add default case handler
           break;
       }
       mes = globalLogger.getMessage();

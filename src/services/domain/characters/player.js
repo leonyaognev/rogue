@@ -1,9 +1,9 @@
 import { ItemType, PlayerConfig, TypesLogs } from '../../../constants.js';
-import { logger } from '../../logger.js';
-import { Inventory } from '../inventory.js';
-import { Character } from './character.js';
+import logger from '../../logger.js';
+import Inventory from '../inventory.js';
+import Character from './character.js';
 
-export class Player extends Character {
+export default class Player extends Character {
   constructor(...args) {
     super(...args);
     this.inventory = new Inventory(PlayerConfig.MAX_ITEMS);
@@ -78,6 +78,8 @@ export class Player extends Character {
         );
         break;
       }
+      default:
+        break; // TODO add default case handler
     }
   }
 

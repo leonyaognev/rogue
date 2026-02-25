@@ -1,6 +1,6 @@
 import { Enemy, EnemyprotectedMethods } from '../enemy.js';
 
-export class Zombie extends Enemy {
+export default class Zombie extends Enemy {
   constructor(name, maxHp, agility, strength, cords, hostility, level) {
     super(
       name,

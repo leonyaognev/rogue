@@ -1,6 +1,6 @@
-import { MinHeap } from './minHeap.js';
+import MinHeap from './minHeap.js';
 
-class Node {
+class Node { // TODO split on two class files OR change to simple object
   constructor(x, y, g, h, f, parent) {
     this.x = x;
     this.y = y;
@@ -11,7 +11,7 @@ class Node {
   }
 }
 
-export class aStar {
+export default class aStar {
   constructor(grid, start, end, costFn = () => 1, isBlockedFn = () => false) {
     this.openSet = new MinHeap();
     this.openMap = new Map();

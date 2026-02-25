@@ -1,8 +1,10 @@
 import { TileType, TypesLogs } from '../../../constants.js';
-import { logger } from '../../logger.js';
+import logger from '../../logger.js';
 import { getKey } from './utils.js';
 
-export class FogOfWar {
+// FIXME no used imports logger & TypesLogs
+
+export default class FogOfWar {
   constructor() {
     this.cellsMap = new Map();
     this.playerVisetedRooms = new Set();
@@ -43,7 +45,7 @@ export class FogOfWar {
     }
     this.lastRoom = room;
 
-    this.playerVisetedRooms.forEach((room) => {
+    this.playerVisetedRooms.forEach((room) => { // FIXME room is declared upper
       this.setWallsAsVisible(room);
     });
   }
@@ -91,8 +93,8 @@ export class FogOfWar {
     const endY = room.y + room.height;
     const endX = room.x + room.width;
 
-    for (let j = room.y - 1; j <= endY; j++) {
-      for (let i = room.x - 1; i <= endX; i++) {
+    for (let j = room.y - 1; j <= endY; j += 1) {
+      for (let i = room.x - 1; i <= endX; i += 1) {
         if (i === room.x - 1 || i === endX || j === room.y - 1 || j === endY) {
           this.cellsMap.set(getKey(i, j), true);
         }
@@ -104,8 +106,8 @@ export class FogOfWar {
     const endY = room.y + room.height - 1;
     const endX = room.x + room.width - 1;
 
-    for (let j = room.y; j <= endY; j++) {
-      for (let i = room.x; i <= endX; i++) {
+    for (let j = room.y; j <= endY; j += 1) {
+      for (let i = room.x; i <= endX; i += 1) {
         this.cellsMap.set(getKey(i, j), true);
       }
     }
@@ -115,8 +117,8 @@ export class FogOfWar {
     const endY = room.y + room.height - 1;
     const endX = room.x + room.width - 1;
 
-    for (let j = room.y; j <= endY; j++) {
-      for (let i = room.x; i <= endX; i++) {
+    for (let j = room.y; j <= endY; j += 1) {
+      for (let i = room.x; i <= endX; i += 1) {
         this.cellsMap.set(getKey(i, j), false);
       }
     }

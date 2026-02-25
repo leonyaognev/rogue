@@ -1,4 +1,4 @@
-export class Corridor {
+export default class Corridor {
   constructor(path) {
     this.path = path;
   }

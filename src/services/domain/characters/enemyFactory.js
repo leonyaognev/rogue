@@ -1,9 +1,9 @@
 import { DefaultEnemy } from '../../../constants.js';
-import { Ghost } from './enemies/ghost.js';
-import { Ogre } from './enemies/ogre.js';
-import { Snake } from './enemies/snake.js';
-import { Vampire } from './enemies/vampire.js';
-import { Zombie } from './enemies/zombie.js';
+import Ghost from './enemies/ghost.js';
+import Ogre from './enemies/ogre.js';
+import Snake from './enemies/snake.js';
+import Vampire from './enemies/vampire.js';
+import Zombie from './enemies/zombie.js';
 import { Enemy } from './enemy.js';
 
 export const enemyClasses = [Zombie, Vampire, Ghost, Ogre, Snake];
@@ -26,7 +26,7 @@ export function createRandomEnemy(enemies, overrides = {}) {
 
 export function enemyDeserialize(data, level) {
   const Cls = objEnemyClasses[data._type] || Enemy;
-  const enemy = new Cls(
+  const enemy = new Cls( // FIXME const naming
     data.name,
     data.maxHP,
     data.agility,

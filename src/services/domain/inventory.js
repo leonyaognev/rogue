@@ -1,8 +1,8 @@
 import { PlayerConfig, TypesLogs } from '../../constants.js';
-import { logger } from '../logger.js';
+import logger from '../logger.js';
 import { Item } from './item.js';
 
-export class Inventory {
+export default class Inventory {
   constructor(maxItems = PlayerConfig.MAX_ITEMS) {
     this.items = {
       food: [], potion: [], scroll: [], weapon: [],

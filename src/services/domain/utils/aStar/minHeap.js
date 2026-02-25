@@ -1,4 +1,4 @@
-export class MinHeap {
+export default class MinHeap {
   #items;
 
   #itemsMap;

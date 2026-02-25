@@ -1,6 +1,23 @@
 {
   "extends": "airbnb-base",
-  "env": { "node": true, "es2024": true },
-  "parserOptions": { "ecmaVersion": 2024, "sourceType": "module" },
-  "rules": { "no-console": "off", "import/extensions": ["error", "always", { "js": "always" }] }
+  "env": {
+    "node": true,
+    "es2024": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2024,
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-console": "warn",
+    "import/extensions": [
+      "error",
+      "always",
+      {
+        "js": "always"
+      }
+    ],
+    "no-restricted-syntax": "off",
+    "no-unused-vars": "warn"
+  }
 }

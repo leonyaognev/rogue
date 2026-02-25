@@ -1,6 +1,6 @@
 import blessed from 'blessed';
 
-export function showLeaderBoard(screen, board, bind) {
+export default function showLeaderBoard(screen, board, bind) {
   const leaderBoardDisplayBox = blessed.box({
     parent: screen,
     top: 'center',
@@ -11,15 +11,17 @@ export function showLeaderBoard(screen, board, bind) {
     border: 'line',
   });
 
+  const exitHandler = () => {
+    // TODO fix eslint error
+    // eslint-disable-next-line no-use-before-define
+    cleanup();
+    bind();
+  };
+
   const cleanup = () => {
     leaderBoardDisplayBox.destroy();
     screen.render();
     screen.unkey(['escape', 'q'], exitHandler);
-  };
-
-  const exitHandler = () => {
-    cleanup();
-    bind();
   };
 
   let content;

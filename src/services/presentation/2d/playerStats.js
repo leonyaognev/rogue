@@ -1,7 +1,7 @@
 import blessed from 'blessed';
 import { colorChar } from './utils.js';
 
-export class PlayerStats {
+export default class PlayerStats {
   constructor(screen, options = {}) {
     this.playerBox = blessed.box({
       parent: screen,

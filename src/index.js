@@ -1,6 +1,6 @@
-import { App } from './app.js';
-import { Game } from './game.js';
-import { showStartMenu } from './services/presentation/startMenu.js';
+import App from './app.js';
+import Game from './game.js';
+import showStartMenu from './services/presentation/startMenu.js';
 
 async function main() {
   const app = new App();

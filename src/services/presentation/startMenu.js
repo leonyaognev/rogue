@@ -1,6 +1,6 @@
 import blessed from 'blessed';
 
-export function showStartMenu(screen) {
+export default function showStartMenu(screen) {
   return new Promise((resolve) => {
     const list = blessed.list({
       parent: screen,

@@ -1,4 +1,4 @@
-export class LeaderBoard {
+export default class LeaderBoard {
   constructor(board = []) {
     this.board = board.sort((a, b) => b.score - a.score);
   }

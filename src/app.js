@@ -1,15 +1,15 @@
 import { PlayerConfig, SaveFiles, TypesLogs } from './constants.js';
-import { SaveManager } from './services/datalayer/saveManager.js';
-import { Player } from './services/domain/characters/player.js';
-import { LeaderBoard } from './services/leaderBoard.js';
-import { LevelManager } from './services/levelManager.js';
-import { logger } from './services/logger.js';
-import { Renderer2D } from './services/presentation/2d/renderer.js';
-import { initScreen } from './services/presentation/initScreen.js';
-import { WorldController } from './services/worldController.js';
+import SaveManager from './services/datalayer/saveManager.js';
+import Player from './services/domain/characters/player.js';
+import LeaderBoard from './services/leaderBoard.js';
+import LevelManager from './services/levelManager.js';
+import logger from './services/logger.js';
+import Renderer2D from './services/presentation/2d/renderer.js';
+import initScreen from './services/presentation/initScreen.js';
+import WorldController from './services/worldController.js';
 
-export class App {
-  constructor(screen) {
+export default class App {
+  constructor(screen) { // FIXME no used screen prop in App
     this.saveManager = new SaveManager(
       SaveFiles.SESSION_SAVE,
       SaveFiles.LEADER_BOAR_SAVE,

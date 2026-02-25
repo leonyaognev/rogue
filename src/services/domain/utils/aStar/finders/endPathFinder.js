@@ -1,7 +1,7 @@
 import { TileType } from '../../../../../constants.js';
-import { baseFinder } from './baseFinder.js';
+import baseFinder from './baseFinder.js';
 
-export class endPathFinder extends baseFinder {
+export default class endPathFinder extends baseFinder {
   find(start, end) {
     const pathFinder = new this.FinderClass(
       this.grid,

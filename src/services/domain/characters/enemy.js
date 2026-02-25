@@ -1,10 +1,10 @@
 import { TileType, TypesLogs } from '../../../constants.js';
-import { logger } from '../../logger.js';
+import logger from '../../logger.js';
 import { createItemWithMultiplier, treasure } from '../item.js';
-import { enemyPathFinder } from '../utils/aStar/finders/enemyPathFinder.js';
-import { Character } from './character.js';
+import EnemyPathFinder from '../utils/aStar/finders/enemyPathFinder.js';
+import Character from './character.js';
 
-export const EnemyprotectedMethods = Object.freeze({
+export const EnemyprotectedMethods = Object.freeze({ // TODO странноe вычисление имен методов
   playerTarget: Symbol('protected'),
   playerIsNotNear: Symbol('protected'),
   nextStep: Symbol('protected'),
@@ -27,14 +27,14 @@ export class Enemy extends Character {
     this.path = [];
     this.angry = false;
 
-    this.finder = new enemyPathFinder(this.level.map);
+    this.finder = new EnemyPathFinder(this.level.map);
     logger.log(
       `Enemy "${name}" spawned. HP: ${Math.floor(maxHp)}, Agility: ${Math.floor(agility)}, Strength: ${Math.floor(strength)}`,
       TypesLogs.INFO,
     );
   }
 
-  movePattern(player) {}
+  movePattern(player) {} // TODO empty method, not used param
 
   serialize() {
     return {
@@ -52,7 +52,7 @@ export class Enemy extends Character {
 
   isDead() {
     if (super.isDead()) {
-      const tmpItem = createItemWithMultiplier(
+      const tmpItem = createItemWithMultiplier( // FIXME не экономь букву e
         treasure[Math.floor(Math.random() * (treasure.length - 1))],
         this.level.number,
       );
@@ -78,8 +78,8 @@ export class Enemy extends Character {
       };
     }
 
-    for (let { y } = room; y < room.y + room.height; y++) {
-      for (let { x } = room; x < room.x + room.width; x++) {
+    for (let { y } = room; y < room.y + room.height; y += 1) {
+      for (let { x } = room; x < room.x + room.width; x += 1) {
         if (this[EnemyprotectedMethods.isInstance](x, y)) targets.push({ x, y });
       }
     }

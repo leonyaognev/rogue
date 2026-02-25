@@ -1,6 +1,6 @@
 import { Enemy, EnemyprotectedMethods } from '../enemy.js';
 
-export class Vampire extends Enemy {
+export default class Vampire extends Enemy {
   #alreadyHit;
 
   constructor(name, maxHp, agility, strength, cords, hostility, level) {
@@ -43,8 +43,8 @@ export class Vampire extends Enemy {
   }
 
   attack(target) {
-    if (super.attack(target)) {
-      target.maxHP--;
+    if (super.attack(target)) { // TODO maybe add attack method in super class Character
+      target.maxHP -= 1;
     }
   }
 }

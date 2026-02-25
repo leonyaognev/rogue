@@ -1,18 +1,18 @@
-import { LevelConfig, TileType, TypesLogs } from '../../constants.js';
-import { logger } from '../logger.js';
+import { LevelConfig, TileType, TypesLogs } from '../../constants.js'; // FIXME two classes in one file
+import logger from '../logger.js';
 import {
   createRandomEnemy,
   enemyClasses,
   enemyDeserialize,
 } from './characters/enemyFactory.js';
-import { Corridor } from './corridor.js';
+import Corridor from './corridor.js';
 import { BaseItems, createItemWithMultiplier, Item } from './item.js';
-import { Room } from './room.js';
-import { CorridorPathfinder } from './utils/aStar/finders/CorridorPathfinder.js';
-import { endPathFinder } from './utils/aStar/finders/endPathFinder.js';
-import { randomBetween } from './utils/randomBetween.js';
+import Room from './room.js';
+import CorridorPathfinder from './utils/aStar/finders/CorridorPathfinder.js';
+import EndPathFinder from './utils/aStar/finders/endPathFinder.js';
+import randomBetween from './utils/randomBetween.js';
 
-class Node {
+class Node { // TODO to object inline
   constructor(x, y, width, height) {
     this.x = x;
     this.y = y;
@@ -27,8 +27,8 @@ function makeLeaves(width, height) {
 
   const leaves = [];
 
-  for (let i = 0; i < LevelConfig.GRID_DIVISIONS; i++) {
-    for (let j = 0; j < LevelConfig.GRID_DIVISIONS; j++) {
+  for (let i = 0; i < LevelConfig.GRID_DIVISIONS; i += 1) {
+    for (let j = 0; j < LevelConfig.GRID_DIVISIONS; j += 1) {
       leaves.push(new Node(pw * i, ph * j, pw, ph));
     }
   }
@@ -36,7 +36,7 @@ function makeLeaves(width, height) {
   return leaves;
 }
 
-export class Level {
+export default class Level {
   constructor(
     width = LevelConfig.DEFAULT_WIDTH,
     height = LevelConfig.DEFAULT_HEIGHT,
@@ -89,9 +89,9 @@ export class Level {
       .map(() => new Array(level.width).fill(TileType.EMPTY));
 
     level.rooms = (data.rooms || []).map((dataRoom) => {
-      for (let j = dataRoom.y - 1; j <= dataRoom.y + dataRoom.height; j++) {
-        for (let i = dataRoom.x - 1; i <= dataRoom.x + dataRoom.width; i++) {
-          level.map[j][i] = i === dataRoom.x - 1
+      for (let j = dataRoom.y - 1; j <= dataRoom.y + dataRoom.height; j += 1) {
+        for (let i = dataRoom.x - 1; i <= dataRoom.x + dataRoom.width; i += 1) {
+          level.map[j][i] = i === dataRoom.x - 1 // TODO too much difficult condition
             || i === dataRoom.x + dataRoom.width
             || j === dataRoom.y - 1
             || j === dataRoom.y + dataRoom.height
@@ -126,8 +126,8 @@ export class Level {
 
   populateEnemies() {
     const cords = [];
-    for (let y = 0; y < this.map.length; y++) {
-      for (let x = 0; x < this.map[0].length; x++) {
+    for (let y = 0; y < this.map.length; y += 1) {
+      for (let x = 0; x < this.map[0].length; x += 1) {
         if (this.#isInstanceForEnemy(x, y)) cords.push({ x, y });
       }
     }
@@ -138,7 +138,7 @@ export class Level {
       Math.min(Math.floor(this.number / 4) + 1, enemyClasses.length),
     );
 
-    for (let i = 0; i < enemiesCount; i++) {
+    for (let i = 0; i < enemiesCount; i += 1) {
       const enemy = createRandomEnemy(enemies, {
         maxHp: Math.floor(randomBetween(30, 60)),
         agility: Math.floor(randomBetween(1, 6)),
@@ -155,15 +155,15 @@ export class Level {
 
   populateItems() {
     const cords = [];
-    for (let y = 0; y < this.map.length; y++) {
-      for (let x = 0; x < this.map[0].length; x++) {
+    for (let y = 0; y < this.map.length; y += 1) {
+      for (let x = 0; x < this.map[0].length; x += 1) {
         if (this.#isInstanceForItem(x, y)) cords.push({ x, y });
       }
     }
 
     const itemsCount = 10 - Math.floor(this.number * 0.2);
 
-    for (let i = 0; i < itemsCount; i++) {
+    for (let i = 0; i < itemsCount; i += 1) {
       const baseItem = BaseItems[Math.floor(Math.random() * BaseItems.length)];
       const item = createItemWithMultiplier(baseItem, this.number);
 
@@ -202,9 +202,9 @@ export class Level {
     const ways = [];
 
     for (const room of this.rooms) {
-      if (room === this.startRoom) continue;
+      if (room === this.startRoom) continue; // FIXME no continue
 
-      const finder = new endPathFinder(this.map);
+      const finder = new EndPathFinder(this.map);
 
       const path = finder.find(this.startRoom.center, room.center).length;
       ways.push({ path, room });
@@ -239,8 +239,8 @@ export class Level {
       const rh = randomBetween(minRoomSize, Math.max(minRoomSize, maxHeight));
 
       const room = new Room(x, y, rw, rh);
-      for (let j = y - 1; j <= y + rh; j++) {
-        for (let i = x - 1; i <= x + rw; i++) {
+      for (let j = y - 1; j <= y + rh; j += 1) {
+        for (let i = x - 1; i <= x + rw; i += 1) {
           this.map[j][i] = i === x - 1 || i === x + rw || j === y - 1 || j === y + rh
             ? TileType.WALL
             : TileType.FLOOR;

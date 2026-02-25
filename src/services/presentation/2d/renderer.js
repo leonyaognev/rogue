@@ -1,10 +1,10 @@
 import blessed from 'blessed';
 import { TileChar, TileType } from '../../../constants.js';
-import { FogOfWar } from './fogOfWar.js';
-import { showInventoryMenu } from './inventoryMeny.js';
-import { Logger } from './logger.js';
-import { PlayerStats } from './playerStats.js';
-import { showLeaderBoard } from './showLeaderBoard.js';
+import FogOfWar from './fogOfWar.js';
+import showInventoryMenu from './inventoryMeny.js';
+import Logger from './logger.js';
+import PlayerStats from './playerStats.js';
+import showLeaderBoard from './showLeaderBoard.js';
 import { colorChar, getKey } from './utils.js';
 
 const TILE_CACHE = Object.freeze({
@@ -17,7 +17,7 @@ const TILE_CACHE = Object.freeze({
   UNKNOWN: ' ',
 });
 
-export class Renderer2D {
+export default class Renderer2D {
   constructor(screen) {
     this.screen = screen;
     this.gameBox = blessed.box({
@@ -85,9 +85,9 @@ export class Renderer2D {
     this.fog.update(player, level);
 
     const buffer = [];
-    for (let y = startY; y < endY; y++) {
+    for (let y = startY; y < endY; y += 1) {
       let line = '';
-      for (let x = startX; x < endX; x++) {
+      for (let x = startX; x < endX; x += 1) {
         line += this.#getTileChar(x, y, level, itemMap, player, enemyMap);
       }
       buffer.push(line);

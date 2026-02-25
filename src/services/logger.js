@@ -20,4 +20,4 @@ class LogBuf {
   }
 }
 
-export const logger = new LogBuf();
+export default new LogBuf();

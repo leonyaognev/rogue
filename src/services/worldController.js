@@ -1,9 +1,9 @@
 import { TileType, TypesLogs } from '../constants.js';
-import { Player } from './domain/characters/player.js';
-import { Level } from './domain/level.js';
-import { logger } from './logger.js';
+import Player from './domain/characters/player.js';
+import Level from './domain/level.js';
+import logger from './logger.js';
 
-export class WorldController {
+export default class WorldController {
   constructor(level, player) {
     this.level = level;
     this.player = player;

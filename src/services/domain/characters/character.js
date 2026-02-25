@@ -1,7 +1,7 @@
 import { CombatConfig, TypesLogs } from '../../../constants.js';
-import { logger } from '../../logger.js';
+import logger from '../../logger.js';
 
-export class Character {
+export default class Character {
   #isSleep;
 
   constructor(name, maxHP, agility, strength, cords) {
@@ -21,17 +21,17 @@ export class Character {
 
   move(cords) {
     this.#potionsTick();
-    const old_cords = { ...this.cords };
+    const oldCords = { ...this.cords }; // TODO maybe means coords
 
     if (!this.#isSleep) {
       this.cords.x = cords.x;
       this.cords.y = cords.y;
     } else {
-      this.#isSleep--;
+      this.#isSleep -= 1;
       return false;
     }
 
-    return !(old_cords.x === this.cords.x && old_cords.y === this.cords.y);
+    return !(oldCords.x === this.cords.x && oldCords.y === this.cords.y);
   }
 
   attack(target) {
@@ -100,9 +100,9 @@ export class Character {
   }
 
   #potionsTick() {
-    for (let i = 0; i < this.potions.length; i++) {
+    for (let i = 0; i < this.potions.length; i += 1) {
       const potion = this.potions[0];
-      potion.duration--;
+      potion.duration -= 1;
       if (potion.duration <= 0) {
         logger.log(
           `the potion ${this.potions.splice(i, 1)[0].subType} is finished`,

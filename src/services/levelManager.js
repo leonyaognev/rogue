@@ -1,8 +1,8 @@
 import { GameConfig, TypesLogs } from '../constants.js';
-import { Level } from './domain/level.js';
-import { logger } from './logger.js';
+import Level from './domain/level.js';
+import logger from './logger.js';
 
-export class LevelManager {
+export default class LevelManager {
   constructor(width, height, startLevel = 1, level = null) {
     this.width = width;
     this.height = height;
@@ -17,7 +17,7 @@ export class LevelManager {
   }
 
   nextLevel() {
-    this.currentLevel++;
+    this.currentLevel += 1;
     this.level = new Level(this.width, this.height, this.currentLevel);
     logger.log(`Generating level ${this.currentLevel}`, TypesLogs.INFO);
     return this.level;

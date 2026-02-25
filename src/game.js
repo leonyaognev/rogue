@@ -1,8 +1,8 @@
 import { GameConfig, ItemType, TypesLogs } from './constants.js';
-import { logger } from './services/logger.js';
-import { GameInput } from './services/presentation/input.js';
+import logger from './services/logger.js';
+import GameInput from './services/presentation/input.js';
 
-export class Game {
+export default class Game {
   constructor(app) {
     this.app = app;
 
@@ -106,6 +106,9 @@ export class Game {
           this.#update();
           this.#refresh();
         });
+        break;
+      default: // TODO добавить обработку
+        break;
     }
     this.#update();
     this.#refresh();

@@ -1,6 +1,6 @@
 import { Enemy, EnemyprotectedMethods } from '../enemy.js';
 
-export class Snake extends Enemy {
+export default class Snake extends Enemy {
   #sleepChance;
 
   #diagonalDirectionVertical;

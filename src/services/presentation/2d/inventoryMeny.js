@@ -1,6 +1,6 @@
 import blessed from 'blessed';
 
-export function showInventoryMenu(pouch, screen, items, onSelect, bind) {
+export default function showInventoryMenu(pouch, screen, items, onSelect, bind) {
   const isNotEmpty = items.length !== 0;
   const list = blessed.list({
     parent: screen,
@@ -25,7 +25,7 @@ export function showInventoryMenu(pouch, screen, items, onSelect, bind) {
   const cleanup = () => {
     list.destroy();
     screen.render();
-    screen.unkey(['escape', 'q'], exitHandler);
+    screen.unkey(['escape', 'q'], exitHandler); // FIXME  exitHandler used before defined, cycle
   };
 
   const exitHandler = () => {
